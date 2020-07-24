@@ -1,14 +1,34 @@
 
-# Contributing
+# DacFx
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a component which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases.
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+For more about SqlPackage.exe, check out the [reference page on Microsoft Docs](https://docs.microsoft.com/en-us/sql/tools/sqlpackage?view=sql-server-ver15).
+
+## Feedback Repository
+
+This repository is currently focused on transparently triaging and addressing feedback on DacFx, including the nuget package and the cross platform SqlPackage.exe. We welcome community interaction and suggestions! For more information on contributing feedback through interacting with issues see [Contributing](CONTRIBUTING.md).
+
+## Download the Latest Release
+
+### Microsoft.SqlServer.DacFx.x64 on nuget
+[https://www.nuget.org/packages/Microsoft.SqlServer.DacFx.x64](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx.x64)
+
+This nuget package is a lightweight version of DacFx. If you would like to use the command-line utility SqlPackage.exe for creating and deploying .dacpac and .bacpac packages, please download DacFramework.msi.
+
+### DacFramework.msi and Cross-Platform SqlPackage.exe
+|Platform|Download|Release date|Version|Build
+|:---|:---|:---|:---|:---|
+|Windows|[MSI Installer](https://go.microsoft.com/fwlink/?linkid=2134206)|June 24, 2020|18.5.1|15.0.4826.1|
+|macOS .NET Core |[.zip file](https://go.microsoft.com/fwlink/?linkid=2134312)|June 24, 2020| 18.5.1|15.0.4826.1|
+|Linux .NET Core |[.zip file](https://go.microsoft.com/fwlink/?linkid=2134311)|June 24, 2020| 18.5.1|15.0.4826.1|
+|Windows .NET Core |[.zip file](https://go.microsoft.com/fwlink/?linkid=2134310)|June 24, 2020| 18.5.1|15.0.4826.1|
+
+
+
+
+## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+For more information see [Code of Conduct](CODE_OF_CONDUCT.md).
+

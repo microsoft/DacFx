@@ -11,7 +11,7 @@ If you find your issue already exists, make relevant comments and add your [reac
 
 If you cannot find an existing issue that describes your bug or feature, submit an issue using the guidelines below.
 
-## Writing Good Bug Reports and Feature Requests
+### Writing Good Bug Reports and Feature Requests
 
 File a single issue per problem and feature request.
 
@@ -40,3 +40,22 @@ Please remember to do the following:
 * Simplify your scripts around the issue so we can better isolate the problem.
 
 Don't feel bad if we can't reproduce the issue and ask for more information!
+
+## Contributing Code
+
+This project welcomes contributions and suggestions. Most contributions require you to
+agree to a Contributor License Agreement (CLA) declaring that you have the right to,
+and actually do, grant us the rights to use your contribution. For details, visit
+https://cla.microsoft.com.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need
+to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the
+instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
+
+## Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
+or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+See also [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)

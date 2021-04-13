@@ -14,7 +14,7 @@ assignees: ''
 <!-- To obtain your SqlPackage version, use sqlpackage.exe /Version -->
 
 - SqlPackage or DacFx Version:
-- .NET Core or Windows .NET Framework:
+- .NET Framework (Windows-only) or .NET Core:
 - Environment (local platform and source/target platforms):
 
 **Steps to Reproduce:**

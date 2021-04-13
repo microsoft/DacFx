@@ -11,10 +11,10 @@ This repository is currently focused on transparently triaging and addressing fe
 
 ## Download the Latest Release
 
-### Microsoft.SqlServer.DacFx.x64 on nuget
+### Microsoft.SqlServer.DacFx on nuget
 [https://www.nuget.org/packages/Microsoft.SqlServer.DACFx](https://www.nuget.org/packages/Microsoft.SqlServer.DACFx)
 
-This nuget package is a lightweight version of DacFx. If you would like to use the command-line utility SqlPackage.exe for creating and deploying .dacpac and .bacpac packages, please download DacFramework.msi.
+This NuGet package is a lightweight version of DacFx. If you would like to use the command-line utility SqlPackage.exe for creating and deploying .dacpac and .bacpac packages, please download DacFramework.msi.
 
 ### DacFramework.msi and Cross-Platform SqlPackage.exe
 

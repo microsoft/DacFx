@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+<!-- GitHub Discussions are enabled on this repository -->
+<!-- You are welcome to open an feature request issue or create an Idea discussion item  -->
+<!-- https://github.com/microsoft/DacFx/discussions/new?category=ideas -->
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 

@@ -13,10 +13,15 @@ assignees: ''
 <!-- Also please test using the latest release to make sure your issue has not already been fixed. -->
 <!-- To obtain your SqlPackage version, use sqlpackage.exe /Version -->
 
-SqlPackage or DacFx Version:
-Environment (local platform and source/target platforms):
+- SqlPackage or DacFx Version:
+- .NET Core or Windows .NET Framework:
+- Environment (local platform and source/target platforms):
 
-Steps to Reproduce:
+**Steps to Reproduce:**
 
 1.
 2.
+
+**Did this occur in prior versions?  If not - which version(s) did it work in?**
+
+(DacFx/SqlPackage/SSMS/Azure Data Studio)

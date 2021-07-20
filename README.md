@@ -12,7 +12,7 @@ This repository is currently focused on transparently triaging and addressing fe
 ## Download the Latest Release
 
 ### Microsoft.SqlServer.DacFx on NuGet
-[https://www.nuget.org/packages/Microsoft.SqlServer.DACFx](https://www.nuget.org/packages/Microsoft.SqlServer.DACFx)
+[https://www.nuget.org/packages/Microsoft.SqlServer.DacFx](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)
 
 This NuGet package is a lightweight version of DacFx. If you would like to use the command-line utility SqlPackage.exe for creating and deploying .dacpac and .bacpac packages, please download DacFramework.msi.
 
@@ -26,10 +26,9 @@ This NuGet package is a lightweight version of DacFx. If you would like to use t
 |[Windows .NET Core]|[.zip file](https://go.microsoft.com/fwlink/?linkid=2165212)|June 2, 2021| 18.7.1| 15.0.5164.1 |
 
 ## Download Preview Versions
-Preview versions of the DacFx NuGet are frequently available and can be downloaded from [NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DACFx).
+Preview versions of the DacFx NuGet are frequently available and can be downloaded from [NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx).
 
 ## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see [Code of Conduct](CODE_OF_CONDUCT.md).
-

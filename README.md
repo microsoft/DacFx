@@ -20,10 +20,10 @@ This NuGet package is a lightweight version of DacFx. If you would like to use t
 
 |Platform|Download|Release date|Version|Build
 |:---|:---|:---|:---|:---|
-|[Windows]|[MSI Installer](https://go.microsoft.com/fwlink/?linkid=2165211)|June 2, 2021| 18.7.1 | 15.0.5164.1 |
-|[macOS .NET Core] |[.zip file](https://go.microsoft.com/fwlink/?linkid=2165132)|June 2, 2021| 18.7.1| 15.0.5164.1 |
-|[Linux .NET Core]|[.zip file](https://go.microsoft.com/fwlink/?linkid=2165213)|June 2, 2021| 18.7.1| 15.0.5164.1 |
-|[Windows .NET Core]|[.zip file](https://go.microsoft.com/fwlink/?linkid=2165212)|June 2, 2021| 18.7.1| 15.0.5164.1 |
+|[Windows]|[MSI Installer](https://go.microsoft.com/fwlink/?linkid=2164920)|October 4, 2021| 18.8 | 15.0.5282.3 |
+|[macOS .NET Core]|[.zip file](https://go.microsoft.com/fwlink/?linkid=2165009)|October 4, 2021| 18.8| 15.0.5282.3 |
+|[Linux .NET Core] |[.zip file](https://go.microsoft.com/fwlink/?linkid=2165008)|October 4, 2021| 18.8| 15.0.5282.3 |
+|[Windows .NET Core] |[.zip file](https://go.microsoft.com/fwlink/?linkid=2165007)|October 4, 2021| 18.8| 15.0.5282.3 |
 
 ## Download Preview Versions
 Preview versions of the DacFx NuGet are frequently available and can be downloaded from [NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx).

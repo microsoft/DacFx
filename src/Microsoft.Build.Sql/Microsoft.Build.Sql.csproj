@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NuspecFile>$(MSBuildThisFileDirectory)Microsoft.Build.Sql.nuspec</NuspecFile>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- Path where all the DLLs build depends on will be copied to -->
+    <BuildBinariesPath>$(MSBuildThisFileDirectory)\Tools\netstandard2.0\</BuildBinariesPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="150.5141.1-preview" GeneratePathProperty="true"/>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" GeneratePathProperty="true" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" />
+    <PackageReference Include="System.IO.Packaging" Version="4.7.0" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <Target Name="CopyBuildBinaries" AfterTargets="Restore">
+    <ItemGroup>
+      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.0\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NetCoreFiles)" DestinationFolder="$(BuildBinariesPath)" />
+    <Copy SourceFiles="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.0\Microsoft.Data.SqlClient.dll" DestinationFolder="$(BuildBinariesPath)" />
+    <Copy SourceFiles="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp2.0\System.ComponentModel.Composition.dll" DestinationFolder="$(BuildBinariesPath)" />
+    <Copy SourceFiles="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" DestinationFolder="$(BuildBinariesPath)" />
+  </Target>
+
+</Project>

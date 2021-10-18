@@ -1,0 +1,2 @@
+CREATE VIEW View1 AS 
+  SELECT * FROM Table1

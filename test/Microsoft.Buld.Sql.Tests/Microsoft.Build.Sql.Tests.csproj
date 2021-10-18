@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+
+    <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
+    <SdkPackagePath>$(MSBuildThisFileDirectory)pkg\</SdkPackagePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.Build.Sql\Microsoft.Build.Sql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="150.5141.1-preview" />
+    <PackageReference Include="nunit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+  </ItemGroup>
+
+  <Target Name="CopySdkPackage" AfterTargets="Build">
+    <ItemGroup>
+      <SdkPackage Include="..\..\src\Microsoft.Build.Sql\bin\$(Configuration)\*.nupkg" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SdkPackage)" DestinationFolder="$(SdkPackagePath)" />
+    <Message Text="Copied SDK package from '@(SdkPackage)' to '$(SdkPackagePath)'" Importance="high" />
+  </Target>
+
+  <Target Name="DeleteSdkPackage" AfterTargets="Clean">
+    <RemoveDir Directories="$(SdkPackagePath)" />
+  </Target>
+
+</Project>

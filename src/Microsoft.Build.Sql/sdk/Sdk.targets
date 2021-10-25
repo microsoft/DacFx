@@ -13,9 +13,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <!-- Build default globbing pattern includes all sql files in all subfolders -->
-    <Build Include="**/*.sql" />
-
     <!-- Remove files specified as PreDeploy and PostDeploy scripts from build -->
     <Build Remove="@(PreDeploy)" />
     <Build Remove="@(PostDeploy)" />

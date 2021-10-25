@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <!-- Path where all the DLLs build depends on will be copied to -->
-    <BuildBinariesPath>$(MSBuildThisFileDirectory)\Tools\netstandard2.0\</BuildBinariesPath>
+    <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\netstandard2.0\</BuildBinariesPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -58,4 +58,8 @@
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
   
+  <ItemGroup>
+    <!-- Build default globbing pattern includes all sql files in all subfolders -->
+    <Build Include="**/*.sql" />
+  </ItemGroup>
 </Project>

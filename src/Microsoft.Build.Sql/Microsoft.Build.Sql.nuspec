@@ -14,8 +14,8 @@
     <packageType>MSBuildSdk</packageType>
   </metadata>
   <files>
-    <file src="Sdk\**" target="Sdk" />
-    <file src="Tools\**" target="Tools" />
+    <file src="sdk\**" target="sdk" />
+    <file src="tools\**" target="tools" />
     <!-- <file src="LICENSE.txt" target="LICENSE.txt" /> -->
   </files>
 </package>

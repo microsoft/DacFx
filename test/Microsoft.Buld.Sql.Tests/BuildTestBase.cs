@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
@@ -154,39 +153,35 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
-        /// Add additional files to be included in build. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// Add additional files to be included in build. <paramref name="files"/> paths are relative.
         /// </summary>
         protected void AddBuildFiles(params string[] files)
         {
-            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Build", filePaths);
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Build", files);
         }
 
         /// <summary>
-        /// Exclude individual files from build. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// Exclude individual files from build. <paramref name="files"/> paths are relative.
         /// </summary>
         protected void RemoveBuildFiles(params string[] files)
         {
-            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
-            ProjectUtils.AddItemRemoveGroup(this.GetProjectFilePath(), "Build", filePaths);
+            ProjectUtils.AddItemRemoveGroup(this.GetProjectFilePath(), "Build", files);
         }
 
         /// <summary>
-        /// Add pre-deploy scripts to the project. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// Add pre-deploy scripts to the project. <paramref name="files"/> paths are relative.
         /// </summary>
         protected void AddPreDeployScripts(params string[] files)
         {
-            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PreDeploy", filePaths);
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PreDeploy", files);
         }
 
         /// <summary>
-        /// Add post-deploy scripts to the project. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// Add post-deploy scripts to the project. <paramref name="files"/> paths are relative.
         /// </summary>
         protected void AddPostDeployScripts(params string[] files)
         {
-            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PostDeploy", filePaths);
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PostDeploy", files);
         }
 
         /// <summary>

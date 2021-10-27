@@ -5,12 +5,6 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- 
-  <PropertyGroup>
-    <NetCoreBuild>true</NetCoreBuild>
-  </PropertyGroup>
-  -->
-  
   <PropertyGroup>
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.0</NETCoreTargetsPath>
   </PropertyGroup>

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Collections.Generic;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 
@@ -18,9 +17,9 @@ namespace Microsoft.Build.Sql.Tests
         ///     ...
         ///   </ItemGroup>
         /// </summary>
-        public static void AddItemGroup(string projectFilePath, string itemName, IEnumerable<string> filePaths)
+        public static void AddItemGroup(string projectFilePath, string itemName, string[] filePaths)
         {
-            if (filePaths != null)
+            if (filePaths != null && filePaths.Length > 0)
             {
                 using (ProjectCollection projectCollection = GetNewEngine())
                 {
@@ -47,9 +46,9 @@ namespace Microsoft.Build.Sql.Tests
         ///     ...
         ///   </ItemGroup>
         /// </summary>
-        public static void AddItemRemoveGroup(string projectFilePath, string itemName, IEnumerable<string> filePaths)
+        public static void AddItemRemoveGroup(string projectFilePath, string itemName, string[] filePaths)
         {
-            if (filePaths != null)
+            if (filePaths != null && filePaths.Length > 0)
             {
                 using (ProjectCollection projectCollection = GetNewEngine())
                 {

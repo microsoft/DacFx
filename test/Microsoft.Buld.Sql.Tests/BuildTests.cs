@@ -98,7 +98,7 @@ namespace Microsoft.Build.Sql.Tests
             File.WriteAllText(tempFile, "CREATE TABLE [dbo].[Table2] ( C1 INT NOT NULL )");
 
             // Include the file in project build
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Build", new List<string> { tempFile });
+            this.AddBuildFiles(tempFile);
 
             string stdOutput, stdError;
             int exitCode = this.Build(out stdOutput, out stdError);

@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Text;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
@@ -14,8 +14,6 @@ namespace Microsoft.Build.Sql.Tests
     public abstract class BuildTestBase
     {
         protected const string DatabaseProjectName = "project";
-
-        protected StringBuilder Errors { get; private set; }
 
         protected string WorkingDirectory
         {
@@ -27,13 +25,6 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(@"..\..\..\TestData", TestContext.CurrentContext.Test.Name); }
         }
 
-        public BuildTestBase()
-        {
-            this.Errors = new StringBuilder();
-
-            // ClearNugetCache();
-        }
-
         /// <summary>
         /// Sets up the working directory to test building the project in. The end result will look like:
         /// WorkingDirectory/
@@ -42,7 +33,7 @@ namespace Microsoft.Build.Sql.Tests
         /// │   └── Microsoft.Build.Sql.nupkg
         /// ├── nuget.config
         /// ├── project.sqlproj
-        /// └── *.sql
+        /// └── SQL files...
         /// </summary>
         [SetUp]
         public void EnvironmentSetup()
@@ -54,13 +45,13 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Copy SDK nuget package to Workingdirectory\pkg\
-            CopyDirectoryRecursive(@"..\..\..\pkg", Path.Combine(this.WorkingDirectory, "pkg"));
+            TestUtils.CopyDirectoryRecursive(@"..\..\..\pkg", Path.Combine(this.WorkingDirectory, "pkg"));
 
             // Copy common project files from Template to WorkingDirectory
-            CopyDirectoryRecursive(@"..\..\..\Template", this.WorkingDirectory);
+            TestUtils.CopyDirectoryRecursive(@"..\..\..\Template", this.WorkingDirectory);
 
             // Copy test specific files to WorkingDirectory
-            CopyDirectoryRecursive(this.TestDataDirectory, this.WorkingDirectory);
+            TestUtils.CopyDirectoryRecursive(this.TestDataDirectory, this.WorkingDirectory);
         }
 
         /// <summary>
@@ -68,7 +59,8 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         /// <param name="arguments">Any additional arguments to be passed to 'dotnet build'.</param>
         /// <returns>The Exit Code of the dotnet process.</returns>
-        protected int Build(string arguments = "")
+        /// <remarks>Adapted from Microsoft.VisualStudio.TeamSystem.Data.UnitTests.UTSqlTasks.ExecuteDotNetExe</remarks>
+        protected int Build(out string stdOutput, out string stdError, string arguments = "")
         {
             // Append NetCoreBuild to arguments
             arguments += " /p:NetCoreBuild=true";
@@ -76,7 +68,7 @@ namespace Microsoft.Build.Sql.Tests
             // Set up the dotnet process
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
-                FileName = this.GetDotnetPath(),
+                FileName = TestUtils.GetDotnetPath(),
                 Arguments = $"build {DatabaseProjectName}.sqlproj {arguments}",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
@@ -87,29 +79,122 @@ namespace Microsoft.Build.Sql.Tests
                 // This also requires the full path of the dotnet process be passed to FileName.
             };
 
-            TestContext.WriteLine($"Executing {dotnetStartInfo.FileName} {dotnetStartInfo.Arguments} in {dotnetStartInfo.WorkingDirectory}");
+            // Setup build output and error handlers
+            object threadSharedLock = new object();
+            StringBuilder threadShared_ReceivedOutput = new StringBuilder();
+            StringBuilder threadShared_ReceivedErrors = new StringBuilder();
+
+            int interlocked_outputCompleted = 0;
+            int interlocked_errorsCompleted = 0;
 
             using Process dotnet = new Process();
             dotnet.StartInfo = dotnetStartInfo;
 
-            dotnet.OutputDataReceived += TestOutputHandler;
-            dotnet.ErrorDataReceived += ErrorOutputHandler;
+            // the OutputDataReceived delegateis called on a separate thread as output data arrives from the process
+            dotnet.OutputDataReceived += (sender, e) =>
+            {
+
+                if (e.Data != null)
+                {
+                    lock (threadSharedLock)
+                    {
+                        TestContext.Out.WriteLine(e.Data);
+                        threadShared_ReceivedOutput.AppendLine(e.Data);
+                    }
+                }
+                else
+                {
+                    System.Threading.Interlocked.Increment(ref interlocked_outputCompleted);
+                }
+            };
+
+            // the ErrorDataReceived delegateis called on a separate thread as output data arrives from the process
+            dotnet.ErrorDataReceived += (sender, e) =>
+            {
+                if (e.Data != null)
+                {
+                    lock (threadSharedLock)
+                    {
+                        TestContext.Error.WriteLine(e.Data);
+                        threadShared_ReceivedErrors.AppendLine(e.Data);
+                    }
+                }
+                else
+                {
+                    System.Threading.Interlocked.Increment(ref interlocked_errorsCompleted);
+                }
+            };
 
             // Start the build and begin reading the outputs
+            TestContext.WriteLine($"Executing {dotnetStartInfo.FileName} {dotnetStartInfo.Arguments} in {dotnetStartInfo.WorkingDirectory}");
             dotnet.Start();
             dotnet.BeginOutputReadLine();
             dotnet.BeginErrorReadLine();
 
             // Wait for dotnet build to finish with a timeout
-            int timeout = 30 * 1000;    // 30 seconds
-            if (dotnet.WaitForExit(timeout))
+            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            dotnet.WaitForExit((int)timeout.TotalMilliseconds);
+
+            do
             {
-                return dotnet.ExitCode;
+                System.Threading.Thread.MemoryBarrier();
+                System.Threading.Thread.Sleep(0);
             }
-            else
+            while ((interlocked_outputCompleted < 1 || interlocked_errorsCompleted < 1) && timer.Elapsed < timeout);
+
+            lock (threadSharedLock)
             {
-                throw new TimeoutException($"dotnet build timed out after {timeout}ms.");
+                stdOutput = threadShared_ReceivedOutput.ToString();
+                stdError = threadShared_ReceivedErrors.ToString();
             }
+
+            return dotnet.ExitCode;
+        }
+
+        /// <summary>
+        /// Add additional files to be included in build. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// </summary>
+        protected void AddBuildFiles(params string[] files)
+        {
+            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Build", filePaths);
+        }
+
+        /// <summary>
+        /// Exclude individual files from build. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// </summary>
+        protected void RemoveBuildFiles(params string[] files)
+        {
+            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
+            ProjectUtils.AddItemRemoveGroup(this.GetProjectFilePath(), "Build", filePaths);
+        }
+
+        /// <summary>
+        /// Add pre-deploy scripts to the project. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// </summary>
+        protected void AddPreDeployScripts(params string[] files)
+        {
+            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PreDeploy", filePaths);
+        }
+
+        /// <summary>
+        /// Add post-deploy scripts to the project. <paramref name="files"/> paths are relative to current WorkingDirectory.
+        /// </summary>
+        protected void AddPostDeployScripts(params string[] files)
+        {
+            var filePaths = files.Select(file => Path.Combine(this.WorkingDirectory, file));
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PostDeploy", filePaths);
+        }
+
+        /// <summary>
+        /// Returns the full path to the sqlproj file used for this test.
+        /// </summary>
+        protected string GetProjectFilePath()
+        {
+            return Path.Combine(this.WorkingDirectory, DatabaseProjectName + ".sqlproj");
         }
 
         /// <summary>
@@ -148,73 +233,5 @@ namespace Microsoft.Build.Sql.Tests
                 }
             }
         }
-
-        /// <summary>
-        /// Returns the full path to the dotnet executable based on the current operating system.
-        /// </summary>
-        private string GetDotnetPath()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return @"C:\Program Files\dotnet\dotnet.exe";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return "/usr/bin/dotnet/dotnet";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "/usr/local/share/dotnet/dotnet";
-            }
-            else
-            {
-                throw new NotSupportedException("Tests are currently not supported on " + RuntimeInformation.OSDescription);
-            }
-        }
-
-        private void TestOutputHandler(object sender, DataReceivedEventArgs e)
-        {
-            if (e != null && !string.IsNullOrEmpty(e.Data))
-            {
-                TestContext.Out.WriteLine(e.Data);
-            }
-        }
-
-        private void ErrorOutputHandler(object sender, DataReceivedEventArgs e)
-        {
-            if (e != null && !string.IsNullOrEmpty(e.Data))
-            {
-                TestContext.Error.WriteLine(e.Data);
-                this.Errors.AppendLine(e.Data);
-            }
-        }
-
-        private void CopyDirectoryRecursive(string sourceDirectoryPath, string targetDirectoryPath)
-        {
-            // Create taret dir if not exists
-            Directory.CreateDirectory(targetDirectoryPath);
-
-            DirectoryInfo sourceDir = new DirectoryInfo(sourceDirectoryPath);
-
-            if (!sourceDir.Exists)
-            {
-                throw new DirectoryNotFoundException("Source directory not found: " + sourceDirectoryPath);
-            }
-
-            // Copy all files
-            foreach (var file in sourceDir.EnumerateFiles())
-            {
-                string destFile = Path.Combine(targetDirectoryPath, file.Name);
-                file.CopyTo(destFile, true);
-            }
-
-            // Copy all subdirectories recursively
-            foreach (var subDir in sourceDir.EnumerateDirectories())
-            {
-                string destDirName = Path.Combine(targetDirectoryPath, subDir.Name);
-                CopyDirectoryRecursive(subDir.FullName, destDirName);
-            }
-        }
-
     }
 }

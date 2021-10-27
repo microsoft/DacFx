@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -13,10 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build" Version="16.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="150.5141.1-preview" />
     <PackageReference Include="nunit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
   </ItemGroup>
 
   <Target Name="CopySdkPackage" AfterTargets="Build">
@@ -30,5 +31,9 @@
   <Target Name="DeleteSdkPackage" AfterTargets="Clean">
     <RemoveDir Directories="$(SdkPackagePath)" />
   </Target>
+
+  <ItemGroup>
+    <None Remove="$(SdkPackagePath)\**" />
+  </ItemGroup>
 
 </Project>

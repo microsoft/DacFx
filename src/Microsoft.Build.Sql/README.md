@@ -15,14 +15,13 @@ This project is in its early stages and we are currently building tests for diff
   See also: https://github.com/microsoft/DacFx/issues/33
 
 ## Using this SDK
+Normally the SDK can be pulled from public Nuget feeds. However since we are still in development mode, this SDK can only be consumed from a local Nuget source. [See also](#adding-a-local-nuget-source)
 
 ### Building this project
 1. Build this project by running `dotnet build` from `\src\Microsoft.Build.Sql\`. This will generate a Nuget package inside the `bin` folder.
 2. Copy the nupkg file to a well known location, e.g. `C:\local_packages\`
 
 ### Adding a local Nuget source
-Normally the SDK can be pulled from public Nuget feeds. However since we are still in development mode, this SDK can only be consumed from a local Nuget source.
-
 1. Add a `nuget.config` in the same folder as your sqlproj by running 
    ```
    dotnet new nugetconfig

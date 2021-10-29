@@ -15,12 +15,11 @@
     <!-- Required -->
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ModelCollation>1033, CI</ModelCollation>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql150DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     
-    <!-- Optional -->   
+    <!-- Optional -->
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    
   </PropertyGroup>
 
   <!-- Default build configurations -->

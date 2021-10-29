@@ -4,10 +4,12 @@
     <id>Microsoft.Build.Sql</id>
     <version>1.0.0</version>
     <title>Microsoft SQL Database Project Build SDK</title>
-    <description>This package contains the SDK for building SQL Database Projects (.sqlproj) in .NET Core.</description>
+    <description>This package contains the SDK for building SQL Database Projects (.sqlproj) in .NET Core and .NET 5+.</description>
+    <packageType>MSBuildSDK</packageType>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <!-- TODO -->
     <!-- <projectUrl></projectUrl> -->
     <!-- <tags></tags> -->
     <!-- <license type="file">LICENSE.txt</license> -->

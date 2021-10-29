@@ -25,7 +25,7 @@ namespace Microsoft.Build.Sql.Tests
                 {
                     Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
 
-                    Microsoft.Build.Construction.ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
+                    ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
                     foreach (string filePath in filePaths)
                     {
                         itemGroup.AddItem(itemName, filePath);

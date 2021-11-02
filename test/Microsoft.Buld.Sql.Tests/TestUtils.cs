@@ -13,33 +13,34 @@ namespace Microsoft.Build.Sql.Tests
 
         /// <summary>
         /// Returns the full path to the dotnet executable based on the current operating system.
+        /// Path to dotnet tool can be set by build pipelines via DotnetToolPathEnvironmentVariable.
         /// </summary>
         public static string GetDotnetPath()
         {
-            // Return dotnet tool path if set by environment variables (pipelines)
+            string dotnetExecutable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
             string? dotnetPath = Environment.GetEnvironmentVariable(DotnetToolPathEnvironmentVariable);
-            if (!string.IsNullOrEmpty(dotnetPath))
+            if (string.IsNullOrEmpty(dotnetPath))
             {
-                return dotnetPath;
+                // Determine OS specific dotnet installation path
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    dotnetPath = @"C:\Program Files\dotnet";
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    dotnetPath = "/usr/bin/dotnet";
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    dotnetPath = "/usr/local/share/dotnet";
+                }
+                else
+                {
+                    throw new NotSupportedException("Tests are currently not supported on " + RuntimeInformation.OSDescription);
+                }
             }
 
-            // Determine OS specific dotnet installation path
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return @"C:\Program Files\dotnet\dotnet.exe";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return "/usr/bin/dotnet/dotnet";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "/usr/local/share/dotnet/dotnet";
-            }
-            else
-            {
-                throw new NotSupportedException("Tests are currently not supported on " + RuntimeInformation.OSDescription);
-            }
+            return Path.Combine(dotnetPath, dotnetExecutable);
         }
 
         /// <summary>

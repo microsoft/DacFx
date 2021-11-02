@@ -348,3 +348,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# DLLs in tools folder are generated when built
+src/Microsoft.Build.Sql/[Tt]ools/
+
+## Ignore packages generated for testing
+test/Microsoft.Build.Sql.Tests/pkg/

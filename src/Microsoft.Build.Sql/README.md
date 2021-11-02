@@ -1,7 +1,7 @@
-# Microsoft.Build.Sql
+# Microsoft.Build.Sql (Preview)
 
 ## Introduction
-Prototype .NET SDK for database projects (.sqlproj). In preview, use by building the SDK Nuget package locally.
+.NET SDK for database projects (.sqlproj) available in early preview for use by building the SDK Nuget package locally.
 
 ## Current Status
 This project is in its early stages and we are currently building tests for different functionality. Contributors welcome, please feel free to share feedback or PRs.

@@ -18,7 +18,7 @@
     <PackageReference Include="System.IO.Packaging" Version="4.7.0" GeneratePathProperty="true" />
   </ItemGroup>
 
-  <Target Name="CopyBuildBinaries" AfterTargets="Restore">
+  <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <ItemGroup>
       <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.0\*.*" />
     </ItemGroup>
@@ -26,6 +26,10 @@
     <Copy SourceFiles="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.0\Microsoft.Data.SqlClient.dll" DestinationFolder="$(BuildBinariesPath)" />
     <Copy SourceFiles="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp2.0\System.ComponentModel.Composition.dll" DestinationFolder="$(BuildBinariesPath)" />
     <Copy SourceFiles="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" DestinationFolder="$(BuildBinariesPath)" />
+  </Target>
+
+  <Target Name="DeleteToolsFolder" AfterTargets="Clean">
+    <RemoveDir Directories="$(MSBuildThisFileDirectory)\tools" />
   </Target>
 
   <ItemGroup>

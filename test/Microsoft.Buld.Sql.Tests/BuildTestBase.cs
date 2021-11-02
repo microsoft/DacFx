@@ -21,7 +21,7 @@ namespace Microsoft.Build.Sql.Tests
 
         protected string TestDataDirectory
         {
-            get { return Path.Combine(@"..\..\..\TestData", TestContext.CurrentContext.Test.Name); }
+            get { return Path.Combine("../../../TestData", TestContext.CurrentContext.Test.Name); }
         }
 
         /// <summary>
@@ -43,11 +43,11 @@ namespace Microsoft.Build.Sql.Tests
                 Directory.Delete(this.WorkingDirectory, true);
             }
 
-            // Copy SDK nuget package to Workingdirectory\pkg\
-            TestUtils.CopyDirectoryRecursive(@"..\..\..\pkg", Path.Combine(this.WorkingDirectory, "pkg"));
+            // Copy SDK nuget package to Workingdirectory/pkg/
+            TestUtils.CopyDirectoryRecursive("../../../pkg", Path.Combine(this.WorkingDirectory, "pkg"));
 
             // Copy common project files from Template to WorkingDirectory
-            TestUtils.CopyDirectoryRecursive(@"..\..\..\Template", this.WorkingDirectory);
+            TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
 
             // Copy test specific files to WorkingDirectory
             TestUtils.CopyDirectoryRecursive(this.TestDataDirectory, this.WorkingDirectory);
@@ -197,7 +197,7 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         protected string GetDacpacPath()
         {
-            return Path.Combine(this.WorkingDirectory, @"bin\Debug", DatabaseProjectName + ".dacpac");
+            return Path.Combine(this.WorkingDirectory, "bin/Debug", DatabaseProjectName + ".dacpac");
         }
 
         protected void VerifyDacPackage(bool expectPreDeployScript = false, bool expectPostDeployScript = false)

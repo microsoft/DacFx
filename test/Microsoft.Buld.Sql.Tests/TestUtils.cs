@@ -9,11 +9,21 @@ namespace Microsoft.Build.Sql.Tests
 {
     public static class TestUtils
     {
+        private const string DotnetToolPathEnvironmentVariable = "DOTNET_TOOL_PATH";
+
         /// <summary>
         /// Returns the full path to the dotnet executable based on the current operating system.
         /// </summary>
         public static string GetDotnetPath()
         {
+            // Return dotnet tool path if set by environment variables (pipelines)
+            string? dotnetPath = Environment.GetEnvironmentVariable(DotnetToolPathEnvironmentVariable);
+            if (!string.IsNullOrEmpty(dotnetPath))
+            {
+                return dotnetPath;
+            }
+
+            // Determine OS specific dotnet installation path
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return @"C:\Program Files\dotnet\dotnet.exe";

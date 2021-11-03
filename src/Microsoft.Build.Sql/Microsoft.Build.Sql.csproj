@@ -20,12 +20,13 @@
 
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <ItemGroup>
-      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.0\*.*" />
+      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.0\*.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(NetCoreFiles)" DestinationFolder="$(BuildBinariesPath)" />
     <Copy SourceFiles="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.0\Microsoft.Data.SqlClient.dll" DestinationFolder="$(BuildBinariesPath)" />
     <Copy SourceFiles="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp2.0\System.ComponentModel.Composition.dll" DestinationFolder="$(BuildBinariesPath)" />
     <Copy SourceFiles="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" DestinationFolder="$(BuildBinariesPath)" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)\Microsoft.Data.Tools.Schema.SqlTasks.targets" DestinationFolder="$(BuildBinariesPath)" />
   </Target>
 
   <Target Name="DeleteToolsFolder" AfterTargets="Clean">

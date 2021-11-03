@@ -15,6 +15,8 @@
   <PropertyGroup>
     <!-- Properties for NET core only targets -->
     <NETCoreTargetsPath Condition="$(NetCoreBuild) == true And $(NETCoreTargetsPath) == ''">TODO</NETCoreTargetsPath>
+    <TargetFrameworkIdentifier Condition="$(NetCoreBuild) == true">.NETStandard</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion Condition="$(NetCoreBuild) == true">v2.0</TargetFrameworkVersion>
     <TargetFramework Condition="$(NetCoreBuild) == true">netstandard2.0</TargetFramework>
   </PropertyGroup>
   

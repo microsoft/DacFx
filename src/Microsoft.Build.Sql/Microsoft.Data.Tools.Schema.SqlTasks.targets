@@ -18,7 +18,7 @@
     <!-- <TargetFrameworkIdentifier Condition="$(NetCoreBuild) == true">.NETCoreApp</TargetFrameworkIdentifier>
     <TargetFrameworkVersion Condition="$(NetCoreBuild) == true">v3.1</TargetFrameworkVersion>
     <TargetFramework Condition="$(NetCoreBuild) == true">netcoreapp3.1</TargetFramework> -->
-    <TargetRuntime>Native</TargetRuntime>
+    
   </PropertyGroup>
   
   <!--Calculation of the VS install path-->
@@ -156,6 +156,10 @@
    -->
   <Import Condition="'$(TargetLanguage)' == 'CS'" Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Condition="'$(TargetLanguage)' == 'VB'" Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+
+  <PropertyGroup>
+    <TargetRuntime>None</TargetRuntime>
+  </PropertyGroup>
   
   <PropertyGroup>
     <SsdtTargetsParentPath>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT</SsdtTargetsParentPath>

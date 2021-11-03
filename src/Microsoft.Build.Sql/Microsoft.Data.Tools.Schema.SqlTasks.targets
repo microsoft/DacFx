@@ -11,6 +11,12 @@
   -->
 
 <Project InitialTargets="CheckRequiredProperties" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- Properties for NET core only targets -->
+    <NETCoreTargetsPath Condition="$(NetCoreBuild) == true And $(NETCoreTargetsPath) == ''">TODO</NETCoreTargetsPath>
+    <TargetFramework Condition="$(NetCoreBuild) == true">netstandard2.0</TargetFramework>
+  </PropertyGroup>
   
   <!--Calculation of the VS install path-->
   <PropertyGroup Condition="$(NetCoreBuild) == true">

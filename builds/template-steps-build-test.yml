@@ -2,6 +2,7 @@ parameters:
   configuration: ''
   solution: ''
   nugetVersion: ''
+  runCodeSign: ''
 
 steps:
 - task: UseDotNet@2
@@ -18,14 +19,14 @@ steps:
 # CodeSign is only run on release builds
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK 2.1.x for CodeSign'
-  condition: eq('${{ parameters.configuration }}', 'Release')
+  condition: '${{ parameters.runCodeSign }}'
   inputs:
     version: '2.1.x'
 
 # CodeSign DLLs included in the SDK
 - task: EsrpCodeSigning@1
   displayName: 'ESRP CodeSigning - Binaries'
-  condition: eq('${{ parameters.configuration }}', 'Release')
+  condition: '${{ parameters.runCodeSign }}'
   inputs:
     ConnectedServiceName: 'Code Signing 2'
     FolderPath: '$(Build.SourcesDirectory)/src/Microsoft.Build.Sql/tools'

@@ -38,6 +38,7 @@ stages:
           solution: '$(solution)'
           configuration: '$(configuration)'
           nugetVersion: '$(nugetVersion)'
+          runCodeSign: 'true'
 
       - template: 'template-steps-publish.yml'
         parameters:

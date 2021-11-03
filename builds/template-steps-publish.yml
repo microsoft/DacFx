@@ -2,7 +2,6 @@ parameters:
   configuration: ''
 
 steps:
-# .NET Core 2.1 for CodeSign
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK 2.1.x for CodeSign'
   inputs:

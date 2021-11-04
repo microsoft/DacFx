@@ -6,7 +6,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.0</NETCoreTargetsPath>
+    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
   </PropertyGroup>
 
   <!-- Defaults from SSDT -->

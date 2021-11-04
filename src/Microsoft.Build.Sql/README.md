@@ -7,12 +7,6 @@
 This project is in its early stages and we are currently building tests for different functionality. Contributors welcome, please feel free to share feedback or PRs.
 
 ## Known Issues
-* Build currently doesn't work with .NET 6. If you have .NET 6 SDK installed, you can workaround this issue by adding a global.json in the same directory as the sqlproj to specify the SDK version.
-  Example for using .NET 5 SDK (you can specify any installed SDK version between .NET Core 3.1 and .NET 5):
-  ```
-  dotnet new globaljson --sdk-version 5.0.400 --force
-  ```
-  See also: https://github.com/microsoft/DacFx/issues/33
 
 ## Using this SDK
 Normally the SDK can be pulled from public Nuget feeds. However since we are still in development mode, this SDK can only be consumed from a local Nuget source. [See also](#adding-a-local-nuget-source)

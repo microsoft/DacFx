@@ -137,5 +137,22 @@ namespace Microsoft.Build.Sql.Tests
             // Verify failure
             Assert.AreEqual(1, exitCode, "Build is expected to fail.");
         }
+
+        [Test]
+        public void VerifyBuildWithProjectReference()
+        {
+             this.AddProjectReference("ReferenceProj/ReferenceProj.sqlproj");
+
+             // Since reference proj is in a subdirectory it gets picked up by default globbing pattern, excluding it here
+             this.RemoveBuildFiles("ReferenceProj/**/*.*");
+
+             string stdOutput, stdError;
+             int exitCode = this.Build(out stdOutput, out stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+        }
     }
 }

@@ -3,9 +3,9 @@ parameters:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET Core SDK 2.1.x for CodeSign'
+  displayName: 'Install .NET Core SDK 3.1.x for CodeSign'
   inputs:
-    version: '2.1.x'
+    version: '3.1.x'
 
 - task: EsrpCodeSigning@1
   displayName: 'ESRP Code Signing - Nuget Package'

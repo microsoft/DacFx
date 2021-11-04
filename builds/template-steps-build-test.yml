@@ -27,10 +27,10 @@ steps:
 
 # CodeSign is only run on release builds
 - task: UseDotNet@2
-  displayName: 'Install .NET Core SDK 2.1.x for CodeSign'
+  displayName: 'Install .NET Core SDK 3.1.x for CodeSign'
   condition: '${{ parameters.runCodeSign }}'
   inputs:
-    version: '2.1.x'
+    version: '3.1.x'
 
 # CodeSign DLLs included in the SDK
 - task: EsrpCodeSigning@1

@@ -139,15 +139,38 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
+        [Description("Verifies build with a project reference.")]
         public void VerifyBuildWithProjectReference()
         {
-             this.AddProjectReference("ReferenceProj/ReferenceProj.sqlproj");
+            // We will copy the ReferenceProj to a temp folder and then delete it from the current working directory
+            string tempFolder = Path.Combine(Path.GetTempPath(), TestContext.CurrentContext.Test.Name);
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.TestDataDirectory, "ReferenceProj"), tempFolder);
+            Directory.Delete(Path.Combine(this.WorkingDirectory, "ReferenceProj"), true);
 
-             // Since reference proj is in a subdirectory it gets picked up by default globbing pattern, excluding it here
-             this.RemoveBuildFiles("ReferenceProj/**/*.*");
+            this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"));
 
-             string stdOutput, stdError;
-             int exitCode = this.Build(out stdOutput, out stdError);
+            string stdOutput, stdError;
+            int exitCode = this.Build(out stdOutput, out stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            Directory.Delete(tempFolder, true);
+        }
+
+        [Test]
+        [Description("Verifies build with a project reference where the referenced project is inside the current folder.")]
+        public void VerifyBuildWithProjectReferenceInSubdirectory()
+        {
+            this.AddProjectReference("ReferenceProj/ReferenceProj.sqlproj");
+
+            // Since reference proj is in a subdirectory it gets picked up by default globbing pattern, excluding it here
+            this.RemoveBuildFiles("ReferenceProj/**/*.*");
+
+            string stdOutput, stdError;
+            int exitCode = this.Build(out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);

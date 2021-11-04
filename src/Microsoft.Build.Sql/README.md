@@ -6,8 +6,6 @@
 ## Current Status
 This project is in its early stages and we are currently building tests for different functionality. Contributors welcome, please feel free to share feedback or PRs.
 
-## Known Issues
-
 ## Using this SDK
 Normally the SDK can be pulled from public Nuget feeds. However since we are still in development mode, this SDK can only be consumed from a local Nuget source. [See also](#adding-a-local-nuget-source)
 

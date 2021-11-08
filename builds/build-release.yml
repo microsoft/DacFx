@@ -1,0 +1,45 @@
+trigger: none
+
+pr: none
+
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Mon-Fri at Midnight
+    branches:
+      include:
+        - main
+    always: true
+
+variables:
+  solution: '**/*.sln'
+  configuration: 'Release'
+  versionMajor: 0
+  versionMinor: 1
+  versionPatch: $[counter(variables['versionMinor'], 0)] # This will reset when we bump minor version
+  nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)'
+
+stages:
+- stage: BuildPublish
+  displayName: 'Release Build and Publish'
+
+  jobs:
+  - job: BuildTestPublish
+    displayName: 'Release: Build, Test, and Publish on Windows'
+
+    pool:
+      vmImage: 'windows-latest'
+
+    workspace:
+      clean: all
+
+    steps:
+      - template: 'template-steps-build-test.yml'
+        parameters:
+          solution: '$(solution)'
+          configuration: '$(configuration)'
+          nugetVersion: '$(nugetVersion)'
+          runCodeSign: 'true'
+
+      - template: 'template-steps-publish.yml'
+        parameters:
+          configuration: '$(configuration)'

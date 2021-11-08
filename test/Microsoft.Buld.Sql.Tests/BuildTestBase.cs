@@ -14,6 +14,12 @@ namespace Microsoft.Build.Sql.Tests
     {
         protected const string DatabaseProjectName = "project";
 
+#if DEBUG
+        protected const bool IsDebug = true;
+#else
+        protected const bool IsDebug = false;
+#endif
+
         protected string WorkingDirectory
         {
             get { return Path.Combine(TestContext.CurrentContext.WorkDirectory, TestContext.CurrentContext.Test.Name); }
@@ -197,7 +203,8 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         protected string GetDacpacPath()
         {
-            return Path.Combine(this.WorkingDirectory, "bin/Debug", DatabaseProjectName + ".dacpac");
+            string configuration = IsDebug ? "Debug" : "Release";
+            return Path.Combine(this.WorkingDirectory, "bin", configuration, DatabaseProjectName + ".dacpac");
         }
 
         protected void VerifyDacPackage(bool expectPreDeployScript = false, bool expectPostDeployScript = false)

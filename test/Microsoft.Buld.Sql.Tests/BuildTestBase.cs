@@ -12,7 +12,13 @@ namespace Microsoft.Build.Sql.Tests
 {
     public abstract class BuildTestBase
     {
-        protected const string DatabaseProjectName = "project";
+        private const string DatabaseProjectName = "project";
+
+#if DEBUG
+        protected const bool IsDebug = true;
+#else
+        protected const bool IsDebug = false;
+#endif
 
         protected string WorkingDirectory
         {
@@ -185,6 +191,14 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
+        /// Add references to another project(s). <paramref name="projects"/> paths are relative.
+        /// </summary>
+        protected void AddProjectReference(params string[] projects)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ProjectReference", projects);
+        }
+
+        /// <summary>
         /// Returns the full path to the sqlproj file used for this test.
         /// </summary>
         protected string GetProjectFilePath()
@@ -197,9 +211,15 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         protected string GetDacpacPath()
         {
-            return Path.Combine(this.WorkingDirectory, "bin/Debug", DatabaseProjectName + ".dacpac");
+            string configuration = IsDebug ? "Debug" : "Release";
+            return Path.Combine(this.WorkingDirectory, "bin", configuration, DatabaseProjectName + ".dacpac");
         }
 
+        /// <summary>
+        /// Verifies dacpac exists in the build output directory, and checks if it contains pre/post deploy scripts.
+        /// </summary>
+        /// <param name="expectPreDeployScript">If true, asserts dacpac has pre-deploy script attached.</param>
+        /// <param name="expectPostDeployScript">If true, asserts dacpac has post-deploy script attached.</param>
         protected void VerifyDacPackage(bool expectPreDeployScript = false, bool expectPostDeployScript = false)
         {
             // Verify dacpac exists

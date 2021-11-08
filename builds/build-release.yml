@@ -24,7 +24,7 @@ stages:
 
   jobs:
   - job: BuildTestPublish
-    displayName: 'Release: Build, Test and Publish on Windows'
+    displayName: 'Release: Build, Test, and Publish on Windows'
 
     pool:
       vmImage: 'windows-latest'

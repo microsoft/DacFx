@@ -1,0 +1,42 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+    - main
+
+variables:
+  solution: '**/*.sln'
+  configuration: 'Debug'
+
+stages:
+- stage: Build
+  displayName: 'PR Validation'
+
+  jobs:
+  - job: BuildTest
+    displayName: 'Build and Test on'
+
+    # Verifies cross-platform build and test
+    strategy:
+      matrix:
+        linux:
+          imageName: 'ubuntu-latest'
+        mac:
+          imageName: 'macos-latest'
+        windows:
+          imageName: 'windows-latest'
+
+    pool:
+      vmImage: '$(imageName)'
+
+    workspace:
+      clean: all
+
+    steps:
+    - template: 'template-steps-build-test.yml'
+      parameters:
+        solution: '$(solution)'
+        configuration: '$(configuration)'
+        nugetVersion: '1.0.0'
+        runCodeSign: 'false'

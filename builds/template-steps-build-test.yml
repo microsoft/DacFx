@@ -1,0 +1,106 @@
+parameters:
+  configuration: ''
+  solution: ''
+  nugetVersion: ''
+  runCodeSign: ''
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET SDK for Build'
+  inputs:
+    version: '5.0.x'
+
+# We don't need restore now, but this may be needed in the future
+# - task: DotNetCoreCLI@2
+#   displayName: '.NET Restore'
+#   inputs:
+#     command: restore
+#     projects: '${{ parameters.solution }}'
+
+# Don't generate package so we can sign it before packaging
+- task: DotNetCoreCLI@2
+  displayName: '.NET Build'
+  inputs:
+    command: build
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} -p:GeneratePackageOnBuild=false'
+
+# CodeSign is only run on release builds
+- task: UseDotNet@2
+  displayName: 'Install .NET SDK 5.0.x for CodeSign'
+  condition: '${{ parameters.runCodeSign }}'
+  inputs:
+    version: '5.0.x'
+
+# CodeSign DLLs included in the SDK
+- task: EsrpCodeSigning@1
+  displayName: 'ESRP CodeSigning - Binaries'
+  condition: '${{ parameters.runCodeSign }}'
+  inputs:
+    ConnectedServiceName: 'Code Signing 2'
+    FolderPath: '$(Build.SourcesDirectory)/src/Microsoft.Build.Sql/tools'
+    Pattern: '*.dll'
+    signConfigType: inlineSignParams
+    inlineOperation: |
+     [
+       {
+         "keyCode": "CP-230012",
+         "operationSetCode": "SigntoolSign",
+         "parameters": [
+         {
+           "parameterName": "OpusName",
+           "parameterValue": "DacFx"
+         },
+         {
+           "parameterName": "OpusInfo",
+           "parameterValue": "https://github.com/microsoft/DacFx"
+         },
+         {
+           "parameterName": "PageHash",
+           "parameterValue": "/NPH"
+         },
+         {
+           "parameterName": "FileDigest",
+           "parameterValue": "/fd sha256"
+         },
+         {
+           "parameterName": "TimeStamp",
+           "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+         }
+         ],
+         "toolName": "signtool.exe",
+         "toolVersion": "6.2.9304.0"
+       },
+       {
+         "keyCode": "CP-230012",
+         "operationSetCode": "SigntoolVerify",
+         "parameters": [
+         {
+           "parameterName": "VerifyAll",
+           "parameterValue": "/all"
+         }
+             ],
+         "toolName": "signtool.exe",
+         "toolVersion": "6.2.9304.0"
+       }
+     ]
+    SessionTimeout: 600
+    MaxConcurrency: 5
+
+  # Extra parameter GeneratePackageOnBuild=false is needed for issue https://github.com/dotnet/sdk/pull/3473#issuecomment-516612070
+- task: DotNetCoreCLI@2
+  displayName: '.NET Pack Nuget'
+  inputs:
+    command: custom
+    custom: pack
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:NuspecProperties="version=${{ parameters.nugetVersion }}" -p:GeneratePackageOnBuild=false'
+
+- task: DotNetCoreCLI@2
+  displayName: '.NET Test'
+  inputs:
+    command: test
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }}'
+  env:
+    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'

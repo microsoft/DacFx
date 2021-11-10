@@ -16,11 +16,8 @@ variables:
   versionMajor: 0
   versionMinor: 1
   versionPatch: $[counter(variables['versionMinor'], 0)] # This will reset when we bump minor version
-  # VersionSuffix can be set by the pipeline
-  ${{ if eq(variables['VersionSuffix'], '') }}:
-    nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)'
-  ${{ if ne(variables['VersionSuffix'], '') }}:
-    nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
+  versionSuffix: 'test'
+  nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
 
 stages:
 - stage: BuildPublish
@@ -31,7 +28,7 @@ stages:
     displayName: 'Release: Build, Test, and Publish on Windows'
 
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
 
     workspace:
       clean: all

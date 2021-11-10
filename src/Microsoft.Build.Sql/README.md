@@ -15,36 +15,28 @@ This project is in its early stages and we are currently building tests for diff
   See also: https://github.com/microsoft/DacFx/issues/33
 
 ## Using this SDK
-Normally the SDK can be pulled from public Nuget feeds. However since we are still in development mode, this SDK can only be consumed from a local Nuget source. [See also](#adding-a-local-nuget-source)
 
-### Building this project
-1. Build this project by running `dotnet build` from `\src\Microsoft.Build.Sql\`. This will generate a Nuget package inside the `bin` folder.
-2. Copy the nupkg file to a well known location, e.g. `C:\local_packages\`
-
-### Adding a local Nuget source
-1. Add a `nuget.config` in the same folder as your sqlproj by running 
-   ```
-   dotnet new nugetconfig
-   ```
-2. Edit `nuget.config` by adding a package source pointing to the folder that contains Microsoft.Build.Sql.1.0.0.nupkg
-   ```xml
-    <packageSources>
-      <clear />
-      <add key="local" value="{PATH_OF_SDK}" />
-    </packageSources>
-   ```
+### Add Github Packages as Nuget Source
+To add Github Packages as a package source, you must first generate a Personal Access Token (PAT) with your Github credentials. [For more information](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry#authenticating-to-github-packages)
+1. You can generate a PAT from here: https://github.com/settings/tokens
+   * Make sure it has *read:packages* scope
+2. Save the PAT to a secure place
+3. Run this command from your project root to add Github Packages as a package source (replace {...} with your own credentials):
+```
+dotnet nuget add source --username {GITHUB_USERNAME} --password {GITHUB_PAT} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/microsoft/index.json"
+```
 
 ### Changes to .sqlproj file
-Edit your database project by adding 
+To convert a database project into SDK-style, edit the .sqlproj file by adding
 ```xml
-<Sdk Name="Microsoft.Build.Sql" Version="1.0.0" />
+<Sdk Name="Microsoft.Build.Sql" Version="0.1.15-alpha" />
 ``` 
 inside `<Project>` tag.
 ### Example:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0">
-  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0" />
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.15-alpha" />
   ...
 </Project>
 ```

@@ -1,14 +1,7 @@
+# This pipeline is manually triggered
 trigger: none
 
 pr: none
-
-schedules:
-  - cron: "0 0 * * *"
-    displayName: Mon-Fri at Midnight
-    branches:
-      include:
-        - main
-    always: true
 
 variables:
   solution: '**/*.sln'

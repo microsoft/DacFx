@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" Version="16.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="150.5141.1-preview" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="160.5332.1-preview" />
     <PackageReference Include="nunit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>

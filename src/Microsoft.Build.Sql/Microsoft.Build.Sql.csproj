@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="160.5323.3-preview" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="160.5332.1-preview" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" />

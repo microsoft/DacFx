@@ -8,7 +8,7 @@ steps:
 - task: UseDotNet@2
   displayName: 'Install .NET SDK for Build'
   inputs:
-    version: '5.0.x'
+    version: '6.0.x'
 
 # We don't need restore now, but this may be needed in the future
 # - task: DotNetCoreCLI@2

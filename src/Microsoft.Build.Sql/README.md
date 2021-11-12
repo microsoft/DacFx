@@ -13,9 +13,9 @@ To add Github Packages as a package source, you must first generate a Personal A
 1. You can generate a PAT from here: https://github.com/settings/tokens
    * Make sure it has *read:packages* scope
 2. Save the PAT to a secure place
-3. Run this command from your project root to add Github Packages as a package source (replace {...} with your own credentials):
+3. Run this command to add Github Packages as a package source (replace GITHUB_USERNAME and GITHUB_PAT with those of your own):
 ```
-dotnet nuget add source --username {GITHUB_USERNAME} --password {GITHUB_PAT} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/microsoft/index.json"
+dotnet nuget add source "https://nuget.pkg.github.com/microsoft/index.json" --name github --username "GITHUB_USERNAME" --password "GITHUB_PAT" --store-password-in-clear-text
 ```
 
 ### Changes to .sqlproj file

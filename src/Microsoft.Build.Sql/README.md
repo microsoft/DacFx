@@ -8,12 +8,12 @@ This project is in its early stages and we are currently building tests for diff
 
 ## Using this SDK
 
-### Add Github Packages as Nuget Source
-To add Github Packages as a package source, you must first generate a Personal Access Token (PAT) with your Github credentials. [For more information](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry#authenticating-to-github-packages)
+### Add GitHub Packages as Nuget Source
+To add GitHub Packages as a package source, you must first generate a Personal Access Token (PAT) with your GitHub credentials. [For more information](https://docs.github.com/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry#authenticating-to-github-packages)
 1. You can generate a PAT from here: https://github.com/settings/tokens
    * Make sure it has *read:packages* scope
 2. Save the PAT to a secure place
-3. Run this command to add Github Packages as a package source (replace GITHUB_USERNAME and GITHUB_PAT with those of your own):
+3. Run this command to add GitHub Packages as a package source (replace GITHUB_USERNAME and GITHUB_PAT with those of your own):
 ```
 dotnet nuget add source "https://nuget.pkg.github.com/microsoft/index.json" --name github --username "GITHUB_USERNAME" --password "GITHUB_PAT" --store-password-in-clear-text
 ```

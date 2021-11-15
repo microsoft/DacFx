@@ -2,6 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>Microsoft.Build.Sql</id>
+    <!-- Version is set by build pipelines -->
     <version>1.0.0</version>
     <title>Microsoft SQL Database Project Build SDK</title>
     <description>This package contains the SDK for building SQL Database Projects (.sqlproj) in .NET Core and .NET 5+.</description>
@@ -9,14 +10,14 @@
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
-    <!-- TODO -->
-    <!-- <projectUrl></projectUrl> -->
-    <!-- <tags></tags> -->
-    <!-- <license type="file">LICENSE.txt</license> -->
+    <projectUrl>https://github.com/microsoft/DacFx</projectUrl>
+    <repository type="git" url="https://github.com/microsoft/DacFx" branch="main" />
+    <tags>dacfx sqlproj build sdk</tags>
+    <license type="file">LICENSE.txt</license>
   </metadata>
   <files>
     <file src="sdk\**" target="sdk" />
     <file src="tools\**" target="tools" />
-    <!-- <file src="LICENSE.txt" target="LICENSE.txt" /> -->
+    <file src="..\..\LICENSE.txt" target="LICENSE.txt" />
   </files>
 </package>

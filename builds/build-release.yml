@@ -1,22 +1,17 @@
+# This pipeline is manually triggered
 trigger: none
 
 pr: none
-
-schedules:
-  - cron: "0 0 * * *"
-    displayName: Mon-Fri at Midnight
-    branches:
-      include:
-        - main
-    always: true
 
 variables:
   solution: '**/*.sln'
   configuration: 'Release'
   versionMajor: 0
   versionMinor: 1
-  versionPatch: $[counter(variables['versionMinor'], 0)] # This will reset when we bump minor version
-  nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)'
+  versionMajorMinor: '$(versionMajor).$(versionMinor)'  # This variable is only used for the counter
+  versionPatch: $[counter(variables['versionMajorMinor'], 0)] # This will reset when we bump either major or minor version
+  versionSuffix: 'alpha'
+  nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
 
 stages:
 - stage: BuildPublish
@@ -24,10 +19,10 @@ stages:
 
   jobs:
   - job: BuildTestPublish
-    displayName: 'Release: Build, Test, and Publish on Windows'
+    displayName: 'Release: Build, Test, and Publish on Linux'
 
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
 
     workspace:
       clean: all

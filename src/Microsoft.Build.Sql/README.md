@@ -21,14 +21,14 @@ dotnet nuget add source "https://nuget.pkg.github.com/microsoft/index.json" --na
 ### Changes to .sqlproj file
 To convert a database project into SDK-style, edit the .sqlproj file by adding
 ```xml
-<Sdk Name="Microsoft.Build.Sql" Version="0.1.15-alpha" />
+<Sdk Name="Microsoft.Build.Sql" Version="0.1.1-alpha" />
 ``` 
 inside `<Project>` tag.
 ### Example:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0">
-  <Sdk Name="Microsoft.Build.Sql" Version="0.1.15-alpha" />
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.1-alpha" />
   ...
 </Project>
 ```

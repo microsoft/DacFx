@@ -1,0 +1,56 @@
+trigger: none
+
+pr: none
+
+# Pipeline trigger - this pipeline will run whenever the 'DacFx Nuget - Nightly' pipeline finishes
+resources:
+  pipelines:
+  - pipeline: 'build-test-nightly'
+    source: '$(source-pipeline-name)'
+    trigger: true
+
+variables:
+  solution: '**/*.sln'
+  configuration: 'Debug'
+
+stages:
+- stage: Build
+  displayName: 'PR Validation'
+
+  jobs:
+  - job: BuildTest
+    displayName: 'Build and Test on'
+
+    # Verifies cross-platform build and test
+    strategy:
+      matrix:
+        linux:
+          imageName: 'ubuntu-latest'
+        mac:
+          imageName: 'macos-latest'
+        windows:
+          imageName: 'windows-latest'
+
+    pool:
+      vmImage: '$(imageName)'
+
+    workspace:
+      clean: all
+
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifact'
+      inputs:
+        buildType: specific
+        project: '$(ado-project-id)'
+        definition: '$(source-pipeline-id)'
+        artifactName: drop
+        itemPattern: 'Microsoft.SqlServer.DacFx.*-preview.nupkg'
+
+    - template: 'template-steps-build-test.yml'
+      parameters:
+        solution: '$(solution)'
+        configuration: '$(configuration)'
+        nugetVersion: '1.0.0'
+        runCodeSign: 'false'
+        

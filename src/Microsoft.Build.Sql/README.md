@@ -30,14 +30,14 @@ The database project can be built in SSDT (tested in Visual Studio 2017+) as is.
 ```
 dotnet build /p:NetCoreBuild=true
 ```
-In Visual Studio 2019 (or newer), .NET Core targets can be used by default. Add this property to the sqlproj:
+In Visual Studio, .NET Core targets can be used by default. Add this property to the sqlproj:
 ```xml
 <NetCoreBuild>True</NetCoreBuild>
 ```
-and the project can be built directly in VS 2019 or `dotnet build` from command line.
+and the project can be built directly in Visual Studio or `dotnet build` from command line.
 
 ## Resolving build errors/warnings
-Depending on if your database project originated from SSDT or ADS, you may encounter build errors or warnings like these:
+Depending on if your database project originated from SSDT, [Azure Data Studio](https://aka.ms/azuredatastudio-sqlprojects), or VS Code, you may encounter build errors or warnings like these:
 ```
 error MSB4019: The imported project "C:\Program Files\dotnet\sdk\6.0.100-rc.1.21458.32\Microsoft\VisualStudio\v11.0\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" was not found. Confirm that the expression in the Import declaration "C:\Program Files\dotnet\sdk\6.0.100-rc.1.21458.32\\Microsoft\VisualStudio\v11.0\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" is correct, and that the file exists on disk.
 ```

@@ -58,8 +58,13 @@ stages:
     - bash: |
         pattern="$(dacFxPackagePath)/$(dacFxPackagePattern)"
         files=( $pattern )
-        echo "DacFx package found: ${files[0]}"
-        version=${${files[0]}/"*Microsoft.SqlServer.DacFx."/""}
+        nupkgFile=${files[0]}
+        if test -f $nupkgFile; then
+          echo "DacFx package found: $nupkgFile"
+        else
+          exit 1
+        fi
+        version=${$nupkgFile/"*Microsoft.SqlServer.DacFx."/""}
         version=${version/".nupkg"/""}
         echo "##vso[task.setvariable variable=dacFxPackageVersion]version"
       displayName: 'Extract Version from DacFx nupkg file'

@@ -64,10 +64,11 @@ stages:
         else
           exit 1
         fi
-        version=${$nupkgFile/"*Microsoft.SqlServer.DacFx."/""}
+        version=${nupkgFile/"*Microsoft.SqlServer.DacFx."/""}
         version=${version/".nupkg"/""}
         echo "##vso[task.setvariable variable=dacFxPackageVersion]version"
       displayName: 'Extract Version from DacFx nupkg file'
+      failOnStderr: true
 
     - template: 'template-steps-build-test.yml'
       parameters:

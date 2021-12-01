@@ -15,7 +15,7 @@ variables:
 resources:
   pipelines:
   - pipeline: 'github-build-test-nightly'
-    source: '$(azureSourcePipelineName)'
+    source: 'DacFx Nuget - Nightly'
     trigger: true
 
 stages:

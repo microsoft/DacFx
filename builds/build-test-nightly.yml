@@ -2,18 +2,21 @@ trigger: none
 
 pr: none
 
+variables:
+  solution: '**/*.sln'
+  configuration: 'Debug'
+  azureSourcePipelineName: ''  # Set in Azure pipeline
+  azureSourcePipelineId: ''    # Set in Azure pipeline
+  azureProjectId: ''           # Set in Azure pipeline
+  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*-preview.nupkg'
+  dacFxPackagePath: '$(Pipeline.Workspace)/pkg'  # DacFx nupkg will be downloaded from nightly build and placed here
+
 # Pipeline trigger - this pipeline will run whenever the 'DacFx Nuget - Nightly' pipeline finishes
 resources:
   pipelines:
   - pipeline: 'github-build-test-nightly'
-    source: '$(source-pipeline-name)'
+    source: '$(azureSourcePipelineName)'
     trigger: true
-
-variables:
-  solution: '**/*.sln'
-  configuration: 'Debug'
-  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*-preview.nupkg'
-  dacFxPackagePath: '$(Pipeline.Workspace)/pkg'  # DacFx nupkg will be downloaded from nightly build and placed here
 
 stages:
 - stage: Build
@@ -44,8 +47,8 @@ stages:
       displayName: 'Download Pipeline Artifact'
       inputs:
         buildType: 'specific'
-        project: '$(ado-project-id)'
-        definition: '$(source-pipeline-id)'
+        project: '$(azureProjectId)'
+        definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
         artifactName: 'drop'
         itemPattern: '$(dacFxPackagePattern)'

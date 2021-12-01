@@ -17,7 +17,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: 'PR Validation'
+  displayName: 'Nightly Build Test'
 
   jobs:
   - job: BuildTest
@@ -48,7 +48,7 @@ stages:
         definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
         artifactName: 'drop'
-        itemPattern: '$(dacFxPackagePattern)'
+        itemPattern: 'drop/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'
     
     - script: 'dotnet nuget add source "$(dacFxPackagePath)"'

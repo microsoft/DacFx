@@ -64,8 +64,9 @@ stages:
         else
           exit 1
         fi
-        version=${nupkgFile/"*Microsoft.SqlServer.DacFx."/""}
+        version=${nupkgFile/"$(dacFxPackagePath)/Microsoft.SqlServer.DacFx."/""}
         version=${version/".nupkg"/""}
+        echo "DacFx package version: $version"
         echo "##vso[task.setvariable variable=dacFxPackageVersion]$version"
       displayName: 'Extract Version from DacFx nupkg file'
       failOnStderr: true

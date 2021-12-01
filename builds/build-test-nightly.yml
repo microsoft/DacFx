@@ -62,15 +62,15 @@ stages:
         script: |
           # Locate the nupkg file from the package path
           $files =  Get-ChildItem "$(dacFxPackagePath)" -Recurse -Include "$(dacFxPackagePattern)"
-          if ($files.length -ne 1) {
+          if ($files.length -eq 0) {
             Write-Error "Failed to find Nuget package with pattern $(dacFxPackagePattern) in $(dacFxPackagePath)"
           }
 
-          # # Parse the nupkg file name for the version number
-          # $filename = Split-Path $files[0] -leaf
-          # $version = $filename.Replace("Microsoft.SqlServer.DacFx.", "").Replace(".nupkg", "")
-          # Write-Host "DacFx package version: $version"
-          # Write-Host "##vso[task.setvariable variable=dacFxPackageVersion]$version
+          # Parse the nupkg file name for the version number
+          $filename = Split-Path $files[0] -leaf
+          $version = $filename.Replace("Microsoft.SqlServer.DacFx.", "").Replace(".nupkg", "")
+          Write-Host "DacFx package version: $version"
+          Write-Host "##vso[task.setvariable variable=dacFxPackageVersion]$version"
 
     - template: 'template-steps-build-test.yml'
       parameters:

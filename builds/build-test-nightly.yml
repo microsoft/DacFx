@@ -5,13 +5,15 @@ pr: none
 # Pipeline trigger - this pipeline will run whenever the 'DacFx Nuget - Nightly' pipeline finishes
 resources:
   pipelines:
-  - pipeline: 'build-test-nightly'
+  - pipeline: 'github-build-test-nightly'
     source: '$(source-pipeline-name)'
     trigger: true
 
 variables:
   solution: '**/*.sln'
   configuration: 'Debug'
+  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*-preview.nupkg'
+  dacFxPackagePath: '$(Pipeline.Workspace)/pkg'  # DacFx nupkg will be downloaded from nightly build and placed here
 
 stages:
 - stage: Build
@@ -41,11 +43,26 @@ stages:
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
       inputs:
-        buildType: specific
+        buildType: 'specific'
         project: '$(ado-project-id)'
         definition: '$(source-pipeline-id)'
-        artifactName: drop
-        itemPattern: 'Microsoft.SqlServer.DacFx.*-preview.nupkg'
+        buildVersionToDownload: 'latest'
+        artifactName: 'drop'
+        itemPattern: '$(dacFxPackagePattern)'
+        targetPath: '$(dacFxPackagePath)'
+    
+    - script: 'dotnet nuget add source "$(dacFxPackagePath)"'
+      displayName: 'Nuget Add Source to Path Containing DacFx Package'
+
+    # Find the nupkg file inside dacFxPackagePath and parse it for the version
+    - bash: |
+        pattern="$(dacFxPackagePath)/$(dacFxPackagePattern)"
+        files=( $pattern )
+        echo "DacFx package found: ${files[0]}"
+        version=${${files[0]}/"*Microsoft.SqlServer.DacFx."/""}
+        version=${version/".nupkg"/""}
+        echo "##vso[task.setvariable variable=dacFxPackageVersion]version"
+      displayName: 'Extract Version from DacFx nupkg file'
 
     - template: 'template-steps-build-test.yml'
       parameters:
@@ -53,4 +70,4 @@ stages:
         configuration: '$(configuration)'
         nugetVersion: '1.0.0'
         runCodeSign: 'false'
-        
+        dacFxPackageVersion: '$(dacFxPackageVersion)'

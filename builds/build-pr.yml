@@ -40,3 +40,4 @@ stages:
         configuration: '$(configuration)'
         nugetVersion: '1.0.0'
         runCodeSign: 'false'
+        dacFxPackageVersion: ''

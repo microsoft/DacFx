@@ -3,6 +3,9 @@ parameters:
   solution: ''
   nugetVersion: ''
   runCodeSign: ''
+  # dacFxPackageVersion is mainly used for nightly tests to get version from nightly build
+  # The version defined in the csproj will be used when this is not set
+  dacFxPackageVersion: ''
 
 steps:
 - task: UseDotNet@2
@@ -23,7 +26,7 @@ steps:
   inputs:
     command: build
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} -p:GeneratePackageOnBuild=false'
+    arguments: '--configuration ${{ parameters.configuration }} -p:GeneratePackageOnBuild=false -p:DacFxPackageVersion="${{ parameters.dacFxPackageVersion }}"'
 
 # CodeSign is only run on release builds
 - task: UseDotNet@2

@@ -3,7 +3,7 @@ parameters:
   solution: ''
   nugetVersion: ''
   runCodeSign: ''
-  # This is mainly used for nightly tests to get version from nightly build
+  # This is mainly used for test pipelines to get version from Nuget build pipelines
   # The version defined in the csproj will be used when this is not set
   dacFxPackageVersionArgument: ''
 

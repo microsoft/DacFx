@@ -5,7 +5,7 @@ pr: none
 # Pipeline trigger - this pipeline will run whenever the 'DacFx Nuget - Nightly' pipeline finishes
 resources:
   pipelines:
-  - pipeline: 'github-build-test-nightly'
+  - pipeline: 'latest-nuget-build-test'
     source: 'DacFx Nuget - Nightly'
     trigger: true
 

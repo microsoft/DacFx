@@ -4,7 +4,7 @@ The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a .NET libra
 
 SqlPackage.exe is a command line interface to DacFx and is available for Windows, macOS, and Linux. For more about SqlPackage.exe, check out the [reference page on Microsoft Docs](https://docs.microsoft.com/sql/tools/sqlpackage/sqlpackage).
 
-Microsoft.Build.Sql (preview) is a [MSBuild project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac).  The SQL project SDK is available via NuGet ([https://www.nuget.org/packages/Microsoft.Build.Sql/](https://www.nuget.org/packages/Microsoft.Build.Sql/)) and in this [repository](/src/Microsoft.Build.Sql/README.md).
+Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac).  The SQL project SDK is available via NuGet ([https://www.nuget.org/packages/Microsoft.Build.Sql/](https://www.nuget.org/packages/Microsoft.Build.Sql/)) and in this [repository](/src/Microsoft.Build.Sql/README.md).
 
 ## Repository Focus
 
@@ -38,7 +38,7 @@ If you would like to use the command-line utility SqlPackage.exe for creating an
 ### Microsoft.Build.Sql
 [https://www.nuget.org/packages/Microsoft.Build.Sql/](https://www.nuget.org/packages/Microsoft.Build.Sql/)
 
-This NuGet package is a MSBuild SDK for SQL projects.
+This NuGet package is a .NET project SDK for SQL projects.
 
 ## Code of Conduct
 

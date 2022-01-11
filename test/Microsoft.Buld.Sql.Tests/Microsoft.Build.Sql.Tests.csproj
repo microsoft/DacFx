@@ -6,8 +6,6 @@
 
     <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
     <SdkPackagePath>$(MSBuildThisFileDirectory)pkg\</SdkPackagePath>
-
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">160.5332.1-preview</DacFxPackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

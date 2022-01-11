@@ -9,8 +9,6 @@
 
     <!-- Path where all the DLLs build depends on will be copied to -->
     <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\netstandard2.1\</BuildBinariesPath>
-
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">160.5332.1-preview</DacFxPackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

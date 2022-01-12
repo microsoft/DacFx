@@ -12,13 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="160.5332.1-preview" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" />
   </ItemGroup>
 
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">
+    <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
       <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.*" />
     </ItemGroup>

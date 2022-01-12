@@ -3,6 +3,9 @@ parameters:
   solution: ''
   nugetVersion: ''
   runCodeSign: ''
+  # This is mainly used for test pipelines to get version from Nuget build pipelines
+  # The version defined in the csproj will be used when this is not set
+  dacFxPackageVersionArgument: ''
 
 steps:
 - task: UseDotNet@2
@@ -23,7 +26,7 @@ steps:
   inputs:
     command: build
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} -p:GeneratePackageOnBuild=false'
+    arguments: '--configuration ${{ parameters.configuration }} -p:GeneratePackageOnBuild=false ${{ parameters.dacFxPackageVersionArgument }}'
 
 # CodeSign is only run on release builds
 - task: UseDotNet@2

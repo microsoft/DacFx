@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
     <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">160.5332.1-preview</DacFxPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">160.5400.1</DacFxPackageVersion>
   </PropertyGroup>
 </Project>

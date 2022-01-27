@@ -29,10 +29,10 @@ If you would like to use the command-line utility SqlPackage.exe for creating an
 
 |Platform|Download|Release date|Version|Build
 |:---|:---|:---|:---|:---|
-|[Windows]|[MSI Installer](https://go.microsoft.com/fwlink/?linkid=2164920)|October 4, 2021| 18.8 | 15.0.5282.3 |
-|[macOS .NET Core]|[.zip file](https://go.microsoft.com/fwlink/?linkid=2165009)|October 4, 2021| 18.8| 15.0.5282.3 |
-|[Linux .NET Core] |[.zip file](https://go.microsoft.com/fwlink/?linkid=2165008)|October 4, 2021| 18.8| 15.0.5282.3 |
-|[Windows .NET Core] |[.zip file](https://go.microsoft.com/fwlink/?linkid=2165007)|October 4, 2021| 18.8| 15.0.5282.3 |
+|Windows|[MSI Installer](https://go.microsoft.com/fwlink/?linkid=2185764)|January 25, 2022|19.0|16.0.5400.1|
+|macOS .NET Core|[.zip file](https://go.microsoft.com/fwlink/?linkid=2185765)|January 25, 2022|19.0|16.0.5400.1|
+|Linux .NET Core|[.zip file](https://go.microsoft.com/fwlink/?linkid=2185670)|January 25, 2022|19.0|16.0.5400.1|
+|Windows .NET Core|[.zip file](https://go.microsoft.com/fwlink/?linkid=2185669)|January 25, 2022|19.0|16.0.5400.1|
 
 
 ### Microsoft.Build.Sql

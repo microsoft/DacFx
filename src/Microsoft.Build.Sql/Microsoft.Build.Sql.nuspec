@@ -10,10 +10,12 @@
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <iconUrl>http://s.gravatar.com/avatar/6f39d8562df0a3509a8240fb281bc5bd?s=80</iconUrl>
     <projectUrl>https://github.com/microsoft/DacFx</projectUrl>
     <repository type="git" url="https://github.com/microsoft/DacFx" branch="main" />
     <tags>dacfx sqlproj build sdk</tags>
     <license type="file">LICENSE.txt</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
   </metadata>
   <files>
     <file src="sdk\**" target="sdk" />

@@ -10,7 +10,7 @@ variables:
   versionMinor: 1
   versionMajorMinor: '$(versionMajor).$(versionMinor)'  # This variable is only used for the counter
   versionPatch: $[counter(variables['versionMajorMinor'], 0)] # This will reset when we bump either major or minor version
-  versionSuffix: 'alpha'
+  versionSuffix: 'preview'
   nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
 
 stages:

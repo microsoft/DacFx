@@ -13,14 +13,14 @@ The latest alpha release can be found on [Nuget.org](https://www.nuget.org/packa
 ### Changes to .sqlproj file
 To convert a database project into SDK-style, edit the .sqlproj file by adding
 ```xml
-<Sdk Name="Microsoft.Build.Sql" Version="0.1.1-alpha" />
+<Sdk Name="Microsoft.Build.Sql" Version="0.1.3-preview" />
 ``` 
 inside `<Project>` tag.
 ### Example:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0">
-  <Sdk Name="Microsoft.Build.Sql" Version="0.1.1-alpha" />
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.3-preview" />
   ...
 </Project>
 ```

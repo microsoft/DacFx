@@ -6,7 +6,7 @@
 ## Current Status
 This project is in its early stages and we are currently building tests for different functionality. Contributors welcome, please feel free to share feedback or PRs.
 
-The latest alpha release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
+The latest preview release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
 
 ## Using this SDK
 

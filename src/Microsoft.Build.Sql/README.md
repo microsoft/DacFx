@@ -1,12 +1,14 @@
 # Microsoft.Build.Sql (Preview)
 
 ## Introduction
-.NET SDK for database projects (.sqlproj) available in early preview for use by building the SDK Nuget package locally.
+.NET SDK for database projects (.sqlproj) available in early preview.
+
+This SDK is similar to [Microsoft.NET.Sdk](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for .NET projects. It contains all the MSBuild targets and task libraries needed to build a database project into a DACPAC, which can then be used to publish to a live database. You can read more about SDK-style projects here: https://docs.microsoft.com/dotnet/core/project-sdk/overview
 
 ## Current Status
-This project is in its early stages and we are currently building tests for different functionality. Contributors welcome, please feel free to share feedback or PRs.
+This project is in its early stages and we are currently building tests for different functionality. Contributors welcome. Please feel free to open issues for bugs or improvements, or send PRs directly.
 
-The latest alpha release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
+The latest release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
 
 ## Using this SDK
 

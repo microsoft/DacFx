@@ -47,6 +47,12 @@ warning MSB4011: "C:\Program Files\dotnet\sdk\6.0.100-rc.1.21458.32\Current\Micr
 ```
 To resolve these errors/warnings, remove any default `<Import>` statements from the project file that reference `Microsoft.Data.Tools.Schema.SqlTasks.targets` or `Microsoft.Common.props`.
 
+For system dacpac build errors like:
+ ```
+C:\Users\user\.nuget\packages\microsoft.build.sql\0.1.3-preview\tools\netstandard2.1\Microsoft.Data.Tools.Schema.SqlTasks.targets(525,5): Build error SQL72027: File "C:\Users\user\.nuget\packages\microsoft.build.sql\0.1.3-preview\tools\netstandard2.1\Extensions\Microsoft\SQLDB\Extensions\SqlServer\150\SqlSchemas\master.dacpac" does not exist.
+```
+To build with system database references added in VS from the commandline, also pass in `/p:DacPacRootPath="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE"`, where the path corresponds to the installed version of VS on the machine.
+
 ### Example statements to remove
 ```xml
 <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

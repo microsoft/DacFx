@@ -1,12 +1,16 @@
 # Microsoft.Build.Sql (Preview)
 
 ## Introduction
-.NET SDK for database projects (.sqlproj) available in early preview for use by building the SDK Nuget package locally.
+.NET SDK for database projects (.sqlproj) available in early preview.
+
+This SDK is similar to [Microsoft.NET.Sdk](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for .NET projects. It contains all the MSBuild targets and task libraries needed to build a database project into a DACPAC, which can then be used to publish to a database. You can read more about SDK-style projects here: https://docs.microsoft.com/dotnet/core/project-sdk/overview
 
 ## Current Status
-This project is in its early stages and we are currently building tests for different functionality. Contributors welcome, please feel free to share feedback or PRs.
+This project is in its early stages and we are currently building tests for different functionality. Contributors welcome. Please feel free to open issues for bugs or improvements, or send PRs directly.
 
-The latest preview release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
+The latest release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
+
+Building and publishing database project is fully supported in the [Insiders Build of Azure Data Studio](https://github.com/microsoft/azuredatastudio#try-out-the-latest-insiders-build-from-main). Support for SDK-style projects will be added in SSDT in a future release.
 
 ## Using this SDK
 
@@ -25,16 +29,13 @@ inside `<Project>` tag.
 </Project>
 ```
 
-## Building .sqlproj 
-The database project can be built in SSDT (tested in Visual Studio 2017+) as is. To build the project via dotnet, run:
+## Building .sqlproj
+The database project can be built in SSDT as is. To build the project via dotnet, run:
 ```
 dotnet build /p:NetCoreBuild=true
 ```
-In Visual Studio, .NET Core targets can be used by default. Add this property to the sqlproj:
-```xml
-<NetCoreBuild>True</NetCoreBuild>
-```
-and the project can be built directly in Visual Studio or `dotnet build` from command line.
+
+> Note: Building with .NET Core targets is currently unsupported in SSDT. Please make sure the `NetCoreBuild` property is false or not defined when building in SSDT.
 
 ## Resolving build errors/warnings
 Depending on if your database project originated from SSDT, [Azure Data Studio](https://aka.ms/azuredatastudio-sqlprojects), or VS Code, you may encounter build errors or warnings like these:
@@ -74,3 +75,14 @@ The SDK specifies a default globbing pattern to include `**/*.sql` from the proj
 * Pre/post-deployment scripts that are specified by the `<PreDeploy>` or `<PostDeploy>` tags are automatically excluded from build.
 * To manually exclude a .sql file from the project, add `<Build Remove="filename.sql"/>` to the project file.
 * Even though build will honor the default globbing pattern, .sql files that are not included explicitly will not be displayed inside Solution Explorer in SSDT. Support for this will be added in a future release of SSDT.
+
+### Controlling SDK version with global.json
+The SDK version can be specified via a [global.json](https://docs.microsoft.com/dotnet/core/tools/global-json?tabs=netcore3x#examples) file:
+```json
+{
+    "msbuild-sdks": {
+        "Microsoft.Build.Sql": "0.1.3-preview"
+    }
+}
+```
+The `Version` attribute can then be omitted from the `Sdk` element in the project file. This is especially useful if you have multiple database references since all projects must specify the same SDK version for build.

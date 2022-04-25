@@ -177,5 +177,35 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
+
+        [Test]
+        [Description("Issue #88: Verifies build with a .sql file that is included as None should not be part of schema.")]
+        public void VerifyBuildWithNoneIncludeSqlFile()
+        {
+            // Table2.sql is included for build by default, specifying it as <None Include...> should remove it from build.
+            this.AddNoneScripts("Table2.sql");
+
+            string stdOutput, stdError;
+            int exitCode = this.Build(out stdOutput, out stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify the excluded Table2 is not part of the model
+            using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
+            {
+                var tables = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Table);
+                Assert.IsTrue(tables.Any(), "Expected at least 1 table in the model.");
+                foreach (var table in tables)
+                {
+                    if (table.Name.ToString().IndexOf("Table2", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        Assert.Fail("Table2 should have been excluded from the model.");
+                    }
+                }
+            }
+        }
     }
 }

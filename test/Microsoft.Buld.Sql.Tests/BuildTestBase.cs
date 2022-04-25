@@ -191,6 +191,14 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
+        /// Add scripts to the project that are not part of build. <paramref name="files"/> paths are relative.
+        /// </summary>
+        protected void AddNoneScripts(params string[] files)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "None", files);
+        }
+
+        /// <summary>
         /// Add references to another project(s). <paramref name="projects"/> paths are relative.
         /// </summary>
         protected void AddProjectReference(params string[] projects)

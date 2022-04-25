@@ -21,9 +21,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <!-- Remove files specified as PreDeploy and PostDeploy scripts from build -->
+    <!-- Remove files specified as PreDeploy, PostDeploy, and None scripts from build -->
     <Build Remove="@(PreDeploy)" />
     <Build Remove="@(PostDeploy)" />
+    <Build Remove="@(None)" />
   </ItemGroup>
 
 </Project>

@@ -21,7 +21,8 @@
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
-      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.*" />
+      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.dll" />
+      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.targets" />
     </ItemGroup>
     <Copy SourceFiles="@(NetCoreFiles)" DestinationFolder="$(BuildBinariesPath)" />
     <Copy SourceFiles="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.1\Microsoft.Data.SqlClient.dll" DestinationFolder="$(BuildBinariesPath)" />

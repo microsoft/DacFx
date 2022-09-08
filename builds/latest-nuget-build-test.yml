@@ -12,7 +12,7 @@ resources:
 variables:
   solution: '**/*.sln'
   configuration: 'Debug'
-  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*-preview.nupkg'
+  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx.*.nupkg'
   dacFxPackagePath: '$(Pipeline.Workspace)/pkg'  # DacFx nupkg will be downloaded from nightly build and placed here
 
 stages:

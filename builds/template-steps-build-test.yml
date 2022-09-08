@@ -40,7 +40,7 @@ steps:
   displayName: 'ESRP CodeSigning - Binaries'
   condition: '${{ parameters.runCodeSign }}'
   inputs:
-    ConnectedServiceName: 'Code Signing 2'
+    ConnectedServiceName: 'Code Signing'
     FolderPath: '$(Build.SourcesDirectory)/src/Microsoft.Build.Sql/tools'
     Pattern: '*.dll'
     signConfigType: inlineSignParams

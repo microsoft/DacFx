@@ -2,11 +2,11 @@ trigger: none
 
 pr: none
 
-# Pipeline trigger - this pipeline will run whenever the 'DacFx Nuget - Nightly' pipeline finishes
+# Pipeline trigger - this pipeline will run whenever the 'DacFx-Official' pipeline finishes
 resources:
   pipelines:
   - pipeline: 'latest-nuget-build-test'
-    source: 'DacFx Nuget - Nightly'
+    source: 'DacFx-Official'
     trigger: true
 
 variables:
@@ -44,11 +44,10 @@ stages:
       displayName: 'Download Pipeline Artifact'
       inputs:
         buildType: 'specific'
-        project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
-        artifactName: 'drop'
-        itemPattern: 'drop/$(dacFxPackagePattern)'
+        artifactName: 'drop_build_main'
+        itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'
     
     - script: 'dotnet nuget add source "$(dacFxPackagePath)"'

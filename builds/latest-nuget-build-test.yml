@@ -44,6 +44,7 @@ stages:
       displayName: 'Download Pipeline Artifact'
       inputs:
         buildType: 'specific'
+        project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
         artifactName: 'drop_build_main'

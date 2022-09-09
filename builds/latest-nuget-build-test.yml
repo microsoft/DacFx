@@ -65,6 +65,8 @@ stages:
             Write-Error "Failed to find Nuget package with pattern $(dacFxPackagePattern) in $(dacFxPackagePath)"
           }
 
+          Write-Host "DacFx package found: $files[0]"
+
           # Parse the nupkg file name for the version number
           $filename = Split-Path $files[0] -leaf
           $version = $filename.Replace("Microsoft.SqlServer.DacFx.", "").Replace(".nupkg", "")
@@ -77,4 +79,4 @@ stages:
         configuration: '$(configuration)'
         nugetVersion: '1.0.0'
         runCodeSign: 'false'
-        dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)" --source "$(dacFxPackagePath)"'
+        dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)"'

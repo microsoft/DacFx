@@ -12,7 +12,7 @@ resources:
 variables:
   solution: '**/*.sln'
   configuration: 'Debug'
-  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx.*.nupkg'
+  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*.nupkg'
   dacFxPackagePath: '$(Pipeline.Workspace)/pkg'  # DacFx nupkg will be downloaded from nightly build and placed here
 
 stages:
@@ -47,7 +47,7 @@ stages:
         project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
-        artifactName: 'drop_build_main'
+        # artifactName: 'drop_build_main'
         itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'
     

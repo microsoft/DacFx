@@ -47,7 +47,6 @@ stages:
         project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
-        # artifactName: 'drop_build_main'
         itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'
     
@@ -78,4 +77,4 @@ stages:
         configuration: '$(configuration)'
         nugetVersion: '1.0.0'
         runCodeSign: 'false'
-        dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)"'
+        dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)" --source "$(dacFxPackagePath)"'

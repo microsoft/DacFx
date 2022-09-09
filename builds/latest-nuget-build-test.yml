@@ -50,7 +50,8 @@ stages:
         itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'
     
-    - script: 'dotnet nuget add source "$(dacFxPackagePath)"'
+    # Note: The download task above preserves the relative folder structure
+    - script: 'dotnet nuget add source "$(dacFxPackagePath)/drop_build_main/release"'
       displayName: 'Nuget Add Source to Path Containing DacFx Package'
 
     - task: PowerShell@2
@@ -61,11 +62,10 @@ stages:
         script: |
           # Locate the nupkg file from the package path
           $files =  Get-ChildItem "$(dacFxPackagePath)" -Recurse -Include "$(dacFxPackagePattern)"
+          Write-Host "DacFx package found in $files"
           if ($files.length -eq 0) {
             Write-Error "Failed to find Nuget package with pattern $(dacFxPackagePattern) in $(dacFxPackagePath)"
           }
-
-          Write-Host "DacFx package found: $files[0]"
 
           # Parse the nupkg file name for the version number
           $filename = Split-Path $files[0] -leaf

@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Microsoft.Build.Sql",
+    "classifications": [
+        "Database",
+        "SqlServer"
+    ],
+    "identity": "Microsoft.Build.Sql",
+    "name": "SQL Server Database Project",
+    "description": "A project that creates a SQL Server Data-Tier Application package (.dacpac)",
+    "shortName": "sqlproj",
+    "tags": {
+        "language": "SQL",
+        "type": "project"
+    },
+    "sourceName": "SqlProject1",
+    "preferNameDirectory": true,
+    "symbols": {
+        "targetPlatform": {
+            "type": "parameter",
+            "description": "Target SQL platform",
+            "datatype": "choice",
+            "defaultValue": "Sql160",
+            "replaces": "{TargetPlatform}",
+            "choices": [
+                {
+                    "choice": "Sql130",
+                    "description": "SQL Server 2016"
+                },
+                {
+                    "choice": "Sql140",
+                    "description": "SQL Server 2017"
+                },
+                {
+                    "choice": "Sql150",
+                    "description": "SQL Server 2019"
+                },
+                {
+                    "choice": "Sql160",
+                    "description": "SQL Server 2022/Azure SQL MI"
+                },
+                {
+                    "choice": "SqlAzureV12",
+                    "description": "Azure SQL Database"
+                },
+                {
+                    "choice": "SqlDw",
+                    "description": "Azure Synapse SQL"
+                }
+            ]
+        }
+    }
+}

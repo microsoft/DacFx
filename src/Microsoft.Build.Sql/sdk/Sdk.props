@@ -6,6 +6,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <NetCoreBuild Condition="'NetCoreBuild' == '' And '$(MSBuildRuntimeType)' != 'Core'">False</NetCoreBuild>
+    <NetCoreBuild Condition="'NetCoreBuild' == '' And '$(MSBuildRuntimeType)' == 'Core'">True</NetCoreBuild>
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
   </PropertyGroup>
 

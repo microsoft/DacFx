@@ -22,40 +22,40 @@ stages:
       matrix:
         linux_net31:
           imageName: 'ubuntu-latest'
-          netVersion: '3.1.x'
+          dotnetVersion: '3.1.x'
         linux_net5:
           imageName: 'ubuntu-latest'
-          netVersion: '5.x'
+          dotnetVersion: '5.x'
         linux_net6:
           imageName: 'ubuntu-latest'
-          netVersion: '6.x'
+          dotnetVersion: '6.x'
         linux_net7:
           imageName: 'ubuntu-latest'
-          netVersion: '7.x'
+          dotnetVersion: '7.x'
         mac_net31:
           imageName: 'macos-latest'
-          netVersion: '3.1.x'
+          dotnetVersion: '3.1.x'
         mac_net5:
           imageName: 'macos-latest'
-          netVersion: '5.x'
+          dotnetVersion: '5.x'
         mac_net6:
           imageName: 'macos-latest'
-          netVersion: '6.x'
+          dotnetVersion: '6.x'
         mac_net7:
           imageName: 'macos-latest'
-          netVersion: '7.x'
+          dotnetVersion: '7.x'
         windows_net31:
           imageName: 'windows-latest'
-          netVersion: '3.1.x'
+          dotnetVersion: '3.1.x'
         windows_net5:
           imageName: 'windows-latest'
-          netVersion: '5.x'
+          dotnetVersion: '5.x'
         windows_net6:
           imageName: 'windows-latest'
-          netVersion: '6.x'
+          dotnetVersion: '6.x'
         windows_net7:
           imageName: 'windows-latest'
-          netVersion: '7.x'
+          dotnetVersion: '7.x'
 
     pool:
       vmImage: '$(imageName)'
@@ -71,4 +71,4 @@ stages:
         nugetVersion: '1.0.0'
         runCodeSign: 'false'
         dacFxPackageVersion: ''
-        netVersion: '$(netVersion)'
+        dotnetVersion: '$(dotnetVersion)'

@@ -35,6 +35,7 @@ stages:
           nugetVersion: '$(nugetVersion)'
           runCodeSign: 'true'
           dacFxPackageVersion: ''
+          netVersion: '6.x'
 
       - template: 'template-steps-publish.yml'
         parameters:

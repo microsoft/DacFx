@@ -6,12 +6,13 @@ parameters:
   # This is mainly used for test pipelines to get version from Nuget build pipelines
   # The version defined in the csproj will be used when this is not set
   dacFxPackageVersionArgument: ''
+  netVersion: ''
 
 steps:
 - task: UseDotNet@2
   displayName: 'Install .NET SDK for Build'
   inputs:
-    version: '6.0.x'
+    version: 'netVersion'
 
 # We don't need restore now, but this may be needed in the future
 # - task: DotNetCoreCLI@2

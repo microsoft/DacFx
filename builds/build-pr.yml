@@ -17,45 +17,15 @@ stages:
   - job: BuildTest
     displayName: 'Build and Test on'
 
-    # Verifies cross-platform build and test on different .NET SDK versions
+    # Verifies cross-platform build and test
     strategy:
       matrix:
-        linux_net31:
+        linux:
           imageName: 'ubuntu-latest'
-          dotnetVersion: '3.1.x'
-        linux_net5:
-          imageName: 'ubuntu-latest'
-          dotnetVersion: '5.x'
-        linux_net6:
-          imageName: 'ubuntu-latest'
-          dotnetVersion: '6.x'
-        linux_net7:
-          imageName: 'ubuntu-latest'
-          dotnetVersion: '7.x'
-        mac_net31:
+        mac:
           imageName: 'macos-latest'
-          dotnetVersion: '3.1.x'
-        mac_net5:
-          imageName: 'macos-latest'
-          dotnetVersion: '5.x'
-        mac_net6:
-          imageName: 'macos-latest'
-          dotnetVersion: '6.x'
-        mac_net7:
-          imageName: 'macos-latest'
-          dotnetVersion: '7.x'
-        windows_net31:
+        windows:
           imageName: 'windows-latest'
-          dotnetVersion: '3.1.x'
-        windows_net5:
-          imageName: 'windows-latest'
-          dotnetVersion: '5.x'
-        windows_net6:
-          imageName: 'windows-latest'
-          dotnetVersion: '6.x'
-        windows_net7:
-          imageName: 'windows-latest'
-          dotnetVersion: '7.x'
 
     pool:
       vmImage: '$(imageName)'
@@ -71,4 +41,3 @@ stages:
         nugetVersion: '1.0.0'
         runCodeSign: 'false'
         dacFxPackageVersion: ''
-        dotnetVersion: '$(dotnetVersion)'

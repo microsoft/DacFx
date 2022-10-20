@@ -12,7 +12,7 @@ steps:
 - task: UseDotNet@2
   displayName: 'Install .NET SDK for Build'
   inputs:
-    version: 'netVersion'
+    version: '${{ parameters.netVersion }}'
 
 # We don't need restore now, but this may be needed in the future
 # - task: DotNetCoreCLI@2

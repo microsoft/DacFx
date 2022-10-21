@@ -11,6 +11,16 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   
+  <!-- Import Nuget pack target -->
+  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/NuGet.Build.Tasks.Pack/build/NuGet.Build.Tasks.Pack.targets" />
+
+  <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
+  <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">
+    <ItemGroup>
+      <BuiltProjectOutputGroupOutput Include="$(SqlTargetPath)" TargetPath="$(SqlTargetFile)" FinalOutputPath="$(SqlTargetPath)" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <!-- This is necessary for building on non-Windows platforms. -->
     <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />

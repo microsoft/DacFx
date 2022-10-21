@@ -99,15 +99,6 @@ steps:
     SessionTimeout: 600
     MaxConcurrency: 5
 
-- task: DotNetCoreCLI@2
-  displayName: '.NET Test'
-  inputs:
-    command: test
-    projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} -p:TestAllNetVersions=true'
-  env:
-    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'
-
 # Extra parameter GeneratePackageOnBuild=false is needed for issue https://github.com/dotnet/sdk/pull/3473#issuecomment-516612070
 - task: DotNetCoreCLI@2
   displayName: '.NET Pack Nuget'
@@ -116,3 +107,13 @@ steps:
     custom: pack
     projects: '${{ parameters.solution }}'
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:NuspecProperties="version=${{ parameters.nugetVersion }}" -p:GeneratePackageOnBuild=false'
+
+- task: DotNetCoreCLI@2
+  displayName: '.NET Test'
+  inputs:
+    command: custom
+    custom: test
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} -p:TestAllNetVersions=true'
+  env:
+    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'

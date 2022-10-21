@@ -13,6 +13,9 @@
     <!-- Pack target properties -->
     <BuildOutputTargetFolder Condition="'$(BuildOutputTargetFolder)' == ''">tools</BuildOutputTargetFolder>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder); .dacpac</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    
+    <!-- Suppress NU5128 since SQL NuGet Packages have no target framework dependencies -->
+    <NoWarn>NU5128</NoWarn>
   </PropertyGroup>
 
   <!-- Defaults from SSDT -->

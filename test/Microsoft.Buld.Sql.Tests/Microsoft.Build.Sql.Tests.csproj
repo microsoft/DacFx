@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Multi-targeting to test SDK on different .NET versions -->
-    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 
     <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
     <SdkPackagePath>$(MSBuildThisFileDirectory)pkg\</SdkPackagePath>
+
+    <!-- Multi-targeting to test SDK on different .NET versions, requires all of the following SDKs to be installed -->
+    <TargetFrameworks Condition="'$(TestAllNetVersions)' == 'true'">$(TargetFrameworks);netcoreapp3.1;net5.0;net7.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

@@ -112,7 +112,7 @@ steps:
   displayName: '.NET Test'
   inputs:
     command: test
-    projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} --no-build -p:TestAllNetVersions=true'
+    projects: 'test/**/*.csproj'
+    arguments: '--configuration ${{ parameters.configuration }} -p:TestAllNetVersions=true'
   env:
     DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'

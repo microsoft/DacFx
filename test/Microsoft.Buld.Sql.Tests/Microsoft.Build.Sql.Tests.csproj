@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.Build" Version="16.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" />
+    <PackageReference Include="NuGet.Packaging" Version="6.3.1" />
     <PackageReference Include="nunit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>
@@ -34,6 +35,10 @@
 
   <ItemGroup>
     <None Remove="$(SdkPackagePath)\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestData\SuccessfulPackWithCustomPropereties\" />
   </ItemGroup>
 
 </Project>

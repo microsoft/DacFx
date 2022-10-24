@@ -9,14 +9,6 @@
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
-
-    <!-- Pack target properties -->
-    <PackageType Condition="'$(PackageType)' == ''">DACPAC</PackageType>
-    <IsTool Condition="'$(BuildOutputTargetFolder)' == ''">true</IsTool>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder); .dacpac</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    
-    <!-- Suppress NU5128 since SQL NuGet Packages have no target framework dependencies -->
-    <NoWarn>NU5128</NoWarn>
   </PropertyGroup>
 
   <!-- Defaults from SSDT -->

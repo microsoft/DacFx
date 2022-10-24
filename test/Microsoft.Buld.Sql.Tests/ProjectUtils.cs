@@ -3,11 +3,32 @@
 
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
+using System.Collections.Generic;
 
 namespace Microsoft.Build.Sql.Tests
 {
     public static class ProjectUtils
     {
+        /// <summary>
+        /// Adds a PropertyGroup to the project XML and populates it with <paramref name="properties"/>.
+        /// </summary>
+        public static void AddProperties(string projectFilePath, IEnumerable<KeyValuePair<string, string>> properties)
+        {
+            using (ProjectCollection projectCollection = GetNewEngine())
+            {
+                Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+
+                ProjectPropertyGroupElement propertyGroup = project.Xml.AddPropertyGroup();
+                foreach (KeyValuePair<string, string> property in properties)
+                {
+                    propertyGroup.AddProperty(property.Key, property.Value);
+                }
+
+                project.Save(project.FullPath);
+                projectCollection.UnloadAllProjects();
+            }
+        }
+
         /// <summary>
         /// Adds an ItemGroup to the project XML and populates it with <paramref name="itemName"/> and <paramref name="filePaths"/>.
         /// Result should look something like:

@@ -37,8 +37,4 @@
     <None Remove="$(SdkPackagePath)\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestData\SuccessfulPackWithCustomPropereties\" />
-  </ItemGroup>
-
 </Project>

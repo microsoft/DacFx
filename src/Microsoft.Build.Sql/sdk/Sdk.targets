@@ -4,6 +4,16 @@
   Licensed under the MIT license.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <!-- Pack target properties -->
+  <PropertyGroup>
+    <PackageType>$(PackageType);DACPAC</PackageType>
+    <IsTool Condition="'$(IsTool)' == ''">true</IsTool>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.dacpac</AllowedOutputExtensionsInPackageBuildOutputFolder>
+
+    <!-- Suppress NU5128 since SQL NuGet Packages have no target framework dependencies -->
+    <NoWarn>$(NoWarn),NU5128</NoWarn>
+  </PropertyGroup>
 
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   

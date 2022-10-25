@@ -5,35 +5,18 @@
     <PackageType>Template</PackageType>
     <PackageId>Microsoft.Build.Sql.Templates</PackageId>
     <Title>Microsoft.Build.Sql templates</Title>
-    <Authors>Microsoft.Build.Sql</Authors>
+    <Authors>Microsoft</Authors>
     <Description>Templates for creating new Microsoft.Build.Sql projects.</Description>
     <PackageProjectUrl>https://github.com/microsoft/dacfx</PackageProjectUrl>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <NuspecFile>Microsoft.Build.Sql.Templates.nuspec</NuspecFile>
-    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);SetNuSpecProperties</GenerateNuspecDependsOn>
-  </PropertyGroup>
-
-  <Target Name="SetNuSpecProperties" Condition=" Exists('$(NuspecFile)') ">
-    <PropertyGroup>
-      <NuspecProperties>
-        id=$(PackageId);
-        description=$(PackageDescription);
-        version=$(PackageVersion);
-        authors=$(Authors);
-        copyright=$(Copyright);
-        projecturl=$(PackageProjectUrl);
-        tags=$(PackageTags);
-        packagetype=$(PackageType)
-      </NuspecProperties>
-    </PropertyGroup>
-  </Target>
-
   <ItemGroup>
     <Compile Remove="**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sqlproject\**" PackagePath="content/" />
   </ItemGroup>
 
 </Project>

@@ -10,7 +10,7 @@ This project is in its early stages and we are currently building tests for diff
 
 The latest release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
 
-Building and publishing database project is supported in the [Azure Data Studio](https://github.com/microsoft/azuredatastudio). Support for SDK-style projects will be added in SSDT in a future release.
+Building and publishing database project is supported in [Azure Data Studio](https://github.com/microsoft/azuredatastudio). Support for SDK-style projects will be added in SSDT in a future release.
 
 ## Using this SDK
 

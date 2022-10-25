@@ -5,7 +5,7 @@
 To build the project, run the following command:
 
 ```bash
-dotnet build /p:NetCoreBuild=true
+dotnet build
 ```
 
 🎉 Congrats! You have successfully built the project and now have a `dacpac` to deploy anywhere.
@@ -18,3 +18,4 @@ To publish the project, the SqlPackage CLI or the SQL Database Projects extensio
 ./SqlPackage /Action:Publish /SourceFile:bin/Debug/SqlProject1.dacpac /TargetServerName:localhost /TargetDatabaseName:SqlProject1
 ```
 
+Learn more about authentication and other options for SqlPackage here: https://aka.ms/sqlpackage-ref

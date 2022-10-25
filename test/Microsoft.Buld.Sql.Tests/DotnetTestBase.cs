@@ -66,6 +66,7 @@ namespace Microsoft.Build.Sql.Tests
         /// <summary>
         /// Calls dotnet command on the database project.
         /// </summary>
+        /// <param name="dotnetCommand">The dotnet command to run (build, pack, etc.)</param>
         /// <param name="arguments">Any additional arguments to be passed to 'dotnet build'.</param>
         /// <returns>The Exit Code of the dotnet process.</returns>
         protected int RunDotnetCommand(string dotnetCommand, out string stdOutput, out string stdError, string arguments = "")

@@ -8,7 +8,6 @@ using System.Linq;
 using Microsoft.Build.Construction;
 using NuGet.Packaging;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -30,7 +29,7 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
-        [Description("Verifies packing separately after builid.")]
+        [Description("Verifies packing separately after build.")]
         public void VerifyPackWithNoBuild()
         {
             // Run build first

@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Build.Construction;
 using NuGet.Packaging;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -15,7 +17,7 @@ namespace Microsoft.Build.Sql.Tests
     {
         [Test]
         [Description("Verifies pack with default settings.")]
-        public void SuccessfulSimplePack()
+        public void VerifySimplePack()
         {
             string stdOutput, stdError;
             int exitCode = this.RunDotnetCommand("pack", out stdOutput, out stdError);
@@ -29,7 +31,7 @@ namespace Microsoft.Build.Sql.Tests
 
         [Test]
         [Description("Verifies packing separately after builid.")]
-        public void SuccessfulPackWithNoBuild()
+        public void VerifyPackWithNoBuild()
         {
             // Run build first
             string stdOutput, stdError;
@@ -47,7 +49,7 @@ namespace Microsoft.Build.Sql.Tests
 
         [Test]
         [Description("Verifies pack with custom defined properties.")]
-        public void SuccessfulPackWithCustomProperties()
+        public void VerifyPackWithCustomProperties()
         {
             // Populate project file with custom properties: https://learn.microsoft.com/nuget/reference/msbuild-targets#pack-target
             string customPackageId = "MyCustomPackageId";
@@ -75,7 +77,6 @@ namespace Microsoft.Build.Sql.Tests
             // Verify
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
-            this.VerifyDacPackage();
             this.VerifyNugetPackage($"{customPackageId}.{customPackageVersion}.nupkg", (PackageArchiveReader package) => {
                 // Verify every custom property is set correctly in the nuspec
                 foreach (var property in properties)
@@ -95,9 +96,54 @@ namespace Microsoft.Build.Sql.Tests
             });
         }
 
+        [Test]
+        [Description("Verifies pack with including content files.")]
+        public void VerifyPackWithIncludedFiles()
+        {
+            // Add a content file, which is packed by default: https://learn.microsoft.com/nuget/reference/msbuild-targets#including-content-in-a-package
+            string includedContent = Path.Combine(this.WorkingDirectory, "include_content.txt");
+            File.WriteAllText(includedContent, "test");
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Content", new[] { includedContent });
+
+            // Add a content file with Pack = false
+            string excludedContent = Path.Combine(this.WorkingDirectory, "exclude_content.txt");
+            File.WriteAllText(excludedContent, "test");
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Content", new[] { excludedContent }, (ProjectItemElement item) =>
+            {
+                item.AddMetadata("Pack", "false");
+            });
+
+            // Add a none file and pack it to the tools folder
+            string includedNone = Path.Combine(this.WorkingDirectory, "none.txt");
+            File.WriteAllText(includedNone, "test");
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "None", new[] { includedNone }, (ProjectItemElement item) =>
+            {
+                item.AddMetadata("Pack", "true");
+                item.AddMetadata("PackagePath", "tools/");
+            });
+
+            // Run dotnet pack
+            string stdOutput, stdError;
+            int exitCode = this.RunDotnetCommand("pack", out stdOutput, out stdError);
+
+            // Verify
+            Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyNugetPackage(test: (PackageArchiveReader package) =>
+            {
+                var files = package.GetFiles();
+                Assert.IsTrue(files.Any(f => f.Equals("content/include_content.txt", StringComparison.OrdinalIgnoreCase)),
+                    "Expected content/include_content.txt to be in the packaged file list.");
+                Assert.IsFalse(files.Any(f => f.Contains("exclude_content.txt", StringComparison.OrdinalIgnoreCase)),
+                    "Expected exclude_content.txt to be excluded from the packaged file list.");
+                Assert.IsTrue(files.Any(f => f.Equals("tools/none.txt", StringComparison.OrdinalIgnoreCase)),
+                    "Expected tools/none.txt to be in the packaged file list.");
+            });
+        }
+
         /// <summary>
         /// Verifies Nuget package created by dotnet pack command. Checks for nupkg in bin/configration folder.
-        /// Verifies DACPAC is in the /tools folder within the nupkg, and verifies DACPAC is one of its package types.
+        /// Verifies DACPAC is in the tools folder within the nupkg, and verifies DACPAC is one of its package types.
         /// </summary>
         /// <param name="packageNameOverride">When not set, defaults to Name.Version.nupkg</param>
         /// <param name="test">Additional test to run against the package</param>

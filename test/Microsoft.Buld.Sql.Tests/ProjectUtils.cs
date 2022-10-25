@@ -3,6 +3,7 @@
 
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Build.Sql.Tests
@@ -38,7 +39,8 @@ namespace Microsoft.Build.Sql.Tests
         ///     ...
         ///   </ItemGroup>
         /// </summary>
-        public static void AddItemGroup(string projectFilePath, string itemName, string[] filePaths)
+        /// <param name="addMetadata">Optional delegate to set metadata on each item added.</param>
+        public static void AddItemGroup(string projectFilePath, string itemName, string[] filePaths, Action<ProjectItemElement>? addMetadata = null)
         {
             if (filePaths != null && filePaths.Length > 0)
             {
@@ -49,7 +51,10 @@ namespace Microsoft.Build.Sql.Tests
                     ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
                     foreach (string filePath in filePaths)
                     {
-                        itemGroup.AddItem(itemName, filePath);
+                        ProjectItemElement item = project.Xml.CreateItemElement(itemName);
+                        item.Include = filePath;
+                        itemGroup.AppendChild(item);
+                        addMetadata?.Invoke(item);
                     }
 
                     project.Save(project.FullPath);

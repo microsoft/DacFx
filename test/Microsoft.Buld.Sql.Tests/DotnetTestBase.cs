@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Build.Construction;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 
@@ -82,16 +83,6 @@ namespace Microsoft.Build.Sql.Tests
                 // This also requires the full path of the dotnet process be passed to FileName.
             };
 
-            return ExecuteProcessWithOutput(dotnetStartInfo, out stdOutput, out stdError);
-        }
-
-        /// <summary>
-        /// Runs a process based on <paramref name="startInfo"/>
-        /// </summary>
-        /// <returns>The Exit Code of the process.</returns>
-        /// <remarks>Adapted from Microsoft.VisualStudio.TeamSystem.Data.UnitTests.UTSqlTasks.ExecuteDotNetExe</remarks>
-        private int ExecuteProcessWithOutput(ProcessStartInfo startInfo, out string stdOutput, out string stdError)
-        {
             // Setup build output and error handlers
             object threadSharedLock = new object();
             StringBuilder threadShared_ReceivedOutput = new StringBuilder();
@@ -101,7 +92,7 @@ namespace Microsoft.Build.Sql.Tests
             int interlocked_errorsCompleted = 0;
 
             using Process dotnet = new Process();
-            dotnet.StartInfo = startInfo;
+            dotnet.StartInfo = dotnetStartInfo;
 
             // the OutputDataReceived delegateis called on a separate thread as output data arrives from the process
             dotnet.OutputDataReceived += (sender, e) =>
@@ -139,7 +130,7 @@ namespace Microsoft.Build.Sql.Tests
             };
 
             // Start the build and begin reading the outputs
-            TestContext.WriteLine($"Executing {startInfo.FileName} {startInfo.Arguments} in {startInfo.WorkingDirectory}");
+            TestContext.WriteLine($"Executing {dotnetStartInfo.FileName} {dotnetStartInfo.Arguments} in {dotnetStartInfo.WorkingDirectory}");
             dotnet.Start();
             dotnet.BeginOutputReadLine();
             dotnet.BeginErrorReadLine();

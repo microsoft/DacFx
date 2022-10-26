@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.Build.Sql\Microsoft.Build.Sql.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.Build.Sql.Templates\Microsoft.Build.Sql.Templates.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,14 @@
     </ItemGroup>
     <Copy SourceFiles="@(SdkPackage)" DestinationFolder="$(SdkPackagePath)" />
     <Message Text="Copied SDK package from '@(SdkPackage)' to '$(SdkPackagePath)'" Importance="high" />
+  </Target>
+
+  <Target Name="CopyTemplatePackage" AfterTargets="Build">
+    <ItemGroup>
+      <TemplatePackage Include="..\..\src\Microsoft.Build.Sql.Templates\bin\$(Configuration)\*.nupkg" />
+    </ItemGroup>
+    <Copy SourceFiles="@(TemplatePackage)" DestinationFolder="$(SdkPackagePath)" />
+    <Message Text="Copied template package from '@(TemplatePackage)' to '$(SdkPackagePath)'" Importance="high" />
   </Target>
 
   <Target Name="DeleteSdkPackage" AfterTargets="Clean">

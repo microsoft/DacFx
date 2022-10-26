@@ -98,9 +98,6 @@ namespace Microsoft.Build.Sql.Tests
         /// <returns>The Exit Code of the dotnet process.</returns>
         protected int RunDotnetCommandOnProject(string dotnetCommand, out string stdOutput, out string stdError, string arguments = "")
         {
-            // Append NetCoreBuild to arguments
-            arguments += " /p:NetCoreBuild=true";
-
             // Set up the dotnet process
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {

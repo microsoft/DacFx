@@ -2,17 +2,17 @@ trigger: none
 
 pr: none
 
-# Pipeline trigger - this pipeline will run whenever the 'DacFx Nuget - Nightly' pipeline finishes
+# Pipeline trigger - this pipeline will run whenever the 'DacFx-Official' pipeline finishes
 resources:
   pipelines:
   - pipeline: 'latest-nuget-build-test'
-    source: 'DacFx Nuget - Nightly'
+    source: 'DacFx-Official'
     trigger: true
 
 variables:
   solution: '**/*.sln'
   configuration: 'Debug'
-  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*-preview.nupkg'
+  dacFxPackagePattern: 'Microsoft.SqlServer.DacFx*.nupkg'
   dacFxPackagePath: '$(Pipeline.Workspace)/pkg'  # DacFx nupkg will be downloaded from nightly build and placed here
 
 stages:
@@ -47,11 +47,11 @@ stages:
         project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
         buildVersionToDownload: 'latest'
-        artifactName: 'drop'
-        itemPattern: 'drop/$(dacFxPackagePattern)'
+        itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'
     
-    - script: 'dotnet nuget add source "$(dacFxPackagePath)"'
+    # Note: The download task above preserves the relative folder structure
+    - script: 'dotnet nuget add source "$(dacFxPackagePath)/drop_build_main/release"'
       displayName: 'Nuget Add Source to Path Containing DacFx Package'
 
     - task: PowerShell@2
@@ -62,6 +62,7 @@ stages:
         script: |
           # Locate the nupkg file from the package path
           $files =  Get-ChildItem "$(dacFxPackagePath)" -Recurse -Include "$(dacFxPackagePattern)"
+          Write-Host "DacFx package found in $files"
           if ($files.length -eq 0) {
             Write-Error "Failed to find Nuget package with pattern $(dacFxPackagePattern) in $(dacFxPackagePath)"
           }

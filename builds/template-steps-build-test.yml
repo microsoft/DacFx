@@ -9,16 +9,25 @@ parameters:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Install .NET SDK for Build'
+  displayName: 'Install .NET 3.1 SDK'
   inputs:
-    version: '6.0.x'
+    version: '3.1.x'
 
-# We don't need restore now, but this may be needed in the future
-# - task: DotNetCoreCLI@2
-#   displayName: '.NET Restore'
-#   inputs:
-#     command: restore
-#     projects: '${{ parameters.solution }}'
+- task: UseDotNet@2
+  displayName: 'Install .NET 5 SDK'
+  inputs:
+    version: '5.x'
+
+- task: UseDotNet@2
+  displayName: 'Install .NET 6 SDK'
+  inputs:
+    version: '6.x'
+
+- task: UseDotNet@2
+  displayName: 'Install .NET 7 SDK'
+  inputs:
+    version: '7.x'
+    includePreviewVersions: true
 
 # Don't generate package so we can sign it before packaging
 - task: DotNetCoreCLI@2
@@ -40,7 +49,7 @@ steps:
   displayName: 'ESRP CodeSigning - Binaries'
   condition: '${{ parameters.runCodeSign }}'
   inputs:
-    ConnectedServiceName: 'Code Signing 2'
+    ConnectedServiceName: 'Code Signing'
     FolderPath: '$(Build.SourcesDirectory)/src/Microsoft.Build.Sql/tools'
     Pattern: '*.dll'
     signConfigType: inlineSignParams
@@ -90,7 +99,7 @@ steps:
     SessionTimeout: 600
     MaxConcurrency: 5
 
-  # Extra parameter GeneratePackageOnBuild=false is needed for issue https://github.com/dotnet/sdk/pull/3473#issuecomment-516612070
+# Extra parameter GeneratePackageOnBuild=false is needed for issue https://github.com/dotnet/sdk/pull/3473#issuecomment-516612070
 - task: DotNetCoreCLI@2
   displayName: '.NET Pack Nuget'
   inputs:

@@ -67,9 +67,6 @@ namespace Microsoft.Build.Sql.Tests
         /// <remarks>Adapted from Microsoft.VisualStudio.TeamSystem.Data.UnitTests.UTSqlTasks.ExecuteDotNetExe</remarks>
         protected int Build(out string stdOutput, out string stdError, string arguments = "")
         {
-            // Append NetCoreBuild to arguments
-            arguments += " /p:NetCoreBuild=true";
-
             // Set up the dotnet process
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {

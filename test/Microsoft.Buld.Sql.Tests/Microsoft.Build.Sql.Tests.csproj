@@ -24,7 +24,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>
 
-  <Target Name="CopySdkPackage" Condition="'$(TargetFramework)' == '$(FirstTargetFramework)'" AfterTargets="AfterCompile">
+  <Target Name="CopySdkPackage" Condition="'$(TargetFramework)' == '$(FirstTargetFramework)'" AfterTargets="Buiild">
     <ItemGroup>
       <SdkPackage Include="..\..\src\Microsoft.Build.Sql\bin\$(Configuration)\*.nupkg" />
     </ItemGroup>

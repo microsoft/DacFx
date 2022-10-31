@@ -4,8 +4,6 @@
     <!-- Multi-targeting to test SDK on different .NET versions, requires all of the following SDKs to be installed. -->
     <!-- To build and test only one version, add -f to dotnet command. -->
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
-    <!-- FirstTargetFramework used only for some targets to run once -->
-    <FirstTargetFramework Condition="'$(FirstTargetFrameworks)' == ''">$(TargetFrameworks.Split(';')[0])</FirstTargetFramework>
     <Nullable>enable</Nullable>
 
     <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
@@ -24,7 +22,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>
 
-  <Target Name="CopySdkPackage" Condition="'$(TargetFramework)' == '$(FirstTargetFramework)'" AfterTargets="Build">
+  <Target Name="CopySdkPackage" AfterTargets="Build">
     <ItemGroup>
       <SdkPackage Include="..\..\src\Microsoft.Build.Sql\bin\$(Configuration)\*.nupkg" />
     </ItemGroup>

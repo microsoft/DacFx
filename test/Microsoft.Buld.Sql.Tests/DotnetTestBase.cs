@@ -12,7 +12,7 @@ namespace Microsoft.Build.Sql.Tests
 {
     public abstract class DotnetTestBase
     {
-        private const string DatabaseProjectName = "project";
+        protected string DatabaseProjectName = "project";
 
 #if DEBUG
         protected const bool IsDebug = true;
@@ -293,6 +293,19 @@ namespace Microsoft.Build.Sql.Tests
                     Assert.IsNull(package.PostDeploymentScript, "PostDeploy script not expected but one was found.");
                 }
             }
+        }
+
+        /// <summary>
+        /// Verifies the project file has the expected target platform
+        /// </summary>
+        /// <param name="expectedTargetPlatform">The expected target platform</param>
+        protected void VerifyTargetPlatform(string expectedTargetPlatform)
+        {
+            string projectFilePath = this.GetProjectFilePath();
+            string dspValue = ProjectUtils.GetTargetPlatform(projectFilePath);
+            string targetPlatform = dspValue.Substring(dspValue.LastIndexOf('.') + 1, dspValue.LastIndexOf("DatabaseSchemaProvider") - dspValue.LastIndexOf('.') - 1);
+
+            Assert.AreEqual(expectedTargetPlatform, targetPlatform, "Target platform is not correct");
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifySqlprojTemplateWithTargetPlatform()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand("new sqlproj --targetPlatform SqlAzureV12", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand("new sqlproj --target-platform SqlAzureV12", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "dotnet new sqlproj failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
 

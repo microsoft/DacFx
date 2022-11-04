@@ -4,20 +4,20 @@
 ## Using the templates
 
 
-Creating a new project "AdventureWorks":
+Creating a new project "AdventureWorks" (`-n` or `--name`):
 
 ```bash
 dotnet new sqlproj -n "AdventureWorks"
 ```
 
-Displaying help information for the SQL project template:
+Displaying help information for the SQL project template (`-h`):
 
 ```bash
 dotnet new sqlproj -h
 ```
 
 
-Creating a new project "AdventureWorksLT" for Azure SQL Database:
+Creating a new project "AdventureWorksLT" for Azure SQL Database (`-t` or `--target-platform`):
 
 ```bash
 dotnet new sqlproj -n "AdventureWorksLT" -t "SqlAzureV12"

@@ -16,7 +16,7 @@
     "sourceName": "SqlProject1",
     "preferNameDirectory": true,
     "symbols": {
-        "targetPlatform": {
+        "target-platform": {
             "type": "parameter",
             "description": "Target SQL platform",
             "datatype": "choice",

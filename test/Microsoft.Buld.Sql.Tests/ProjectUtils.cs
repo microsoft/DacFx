@@ -1,10 +1,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.Build.Construction;
-using Microsoft.Build.Evaluation;
 using System;
 using System.Collections.Generic;
+using Microsoft.Build.Construction;
+using Microsoft.Build.Evaluation;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -51,8 +51,7 @@ namespace Microsoft.Build.Sql.Tests
                     ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
                     foreach (string filePath in filePaths)
                     {
-                        ProjectItemElement item = project.Xml.CreateItemElement(itemName);
-                        item.Include = filePath;
+                        ProjectItemElement item = project.Xml.CreateItemElement(itemName, filePath);
                         itemGroup.AppendChild(item);
                         addMetadata?.Invoke(item);
                     }

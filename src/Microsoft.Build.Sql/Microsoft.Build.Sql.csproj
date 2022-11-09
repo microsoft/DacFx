@@ -13,7 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.Types" Version="160.900.6-rc0" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" />
   </ItemGroup>
@@ -21,13 +23,15 @@
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
-      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.dll" />
-      <NetCoreFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.targets" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.targets" />
+      <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.1\Microsoft.Data.SqlClient.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
+      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp2.0\System.ComponentModel.Composition.dll" />
+      <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(NetCoreFiles)" DestinationFolder="$(BuildBinariesPath)" />
-    <Copy SourceFiles="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.1\Microsoft.Data.SqlClient.dll" DestinationFolder="$(BuildBinariesPath)" />
-    <Copy SourceFiles="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp2.0\System.ComponentModel.Composition.dll" DestinationFolder="$(BuildBinariesPath)" />
-    <Copy SourceFiles="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" DestinationFolder="$(BuildBinariesPath)" />
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)" />
   </Target>
 
   <Target Name="DeleteToolsFolder" AfterTargets="Clean">

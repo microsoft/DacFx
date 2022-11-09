@@ -3,14 +3,14 @@
 ## Introduction
 .NET SDK for database projects (.sqlproj) available in early preview.
 
-This SDK is similar to [Microsoft.NET.Sdk](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for .NET projects. It contains all the MSBuild targets and task libraries needed to build a database project into a DACPAC, which can then be used to publish to a database. You can read more about SDK-style projects here: https://docs.microsoft.com/dotnet/core/project-sdk/overview
+This SDK is similar to [Microsoft.NET.Sdk](https://learn.microsoft.com/dotnet/core/project-sdk/overview) for .NET projects. It contains all the MSBuild targets and task libraries needed to build a database project into a DACPAC, which can then be used to publish to a database. You can read more about SDK-style projects here: https://learn.microsoft.com/dotnet/core/project-sdk/overview
 
 ## Current Status
 This project is in its early stages and we are currently building tests for different functionality. Contributors welcome. Please feel free to open issues for bugs or improvements, or send PRs directly.
 
 The latest release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
 
-Building and publishing database project is fully supported in the [Insiders Build of Azure Data Studio](https://github.com/microsoft/azuredatastudio#try-out-the-latest-insiders-build-from-main). Support for SDK-style projects will be added in SSDT in a future release.
+Building and publishing database project is supported in [Azure Data Studio](https://github.com/microsoft/azuredatastudio). Support for SDK-style projects will be added in SSDT in a future release.
 
 ## Using this SDK
 

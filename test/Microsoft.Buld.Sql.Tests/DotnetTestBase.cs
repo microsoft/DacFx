@@ -10,9 +10,9 @@ using NUnit.Framework;
 
 namespace Microsoft.Build.Sql.Tests
 {
-    public abstract class BuildTestBase
+    public abstract class DotnetTestBase
     {
-        private const string DatabaseProjectName = "project";
+        protected string DatabaseProjectName = "project";
 
 #if DEBUG
         protected const bool IsDebug = true;
@@ -30,6 +30,12 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine("../../../TestData", TestContext.CurrentContext.Test.Name); }
         }
 
+        [SetUp]
+        public void TestSetup()
+        {
+            EnvironmentSetup();
+        }
+
         /// <summary>
         /// Sets up the working directory to test building the project in. The end result will look like:
         /// WorkingDirectory/
@@ -40,8 +46,7 @@ namespace Microsoft.Build.Sql.Tests
         /// ├── project.sqlproj
         /// └── SQL files...
         /// </summary>
-        [SetUp]
-        public void EnvironmentSetup()
+        protected void EnvironmentSetup()
         {
             // Clear WorkingDirectory from previous test runs if exists
             if (Directory.Exists(this.WorkingDirectory))
@@ -56,22 +61,23 @@ namespace Microsoft.Build.Sql.Tests
             TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
 
             // Copy test specific files to WorkingDirectory
-            TestUtils.CopyDirectoryRecursive(this.TestDataDirectory, this.WorkingDirectory);
+            if (Directory.Exists(this.TestDataDirectory))
+            {
+                TestUtils.CopyDirectoryRecursive(this.TestDataDirectory, this.WorkingDirectory);
+            }
         }
 
         /// <summary>
-        /// Calls dotnet build to build the project.
+        /// Calls a dotnet command with <paramref name="dotnetCommandWithArgs"/>
         /// </summary>
-        /// <param name="arguments">Any additional arguments to be passed to 'dotnet build'.</param>
-        /// <returns>The Exit Code of the dotnet process.</returns>
-        /// <remarks>Adapted from Microsoft.VisualStudio.TeamSystem.Data.UnitTests.UTSqlTasks.ExecuteDotNetExe</remarks>
-        protected int Build(out string stdOutput, out string stdError, string arguments = "")
+        /// <returns>The Exit Code of the dotnet process</returns>
+        protected int RunGenericDotnetCommand(string dotnetCommandWithArgs, out string stdOutput, out string stdError)
         {
             // Set up the dotnet process
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
                 FileName = TestUtils.GetDotnetPath(),
-                Arguments = $"build {DatabaseProjectName}.sqlproj {arguments}",
+                Arguments = $"{dotnetCommandWithArgs}",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,
@@ -81,6 +87,41 @@ namespace Microsoft.Build.Sql.Tests
                 // This also requires the full path of the dotnet process be passed to FileName.
             };
 
+            return RunProcessWithOutputRedirect(dotnetStartInfo, out stdOutput, out stdError);
+        }
+
+        /// <summary>
+        /// Calls dotnet command on the database project.
+        /// </summary>
+        /// <param name="dotnetCommand">The dotnet command to run (build, pack, etc.)</param>
+        /// <param name="arguments">Any additional arguments to be passed to 'dotnet build'.</param>
+        /// <returns>The Exit Code of the dotnet process.</returns>
+        protected int RunDotnetCommandOnProject(string dotnetCommand, out string stdOutput, out string stdError, string arguments = "")
+        {
+            // Set up the dotnet process
+            ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
+            {
+                FileName = TestUtils.GetDotnetPath(),
+                Arguments = $"{dotnetCommand} {DatabaseProjectName}.sqlproj {arguments}",
+                WorkingDirectory = this.WorkingDirectory,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false
+                // Note: UseShellExecute needs to be false to be able to redirect outputs and run inside workingDirectory.
+                // This also requires the full path of the dotnet process be passed to FileName.
+            };
+
+            return RunProcessWithOutputRedirect(dotnetStartInfo, out stdOutput, out stdError);
+        }
+
+        /// <summary>
+        /// Runs a process with captured stdOutput and stdError.
+        /// Adapted from Microsoft.VisualStudio.TeamSystem.Data.UnitTests.UTSqlTasks.ExecuteDotNetExe
+        /// </summary>
+        /// <returns>The Exit Code of the process.</returns>
+        private int RunProcessWithOutputRedirect(ProcessStartInfo startInfo, out string stdOutput, out string stdError)
+        {
             // Setup build output and error handlers
             object threadSharedLock = new object();
             StringBuilder threadShared_ReceivedOutput = new StringBuilder();
@@ -90,7 +131,7 @@ namespace Microsoft.Build.Sql.Tests
             int interlocked_errorsCompleted = 0;
 
             using Process dotnet = new Process();
-            dotnet.StartInfo = dotnetStartInfo;
+            dotnet.StartInfo = startInfo;
 
             // the OutputDataReceived delegateis called on a separate thread as output data arrives from the process
             dotnet.OutputDataReceived += (sender, e) =>
@@ -128,7 +169,7 @@ namespace Microsoft.Build.Sql.Tests
             };
 
             // Start the build and begin reading the outputs
-            TestContext.WriteLine($"Executing {dotnetStartInfo.FileName} {dotnetStartInfo.Arguments} in {dotnetStartInfo.WorkingDirectory}");
+            TestContext.WriteLine($"Executing {startInfo.FileName} {startInfo.Arguments} in {startInfo.WorkingDirectory}");
             dotnet.Start();
             dotnet.BeginOutputReadLine();
             dotnet.BeginErrorReadLine();
@@ -252,6 +293,19 @@ namespace Microsoft.Build.Sql.Tests
                     Assert.IsNull(package.PostDeploymentScript, "PostDeploy script not expected but one was found.");
                 }
             }
+        }
+
+        /// <summary>
+        /// Verifies the project file has the expected target platform
+        /// </summary>
+        /// <param name="expectedTargetPlatform">The expected target platform</param>
+        protected void VerifyTargetPlatform(string expectedTargetPlatform)
+        {
+            string projectFilePath = this.GetProjectFilePath();
+            string dspValue = ProjectUtils.GetTargetPlatform(projectFilePath);
+            string targetPlatform = dspValue.Substring(dspValue.LastIndexOf('.') + 1, dspValue.LastIndexOf("DatabaseSchemaProvider") - dspValue.LastIndexOf('.') - 1);
+
+            Assert.AreEqual(expectedTargetPlatform, targetPlatform, "Target platform is not correct");
         }
     }
 }

@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageType>Template</PackageType>
+    <PackageId>Microsoft.Build.Sql.Templates</PackageId>
+    <Title>Microsoft.Build.Sql templates</Title>
+    <Authors>Microsoft</Authors>
+    <Description>Templates for creating new Microsoft.Build.Sql projects.</Description>
+    <PackageProjectUrl>https://github.com/microsoft/dacfx</PackageProjectUrl>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TemplateIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)\sqlproject</TemplateIntermediateOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
+  </ItemGroup>
+
+  <Target Name="CleanIntermediateFolder" AfterTargets="Clean">
+    <RemoveDir Directories="$(TemplateIntermediateOutputPath)" />
+  </Target>
+
+  <!-- This target copies template files to intermediate output path, then sets the SDK version to the current assembly version -->
+  <Target Name="CopyTemplateFiles" BeforeTargets="GenerateNuspec;Build">
+    <ItemGroup>
+      <TemplateFiles Include="sqlproject/**" />
+    </ItemGroup>
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(TemplateIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
+    <ReplaceFileText 
+      InputFilename="$(TemplateIntermediateOutputPath)/SqlProject1.sqlproj"
+      OutputFilename="$(TemplateIntermediateOutputPath)/SqlProject1.sqlproj" 
+      MatchExpression="###ASSEMBLY_VERSION###"
+      ReplacementText="$(PackageVersion)" />
+    <ItemGroup>
+      <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
+    </ItemGroup>
+  </Target>
+
+  <UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll" >
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+              File.WriteAllText(
+                  OutputFilename,
+                  Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
+                  );
+            ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+</Project>

@@ -106,7 +106,7 @@ steps:
     command: custom
     custom: pack
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:NuspecProperties="version=${{ parameters.nugetVersion }}" -p:GeneratePackageOnBuild=false'
+    arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:NuspecProperties="version=${{ parameters.nugetVersion }}" -p:GeneratePackageOnBuild=false -p:PackageVersion=${{ parameters.nugetVersion }}'
 
 - task: DotNetCoreCLI@2
   displayName: '.NET Test'

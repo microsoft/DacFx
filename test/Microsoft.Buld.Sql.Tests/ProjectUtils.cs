@@ -78,7 +78,7 @@ namespace Microsoft.Build.Sql.Tests
             string dspValue = "";
             // parse file xml to <DSP> element in <Project> root element
             XDocument sqlproj = XDocument.Load(projectFilePath);
-            XElement dsp = sqlproj.Root.Element("PropertyGroup").Element("DSP");
+            XElement? dsp = sqlproj.Root?.Element("PropertyGroup")?.Element("DSP");
             if (dsp != null)
             {
                 dspValue = dsp.Value;

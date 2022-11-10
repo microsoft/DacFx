@@ -8,6 +8,7 @@
     <Authors>Microsoft</Authors>
     <Description>Templates for creating new Microsoft.Build.Sql projects.</Description>
     <PackageProjectUrl>https://github.com/microsoft/dacfx</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <TemplateIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)\sqlproject</TemplateIntermediateOutputPath>
@@ -17,6 +18,7 @@
     <Compile Remove="**\*" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(EnlistmentRoot)/LICENSE.txt" PackagePath="/" Pack="true" />
     <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
   </ItemGroup>
 

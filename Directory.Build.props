@@ -1,5 +1,8 @@
 <Project>
   <PropertyGroup>
+    <!-- Root directory of the code base. Do not set this anywhere else. -->
+    <EnlistmentRoot>$(MSBuildThisFileDirectory)</EnlistmentRoot>
+
     <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
     <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">161.6374.0</DacFxPackageVersion>
   </PropertyGroup>

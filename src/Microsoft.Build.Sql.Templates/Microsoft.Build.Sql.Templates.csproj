@@ -5,9 +5,8 @@
     <PackageType>Template</PackageType>
     <PackageId>Microsoft.Build.Sql.Templates</PackageId>
     <Title>Microsoft.Build.Sql templates</Title>
-    <Authors>Microsoft</Authors>
     <Description>Templates for creating new Microsoft.Build.Sql projects.</Description>
-    <PackageProjectUrl>https://github.com/microsoft/dacfx</PackageProjectUrl>
+    <PackageTags>DacFx sqlproj</PackageTags>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

@@ -17,10 +17,10 @@ dotnet new sqlproj -h
 ```
 
 
-Creating a new project "AdventureWorksLT" for Azure SQL Database (`-t` or `--target-platform`):
+Creating a new project "AdventureWorksLT" for Azure SQL Database (`-tp` or `--target-platform`):
 
 ```bash
-dotnet new sqlproj -n "AdventureWorksLT" -t "SqlAzureV12"
+dotnet new sqlproj -n "AdventureWorksLT" -tp "SqlAzureV12"
 ```
 
 

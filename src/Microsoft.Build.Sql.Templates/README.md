@@ -1,5 +1,12 @@
 # Microsoft.Build.Sql.Templates
 
+## Installing the templates
+
+The templates are available on [NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates/).  To install the templates, run the following command:
+
+```bash
+dotnet new -i Microsoft.Build.Sql.Templates
+```
 
 ## Using the templates
 

@@ -17,14 +17,14 @@ Building and publishing database project is supported in [Azure Data Studio](htt
 ### Changes to .sqlproj file
 To convert a database project into SDK-style, edit the .sqlproj file by adding
 ```xml
-<Sdk Name="Microsoft.Build.Sql" Version="0.1.3-preview" />
+<Sdk Name="Microsoft.Build.Sql" Version="0.1.7-preview" />
 ``` 
 inside `<Project>` tag.
 ### Example:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0">
-  <Sdk Name="Microsoft.Build.Sql" Version="0.1.3-preview" />
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.7-preview" />
   ...
 </Project>
 ```

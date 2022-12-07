@@ -18,7 +18,7 @@ namespace Microsoft.Build.Sql.Tests
         public void SuccessfulSimpleBuild()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -33,7 +33,7 @@ namespace Microsoft.Build.Sql.Tests
             this.AddPreDeployScripts("Script.PreDeployment1.sql");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -48,7 +48,7 @@ namespace Microsoft.Build.Sql.Tests
             this.AddPostDeployScripts("Script.PostDeployment1.sql");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -63,7 +63,7 @@ namespace Microsoft.Build.Sql.Tests
             this.RemoveBuildFiles("Table2.sql");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -101,7 +101,7 @@ namespace Microsoft.Build.Sql.Tests
             this.AddBuildFiles(tempFile);
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -132,7 +132,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifyBuildFailureWithUnresolvedReference()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify failure
             Assert.AreEqual(1, exitCode, "Build is expected to fail.");
@@ -150,7 +150,7 @@ namespace Microsoft.Build.Sql.Tests
             this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"));
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -170,7 +170,7 @@ namespace Microsoft.Build.Sql.Tests
             this.RemoveBuildFiles("ReferenceProj/**/*.*");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -186,7 +186,7 @@ namespace Microsoft.Build.Sql.Tests
             this.AddNoneScripts("Table2.sql");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);

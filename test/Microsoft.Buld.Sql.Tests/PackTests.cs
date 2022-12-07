@@ -19,7 +19,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifySimplePack()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("pack", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand("pack", out stdOutput, out stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
@@ -34,13 +34,13 @@ namespace Microsoft.Build.Sql.Tests
         {
             // Run build first
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand("build", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
             // Run pack with --no-build
-            exitCode = this.RunDotnetCommand("pack", out stdOutput, out stdError, "--no-build");
+            exitCode = this.RunGenericDotnetCommand("pack --no-build", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyNugetPackage();
@@ -71,7 +71,7 @@ namespace Microsoft.Build.Sql.Tests
 
             // Pack
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("pack", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand("pack", out stdOutput, out stdError);
 
             // Verify
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
@@ -123,7 +123,7 @@ namespace Microsoft.Build.Sql.Tests
 
             // Run dotnet pack
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommand("pack", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand("pack", out stdOutput, out stdError);
 
             // Verify
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);

@@ -1,6 +1,18 @@
 <Project>
   <PropertyGroup>
+    <!-- Root directory of the code base. Do not set this anywhere else. -->
+    <EnlistmentRoot>$(MSBuildThisFileDirectory)</EnlistmentRoot>
+
+    <!-- Common project properties -->
+    <Authors>Microsoft</Authors>
+    <Owners>Microsoft</Owners>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <PackageProjectUrl>https://github.com/microsoft/dacfx</PackageProjectUrl>
+    <PackageIconUrl>http://s.gravatar.com/avatar/6f39d8562df0a3509a8240fb281bc5bd?s=80</PackageIconUrl>
+    <RepositoryUrl>https://github.com/microsoft/DacFx</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
     <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">160.6161.0</DacFxPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">161.6374.0</DacFxPackageVersion>
   </PropertyGroup>
 </Project>

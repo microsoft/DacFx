@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
+using System.Xml.Linq;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -91,6 +92,23 @@ namespace Microsoft.Build.Sql.Tests
                     projectCollection.UnloadAllProjects();
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the target platform value for the sql project
+        /// </summary>
+        /// TODO update to use dacfx SQL project APIs
+        public static string GetTargetPlatform(string projectFilePath)
+        {
+            string dspValue = "";
+            // parse file xml to <DSP> element in <Project> root element
+            XDocument sqlproj = XDocument.Load(projectFilePath);
+            XElement? dsp = sqlproj.Root?.Element("PropertyGroup")?.Element("DSP");
+            if (dsp != null)
+            {
+                dspValue = dsp.Value;
+            }
+            return dspValue;
         }
 
         public static ProjectCollection GetNewEngine()

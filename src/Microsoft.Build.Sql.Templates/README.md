@@ -1,5 +1,12 @@
 # Microsoft.Build.Sql.Templates
 
+## Installing the templates
+
+The templates are available on [NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates/).  To install the templates, run the following command:
+
+```bash
+dotnet new -i Microsoft.Build.Sql.Templates
+```
 
 ## Using the templates
 
@@ -17,10 +24,10 @@ dotnet new sqlproj -h
 ```
 
 
-Creating a new project "AdventureWorksLT" for Azure SQL Database (`-t` or `--target-platform`):
+Creating a new project "AdventureWorksLT" for Azure SQL Database (`-tp` or `--target-platform`):
 
 ```bash
-dotnet new sqlproj -n "AdventureWorksLT" -t "SqlAzureV12"
+dotnet new sqlproj -n "AdventureWorksLT" -tp "SqlAzureV12"
 ```
 
 

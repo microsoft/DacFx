@@ -98,7 +98,6 @@ namespace Microsoft.Build.Sql.Tests
         /// <returns>The Exit Code of the dotnet process.</returns>
         protected int RunDotnetCommandOnProject(string dotnetCommand, out string stdOutput, out string stdError, string arguments = "")
         {
-            // Set up the dotnet process
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
                 FileName = TestUtils.GetDotnetPath(),
@@ -257,8 +256,16 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         protected string GetDacpacPath()
         {
+            return Path.Combine(this.GetOutputDirectory(), DatabaseProjectName + ".dacpac");
+        }
+
+        /// <summary>
+        /// Returns the output directory. Ex: /bin/Debug/
+        /// </summary>
+        protected string GetOutputDirectory()
+        {
             string configuration = IsDebug ? "Debug" : "Release";
-            return Path.Combine(this.WorkingDirectory, "bin", configuration, DatabaseProjectName + ".dacpac");
+            return Path.Combine(this.WorkingDirectory, "bin", configuration);
         }
 
         /// <summary>

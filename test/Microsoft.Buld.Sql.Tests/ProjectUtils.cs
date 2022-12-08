@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using System.Xml.Linq;
@@ -10,6 +12,26 @@ namespace Microsoft.Build.Sql.Tests
     public static class ProjectUtils
     {
         /// <summary>
+        /// Adds a PropertyGroup to the project XML and populates it with <paramref name="properties"/>.
+        /// </summary>
+        public static void AddProperties(string projectFilePath, IEnumerable<KeyValuePair<string, string>> properties)
+        {
+            using (ProjectCollection projectCollection = GetNewEngine())
+            {
+                Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+
+                ProjectPropertyGroupElement propertyGroup = project.Xml.AddPropertyGroup();
+                foreach (KeyValuePair<string, string> property in properties)
+                {
+                    propertyGroup.AddProperty(property.Key, property.Value);
+                }
+
+                project.Save(project.FullPath);
+                projectCollection.UnloadAllProjects();
+            }
+        }
+
+        /// <summary>
         /// Adds an ItemGroup to the project XML and populates it with <paramref name="itemName"/> and <paramref name="filePaths"/>.
         /// Result should look something like:
         ///   <ItemGroup>
@@ -18,7 +40,8 @@ namespace Microsoft.Build.Sql.Tests
         ///     ...
         ///   </ItemGroup>
         /// </summary>
-        public static void AddItemGroup(string projectFilePath, string itemName, string[] filePaths)
+        /// <param name="addMetadata">Optional delegate to set metadata on each item added.</param>
+        public static void AddItemGroup(string projectFilePath, string itemName, string[] filePaths, Action<ProjectItemElement>? addMetadata = null)
         {
             if (filePaths != null && filePaths.Length > 0)
             {
@@ -29,7 +52,9 @@ namespace Microsoft.Build.Sql.Tests
                     ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
                     foreach (string filePath in filePaths)
                     {
-                        itemGroup.AddItem(itemName, filePath);
+                        ProjectItemElement item = project.Xml.CreateItemElement(itemName, filePath);
+                        itemGroup.AppendChild(item);
+                        addMetadata?.Invoke(item);
                     }
 
                     project.Save(project.FullPath);

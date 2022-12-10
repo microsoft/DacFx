@@ -56,6 +56,7 @@
         <PackageId>@(PackageReference->'%(Identity)'->Replace('.', '_'))</PackageId>
         <PackagePath>$(Pkg%(ResolvedDacpacPackageReference.PackageId))</PackagePath>
         <HintPath>%(ResolvedDacpacPackageReference.PackagePath)/tools/%(Identity).dacpac</HintPath>
+        <ServerSqlCmdVariable>%(PackageReference.ServerSqlCmdVariable)</ServerSqlCmdVariable>
         <DatabaseSqlCmdVariable>%(PackageReference.DatabaseSqlCmdVariable)</DatabaseSqlCmdVariable>
         <SuppressMissingDependenciesErrors>%(PackageReference.SuppressMissingDependenciesErrors)</SuppressMissingDependenciesErrors>
       </ResolvedDacpacPackageReference>

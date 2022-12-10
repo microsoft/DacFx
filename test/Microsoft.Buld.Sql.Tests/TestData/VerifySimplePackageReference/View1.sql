@@ -1,3 +1,3 @@
-﻿-- Table1 definition comes from the reference project that will be added as package reference
+﻿-- Table1 definition comes from dacpac reference but is part of the same database
 CREATE VIEW [dbo].[View1] AS
-SELECT c1, c2 FROM [$(RefProj)].[dbo].[Table1]
+SELECT c1, c2 FROM [dbo].[Table1]

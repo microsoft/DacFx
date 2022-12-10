@@ -25,9 +25,14 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(TestContext.CurrentContext.WorkDirectory, TestContext.CurrentContext.Test.Name); }
         }
 
-        protected string TestDataDirectory
+        protected string CommonTestDataDirectory
         {
-            get { return Path.Combine("../../../TestData", TestContext.CurrentContext.Test.Name); }
+            get { return Path.GetFullPath("../../../TestData"); }
+        }
+
+        protected string CurrentTestDataDirectory
+        {
+            get { return Path.Combine(this.CommonTestDataDirectory, TestContext.CurrentContext.Test.Name); }
         }
 
         [SetUp]
@@ -61,9 +66,9 @@ namespace Microsoft.Build.Sql.Tests
             TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
 
             // Copy test specific files to WorkingDirectory
-            if (Directory.Exists(this.TestDataDirectory))
+            if (Directory.Exists(this.CurrentTestDataDirectory))
             {
-                TestUtils.CopyDirectoryRecursive(this.TestDataDirectory, this.WorkingDirectory);
+                TestUtils.CopyDirectoryRecursive(this.CurrentTestDataDirectory, this.WorkingDirectory);
             }
         }
 

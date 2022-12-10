@@ -140,38 +140,6 @@ namespace Microsoft.Build.Sql.Tests
             });
         }
 
-        [Test]
-        [Description("Verifies simple package reference scenario")]
-        public void VerifySimplePackageReference()
-        {
-            // Build and pack the reference project into a Nuget package
-            string packagesFolder = Path.Combine(this.WorkingDirectory, "pkg");
-            string packageVersion = "5.5.5";
-            string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand($"pack ReferenceProj/ReferenceProj.sqlproj -p:Version={packageVersion} -o {packagesFolder}", out stdOutput, out stdError);
-
-            Assert.AreEqual(0, exitCode, "dotnet pack failed with error " + stdError);
-            Assert.AreEqual(string.Empty, stdError);
-            FileAssert.Exists(Path.Combine(packagesFolder, $"ReferenceProj.{packageVersion}.nupkg"));
-
-            // Delete the ReferenceProj folder from current WorkingDirectory
-            Directory.Delete(Path.Combine(this.WorkingDirectory, "ReferenceProj"), true);
-
-            // Add a package reference to ReferenceProj
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { "ReferenceProj" }, (ProjectItemElement item) => {
-                item.AddMetadata("Version", packageVersion);
-                item.AddMetadata("DatabaseSqlCmdVariable", "RefProj");
-            });
-
-            // Verify build succeeds
-            exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
-
-            // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
-            Assert.AreEqual(string.Empty, stdError);
-            this.VerifyDacPackage();
-        }
-
         /// <summary>
         /// Verifies Nuget package created by dotnet pack command. Checks for nupkg in bin/configration folder.
         /// Verifies DACPAC is in the tools folder within the nupkg, and verifies DACPAC is one of its package types.

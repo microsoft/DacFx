@@ -1,44 +1,37 @@
 # DacFx and Related Components
 
-The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases.
+## Packages on NuGet
 
-SqlPackage.exe is a command line interface to DacFx and is available for Windows, macOS, and Linux. For more about SqlPackage.exe, check out the [reference page on Microsoft Docs](https://docs.microsoft.com/sql/tools/sqlpackage/sqlpackage).
+|Package|Summary|
+|:--|:--|
+|[Microsoft.SqlServer.DacFx](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)|The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
+|[Microsoft.Build.Sql](https://www.nuget.org/packages/Microsoft.Build.Sql)|Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac). In preview, [source code](/src/Microsoft.Build.Sql/) in this repository.|
+|[Microsoft.Build.Sql.Templates](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates)|Microsoft.Build.Sql.Templates (preview) is a set of [.NET project templates](https://learn.microsoft.com/dotnet/core/tools/custom-templates) for SQL projects. In preview, [source code](/src/Microsoft.Build.Sql.Templates/) in this repository.|
 
-Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac).  The SQL project SDK is available via NuGet ([https://www.nuget.org/packages/Microsoft.Build.Sql/](https://www.nuget.org/packages/Microsoft.Build.Sql/)) and in this [repository](/src/Microsoft.Build.Sql/README.md).
+
+## Install SqlPackage
+
+SqlPackage is a command line interface to DacFx and is available for Windows, macOS, and Linux. For more about SqlPackage, check out the [reference page on Microsoft Docs](https://learn.microsoft.com/sql/tools/sqlpackage/sqlpackage).
+
+If you would like to use the command-line utility SqlPackage for creating and deploying .dacpac and .bacpac packages, you can obtain it as a dotnet tool.  The tool is available for Windows, macOS, and Linux.
+
+```bash
+dotnet tool install -g microsoft.sqlpackage
+```
+
+Optionally, SqlPackage can be downloaded as a zip file from the [SqlPackage documentation](https://learn.microsoft.com/sql/tools/sqlpackage/sqlpackage-download).
+
 
 ## Repository Focus
 
 ### Feedback
 
-This repository is available for transparently triaging and addressing feedback on DacFx, including the NuGet package and the cross-platform CLI SqlPackage.exe. We welcome community interaction and suggestions! For more information on contributing feedback through interacting with issues see [Contributing](CONTRIBUTING.md).
+This repository is available for transparently triaging and addressing feedback on DacFx, including the NuGet package and the cross-platform CLI SqlPackage. We welcome community interaction and suggestions! For more information on contributing feedback through interacting with issues see [Contributing](CONTRIBUTING.md).
 
 ### Related Open Source Projects
 
 This repository is available to make related open source components accessible even from their early stages. Feedback and contributions are welcome!
 
-## Download the Latest Releases
-
-### Microsoft.SqlServer.DacFx on NuGet
-[https://www.nuget.org/packages/Microsoft.SqlServer.DacFx](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)
-
-This NuGet package is a lightweight version of DacFx. Preview versions of the DacFx NuGet are also frequently released. 
-
-### DacFramework.msi and Cross-Platform SqlPackage.exe
-
-If you would like to use the command-line utility SqlPackage.exe for creating and deploying .dacpac and .bacpac packages, you can obtain it by downloading the SqlPackage.exe (.zip file) or DacFramework.msi.
-
-|Platform|Download|Release date|Version|Build
-|:---|:---|:---|:---|:---|
-|Windows|[MSI Installer](https://go.microsoft.com/fwlink/?linkid=2185764)|January 25, 2022|19.0|16.0.5400.1|
-|macOS .NET Core|[.zip file](https://go.microsoft.com/fwlink/?linkid=2185765)|January 25, 2022|19.0|16.0.5400.1|
-|Linux .NET Core|[.zip file](https://go.microsoft.com/fwlink/?linkid=2185670)|January 25, 2022|19.0|16.0.5400.1|
-|Windows .NET Core|[.zip file](https://go.microsoft.com/fwlink/?linkid=2185669)|January 25, 2022|19.0|16.0.5400.1|
-
-
-### Microsoft.Build.Sql
-[https://www.nuget.org/packages/Microsoft.Build.Sql/](https://www.nuget.org/packages/Microsoft.Build.Sql/)
-
-This NuGet package is a .NET project SDK for SQL projects.
 
 ## Code of Conduct
 

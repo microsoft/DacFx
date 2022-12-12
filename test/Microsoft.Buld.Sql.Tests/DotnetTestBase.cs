@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -34,6 +35,23 @@ namespace Microsoft.Build.Sql.Tests
         public void TestSetup()
         {
             EnvironmentSetup();
+        }
+
+        [TearDown]
+        public void TestTearDown()
+        {
+            try
+            {
+                // Delete working directory unless test failed
+                if (TestContext.CurrentContext.Result.Outcome == ResultState.Success && Directory.Exists(this.WorkingDirectory))
+                {
+                    Directory.Delete(this.WorkingDirectory, true);
+                }
+            }
+            catch (Exception e)
+            {
+                Assert.Warn("TestTearDown failed with exception: {0}", e);
+            }
         }
 
         /// <summary>
@@ -174,7 +192,7 @@ namespace Microsoft.Build.Sql.Tests
             dotnet.BeginErrorReadLine();
 
             // Wait for dotnet build to finish with a timeout
-            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            TimeSpan timeout = TimeSpan.FromSeconds(60);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             dotnet.WaitForExit((int)timeout.TotalMilliseconds);

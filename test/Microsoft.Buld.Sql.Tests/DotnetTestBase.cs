@@ -192,7 +192,7 @@ namespace Microsoft.Build.Sql.Tests
             dotnet.BeginErrorReadLine();
 
             // Wait for dotnet build to finish with a timeout
-            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            TimeSpan timeout = TimeSpan.FromSeconds(60);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             dotnet.WaitForExit((int)timeout.TotalMilliseconds);

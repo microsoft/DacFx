@@ -109,10 +109,37 @@ steps:
     arguments: '--configuration ${{ parameters.configuration }} --output $(Build.ArtifactStagingDirectory) --no-build -p:NuspecProperties="version=${{ parameters.nugetVersion }}" -p:GeneratePackageOnBuild=false -p:PackageVersion=${{ parameters.nugetVersion }}'
 
 - task: DotNetCoreCLI@2
-  displayName: '.NET Test'
+  displayName: '.NET Test for .NET Core 3.1'
   inputs:
     command: test
     projects: '${{ parameters.solution }}'
-    arguments: '--configuration ${{ parameters.configuration }}'
+    arguments: '--configuration ${{ parameters.configuration }} -f netcoreapp3.1'
+  env:
+    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'
+
+- task: DotNetCoreCLI@2
+  displayName: '.NET Test for .NET 5'
+  inputs:
+    command: test
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} -f net5.0'
+  env:
+    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'
+
+- task: DotNetCoreCLI@2
+  displayName: '.NET Test for .NET 6'
+  inputs:
+    command: test
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} -f net6.0'
+  env:
+    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'
+
+- task: DotNetCoreCLI@2
+  displayName: '.NET Test for .NET 7'
+  inputs:
+    command: test
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} -f net7.0'
   env:
     DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'

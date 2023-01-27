@@ -142,10 +142,9 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies build with a project reference.")]
         public void VerifyBuildWithProjectReference()
         {
-            // We will copy the ReferenceProj to a temp folder and then delete it from the current working directory
+            // We will copy the ReferenceProj to a temp folder and then add it as project reference
             string tempFolder = Path.Combine(Path.GetTempPath(), TestContext.CurrentContext.Test.Name);
-            TestUtils.CopyDirectoryRecursive(Path.Combine(this.TestDataDirectory, "ReferenceProj"), tempFolder);
-            Directory.Delete(Path.Combine(this.WorkingDirectory, "ReferenceProj"), true);
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
 
             this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"));
 

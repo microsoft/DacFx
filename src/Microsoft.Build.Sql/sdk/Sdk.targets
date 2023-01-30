@@ -58,6 +58,7 @@
         <HintPath>%(_ResolvedDacpacPackageReference.PackagePath)/tools/%(Identity).dacpac</HintPath>
         <ServerSqlCmdVariable>%(PackageReference.ServerSqlCmdVariable)</ServerSqlCmdVariable>
         <DatabaseSqlCmdVariable>%(PackageReference.DatabaseSqlCmdVariable)</DatabaseSqlCmdVariable>
+        <DatabaseVariableLiteralValue>%(PackageReference.DatabaseVariableLiteralValue)</DatabaseVariableLiteralValue>
         <SuppressMissingDependenciesErrors>%(PackageReference.SuppressMissingDependenciesErrors)</SuppressMissingDependenciesErrors>
       </_ResolvedDacpacPackageReference>
 

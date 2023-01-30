@@ -69,6 +69,20 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
+        [Description("Verifies scenario where dacpac reference uses a database literal instead of SQLCMD variable.")]
+        public void VerifyPackageReferenceWithDatabaseVariableLiteral()
+        {
+            this.AddPackageReference(databaseVariableLiteralValue: "RefProjLit");
+
+            string stdOutput, stdError;
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+        }
+
+        [Test]
         [Description("Verifies scenario where dacpac reference is from another server and another database")]
         public void VerifyPackageReferenceDifferentServerDifferentDatabase()
         {
@@ -82,7 +96,7 @@ namespace Microsoft.Build.Sql.Tests
             this.VerifyDacPackage();
         }
 
-        private void AddPackageReference(string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", bool? suppressMissingDependenciesErrors = null)
+        private void AddPackageReference(string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", string databaseVariableLiteralValue = "", bool? suppressMissingDependenciesErrors = null)
         {
             // Add a package reference to ReferenceProj version 5.5.5
             ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { ReferenceProjectName }, (ProjectItemElement item) => {
@@ -97,7 +111,12 @@ namespace Microsoft.Build.Sql.Tests
                 {
                     item.AddMetadata("DatabaseSqlCmdVariable", databaseSqlcmdVariable);
                 }
-                
+
+                if (!string.IsNullOrEmpty(databaseVariableLiteralValue))
+                {
+                    item.AddMetadata("DatabaseVariableLiteralValue", databaseVariableLiteralValue);
+                }
+
                 if (suppressMissingDependenciesErrors.HasValue)
                 {
                     item.AddMetadata("SuppressMissingDependenciesErrors", suppressMissingDependenciesErrors.ToString());

@@ -59,8 +59,8 @@
 
         <!-- File name of the dacpac inside the package -->
         <DacpacName>%(PackageReference.DacpacName)</DacpacName>
+        <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == '' And '%(_ResolvedDacpacPackageReference.IsSystemDacpac)' == 'true'">master</DacpacName>
         <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == ''">%(PackageReference.Identity)</DacpacName>
-        <DacpacName Condition="'%(_ResolvedDacpacPackageReference.IsSystemDacpac)' == 'true'">master</DacpacName>
 
         <!-- Full resolved path to the dacpac file -->
         <HintPath>%(PackageReference.HintPath)</HintPath>

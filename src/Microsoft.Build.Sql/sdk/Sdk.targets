@@ -75,5 +75,4 @@
       <ArtifactReference Include="@(_ResolvedDacpacPackageReference->'%(HintPath)')" Condition="Exists(%(HintPath))" />
     </ItemGroup>
   </Target>
-
 </Project>

@@ -55,7 +55,17 @@
         <!-- https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Commands/RestoreCommand/Utility/BuildAssetsUtils.cs#L763 -->
         <PackageId>@(PackageReference->'%(Identity)'->Replace('.', '_'))</PackageId>
         <PackagePath>$(Pkg%(_ResolvedDacpacPackageReference.PackageId))</PackagePath>
-        <HintPath>%(_ResolvedDacpacPackageReference.PackagePath)/tools/%(Identity).dacpac</HintPath>
+        <IsSystemDacpac>@(PackageReference->'%(Identity)'->ToLowerInvariant()->Contains('microsoft.sqlserver.dacpacs'))</IsSystemDacpac>
+
+        <!-- File name of the dacpac inside the package -->
+        <DacpacName>%(PackageReference.DacpacName)</DacpacName>
+        <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == ''">%(PackageReference.Identity)</DacpacName>
+        <DacpacName Condition="'%(_ResolvedDacpacPackageReference.IsSystemDacpac)' == 'true'">master</DacpacName>
+
+        <!-- Full resolved path to the dacpac file -->
+        <HintPath>%(PackageReference.HintPath)</HintPath>
+        <HintPath Condition="'%(_ResolvedDacpacPackageReference.HintPath)' == ''">%(_ResolvedDacpacPackageReference.PackagePath)/tools/%(_ResolvedDacpacPackageReference.DacpacName).dacpac</HintPath>
+
         <ServerSqlCmdVariable>%(PackageReference.ServerSqlCmdVariable)</ServerSqlCmdVariable>
         <DatabaseSqlCmdVariable>%(PackageReference.DatabaseSqlCmdVariable)</DatabaseSqlCmdVariable>
         <DatabaseVariableLiteralValue>%(PackageReference.DatabaseVariableLiteralValue)</DatabaseVariableLiteralValue>

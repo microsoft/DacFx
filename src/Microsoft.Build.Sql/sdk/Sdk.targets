@@ -62,7 +62,7 @@
         <SuppressMissingDependenciesErrors>%(PackageReference.SuppressMissingDependenciesErrors)</SuppressMissingDependenciesErrors>
       </_ResolvedDacpacPackageReference>
 
-      <ArtifactReference Include="@(_ResolvedDacpacPackageReference->'%(HintPath)')" Condition="Exists(%(HintPath))" />
+      <ArtifactReference Include="@(_ResolvedDacpacPackageReference->'%(HintPath)')" Condition="Exists(%(_ResolvedDacpacPackageReference.HintPath))" />
     </ItemGroup>
   </Target>
 

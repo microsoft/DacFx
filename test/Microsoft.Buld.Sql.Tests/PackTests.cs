@@ -149,11 +149,11 @@ namespace Microsoft.Build.Sql.Tests
         private void VerifyNugetPackage(string packageNameOverride = "", Action<PackageArchiveReader>? test = null)
         {
             // Verify packakge exists
-            string packageName = String.IsNullOrEmpty(packageNameOverride) ? $"{DatabaseProjectName}.1.0.0.nupkg" : packageNameOverride;
-            string packagePath = Path.Combine(this.GetOutputDirectory(), packageName);
-            Assert.IsTrue(File.Exists(packagePath), $"Nuget package not found: {packagePath}");
+            string packageName = String.IsNullOrEmpty(packageNameOverride) ? $"{DatabaseProjectName}.*.nupkg" : packageNameOverride;
+            string[] packageFiles = Directory.GetFiles(this.GetOutputDirectory(), packageName, SearchOption.TopDirectoryOnly);
+            Assert.AreEqual(1, packageFiles.Length, $"Expected 1 Nuget package with pattern {packageName} in {this.GetOutputDirectory()}.");
 
-            using var packageReader = new PackageArchiveReader(packagePath);
+            using var packageReader = new PackageArchiveReader(packageFiles[0]);
 
             // Verify dacpac is in tools folder
             var files = packageReader.GetFiles();

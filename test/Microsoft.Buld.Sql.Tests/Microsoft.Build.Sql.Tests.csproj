@@ -5,7 +5,8 @@
     <!-- To build and test only one version, add -f to dotnet command. -->
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-
+    <!-- Disable EOL target framework check since we're explicitly testing against older .NET versions. -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
     <SdkPackagePath>$(MSBuildThisFileDirectory)pkg\</SdkPackagePath>
   </PropertyGroup>

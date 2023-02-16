@@ -12,10 +12,10 @@
 
 ## Microsoft.Build.Sql projects documentation
 
-- [Converting Existing Projects](docs/Converting-Existing.md)
-- [Functionality](docs/Functionality.md)
-- [Troubleshooting](docs/Troubleshooting.md)
-- [Tutorial](docs/Tutorial.md)
+- [Converting Existing Projects](src/Microsoft.Build.Sql/docs/Converting-Existing.md)
+- [Functionality](src/Microsoft.Build.Sql/docs/Functionality.md)
+- [Troubleshooting](src/Microsoft.Build.Sql/docs/Troubleshooting.md)
+- [Tutorial](src/Microsoft.Build.Sql/docs/Tutorial.md)
 
 ## Quickstart
 

@@ -10,6 +10,13 @@
 |[Microsoft.SqlServer.DacFx](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)|The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
 |[Microsoft.SqlServer.Dacpacs](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs)|Microsoft.SqlServer.Dacpacs is a set of NuGet packages containing .dacpac files for Microsoft SQL Server and Microsoft Azure SQL Databases.|
 
+## Microsoft.Build.Sql projects documentation
+
+- [Converting Existing Projects](docs/Converting-Existing.md)
+- [Functionality](docs/Functionality.md)
+- [Troubleshooting](docs/Troubleshooting.md)
+- [Tutorial](docs/Tutorial.md)
+
 ## Quickstart
 
 ### 🛠️ Install SqlPackage
@@ -35,10 +42,10 @@ dotnet new -i Microsoft.Build.Sql.Templates
 Create a new SQL project using the `sqlproj` [template](src/Microsoft.Build.Sql.Templates/).
 
 ```bash
-dotnet new sqlproj -n AdventureWorks
+dotnet new sqlproj -n ProductsTutorial
 ```
 
-Add a new table `dbo.Product` in a .SQL file alongside the project file.
+Add a new table `dbo.Product` in a *.sql* file alongside the project file.
 
 ```sql
 CREATE TABLE [dbo].[Product](
@@ -59,10 +66,9 @@ Publish a SQL project to a database using the SqlPackage `publish` command. Lear
 
 ```bash
 # example publish from Azure SQL Database using SQL authentication and a connection string
-SqlPackage /Action:Publish /SourceFile:"bin\Debug\AdventureWorksLT.dacpac" \
-    /TargetConnectionString:"Server=tcp:{yourserver}.database.windows.net,1433;Initial Catalog=AdventureWorksLT;Persist Security Info=False;User ID=sqladmin;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+SqlPackage /Action:Publish /SourceFile:"bin\Debug\ProductsTutorial.dacpac" \
+    /TargetConnectionString:"Server=tcp:{yourserver}.database.windows.net,1433;Initial Catalog=ProductsTutorial;User ID=sqladmin;Password={your_password};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 ```
-
 
 ## Repository Focus
 
@@ -73,7 +79,6 @@ This repository is available for transparently triaging and addressing feedback 
 ### Related Open Source Projects
 
 This repository is available to make related open source components accessible even from their early stages. Feedback and contributions are welcome!
-
 
 ## Code of Conduct
 

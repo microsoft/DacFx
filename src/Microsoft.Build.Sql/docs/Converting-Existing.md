@@ -1,11 +1,14 @@
 # Converting an existing project to use Microsoft.Build.Sql
 
+This page provides guidance in converting existing SQL projects from Visual Studio SQL Server Data Tools (SSDT) or Azure Data Studio (ADS) to use the Microsoft.Build.Sql SDK.
+
 ## Changes to .sqlproj file
 To convert a database project into SDK-style, edit the .sqlproj file by adding
 ```xml
 <Sdk Name="Microsoft.Build.Sql" Version="0.1.9-preview" />
 ``` 
-inside `<Project>` tag.
+inside the `<Project>` tag.
+
 ### Example:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -24,14 +27,6 @@ inside `<Project>` tag.
 ```
 
 * Note: This only applies to the auto-generated statements that come from SSDT or ADS. Please keep any custom `<Import>` targets that you may have added to the project file.
-
-## Building .sqlproj
-The database project can be built in SSDT as is. To build the project via dotnet, run:
-```bash
-dotnet build
-```
-
-> Note: Building with .NET Core targets is currently unsupported in SSDT. Please make sure the `NetCoreBuild` property is false or not defined when building in SSDT.
 
 ## (Optional) Simplifying the project file
 A major advantage of SDK-style projects is a lot of default properties can be defined in the SDK, which means the project file itself can be dramatically simplified.

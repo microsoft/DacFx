@@ -47,6 +47,7 @@ BEGIN
     FROM dbo.Product P
     LEFT JOIN dbo.ProductOrder PO ON PO.ProductID = P.ProductID
     WHERE P.ProductID = @ProductID
+    GROUP BY P.ProductID, P.ProductName
 END
 ```
 
@@ -115,7 +116,7 @@ Once you've committed the project to source control, you can push it to a GitHub
 **Commit the project to source control**
 ```bash
 git init
-git add *
+git add .
 git commit -m "new project"
 ```
 

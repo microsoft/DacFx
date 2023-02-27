@@ -87,7 +87,7 @@ In addition to the attributes available for [database references](#database-refe
 ```xml
 ...
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.Dacpacs" Version="160.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.Dacpacs" Version="160.0.0">
       <DacpacName>msdb</DacpacName>
     </PackageReference>
   </ItemGroup>

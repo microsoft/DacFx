@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.Sql", "src\Microsoft.Build.Sql\Microsoft.Build.Sql.csproj", "{7C194D72-97FE-49BB-8D03-B3F7C9A91835}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.Sql.Tests", "test\Microsoft.Buld.Sql.Tests\Microsoft.Build.Sql.Tests.csproj", "{4F50196D-E946-4A58-992E-C1AE25332CE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.Sql.Tests", "test\Microsoft.Build.Sql.Tests\Microsoft.Build.Sql.Tests.csproj", "{4F50196D-E946-4A58-992E-C1AE25332CE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.Sql.Templates", "src\Microsoft.Build.Sql.Templates\Microsoft.Build.Sql.Templates.csproj", "{1AAE57EF-E614-4C58-8287-C830F098A7DA}"
 EndProject

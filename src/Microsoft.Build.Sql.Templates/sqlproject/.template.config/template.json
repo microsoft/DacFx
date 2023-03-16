@@ -46,6 +46,10 @@
                 {
                     "choice": "SqlDw",
                     "description": "Azure Synapse SQL"
+                },
+                {
+                    "choice": "SqlServerless",
+                    "description": "Azure Synapse SQL Serverless"
                 }
             ]
         }

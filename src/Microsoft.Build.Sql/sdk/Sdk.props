@@ -8,7 +8,8 @@
   <PropertyGroup>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
-    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
+    <!-- <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath> -->
+    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1</NETCoreTargetsPath>
   </PropertyGroup>
 
   <!-- Defaults from SSDT -->
@@ -62,4 +63,29 @@
     <Build Remove="bin/**/*.sql" />
     <Build Remove="obj/**/*.sql" />
   </ItemGroup>
+
+
+  <Target Name="AddSqlBuildPackageReferences" BeforeTargets="CheckRequiredProperties" Condition="'$(NetCoreBuild)' == 'true'">
+    <ItemGroup>
+      <PackageReference Include="Microsoft.SqlServer.DacFx" Version="161.8089.0" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" ExcludeAssets="all" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CopySqlBuildBinaries" AfterTargets="Restore" BeforeTargets="Build" Condition="'$(NetCoreBuild)' == 'true' And !Exists('$(NETCoreTargetsPath)/Microsoft.Data.Tools.Schema.Tasks.Sql.dll')">
+    <ItemGroup>
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_SqlServer_DacFx)/lib/netstandard2.1/*.dll" />
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_Data_SqlClient)/lib/netstandard2.1/Microsoft.Data.SqlClient.dll" />
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_SqlServer_Server)/lib/netstandard2.0/Microsoft.SqlServer.Server.dll" />
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_SqlServer_Types)/lib/netstandard2.1/Microsoft.SqlServer.Types.dll" />
+      <__SqlBuildBinaries Include="$(PkgSystem_ComponentModel_Composition)/lib/netcoreapp2.0/System.ComponentModel.Composition.dll" />
+      <__SqlBuildBinaries Include="$(PkgSystem_IO_Packaging)/lib/netstandard2.0/System.IO.Packaging.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(__SqlBuildBinaries)" DestinationFolder="$(NETCoreTargetsPath)" />
+  </Target>
+
 </Project>

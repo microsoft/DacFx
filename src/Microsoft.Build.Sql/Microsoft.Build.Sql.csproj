@@ -10,16 +10,7 @@
     <!-- Path where all the DLLs build depends on will be copied to -->
     <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\netstandard2.1\</BuildBinariesPath>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" />
-    <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" />
-  </ItemGroup>
-
+<!-- 
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
@@ -40,6 +31,6 @@
 
   <ItemGroup>
     <None Remove="tools\**" />
-  </ItemGroup>
+  </ItemGroup> -->
 
 </Project>

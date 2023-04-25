@@ -1,16 +1,15 @@
 # DacFx and Related Components
 
-## Packages on NuGet
-
-|Package|Summary|
-|:--|:--|
-|[Microsoft.Build.Sql](https://www.nuget.org/packages/Microsoft.Build.Sql)|Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac). In preview, [source code](/src/Microsoft.Build.Sql/) in this repository.|
-|[Microsoft.Build.Sql.Templates](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates)|Microsoft.Build.Sql.Templates (preview) is a set of [.NET project templates](https://learn.microsoft.com/dotnet/core/tools/custom-templates) for SQL projects. In preview, [source code](/src/Microsoft.Build.Sql.Templates/) in this repository.|
-|[Microsoft.SqlPackage](https://www.nuget.org/packages/Microsoft.SqlPackage)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
-|[Microsoft.SqlServer.DacFx](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)|The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
-|[Microsoft.SqlServer.Dacpacs](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs)|Microsoft.SqlServer.Dacpacs is a set of NuGet packages containing .dacpac files for Microsoft SQL Server system databases (master, msdb) with versions across SQL Server 2008 (100) through SQL Server 2022 (160).|
-|[Microsoft.SqlServer.Dacpacs.Azure](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Azure)|Microsoft.SqlServer.Dacpacs.Azure is a NuGet package containing a .dacpac file for the Azure SQL Database master database.|
-|[Microsoft.SqlServer.Dacpacs.Synapse](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Synapse)|Microsoft.SqlServer.Dacpacs.Synapse is a NuGet package containing a .dacpac file for the Azure Synapse Analytics master database.|
+|Component|Links|Summary|
+|:--|:--|:--|
+|Microsoft.Build.Sql|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql/)|Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac). In preview, [source code](/src/Microsoft.Build.Sql/) in this repository.|
+|Microsoft.Build.Sql.Templates|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql.Templates/)|Microsoft.Build.Sql.Templates (preview) is a set of [.NET project templates](https://learn.microsoft.com/dotnet/core/tools/custom-templates) for SQL projects. In preview, [source code](/src/Microsoft.Build.Sql.Templates/) in this repository.|
+|Microsoft.SqlPackage|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlPackage)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
+|Microsoft.SqlServer.DacFx|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)|The Microsoft SQL Server Data-Tier Application Framework (DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
+|Microsoft.SqlServer.Dacpacs|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs)|Microsoft.SqlServer.Dacpacs is a set of NuGet packages containing .dacpac files for Microsoft SQL Server system databases (master, msdb) with versions across SQL Server 2008 (100) through SQL Server 2022 (160).|
+|Microsoft.SqlServer.Dacpacs.Azure|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Azure)|Microsoft.SqlServer.Dacpacs.Azure is a NuGet package containing a .dacpac file for the Azure SQL Database master database.|
+|Microsoft.SqlServer.Dacpacs.Synapse|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Synapse)|Microsoft.SqlServer.Dacpacs.Synapse is a NuGet package containing a .dacpac file for the Azure Synapse Analytics master database.|
+|Microsoft.SqlServer.TransactSql.ScriptDom|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom)<br/>[🛠️&nbsp;Code](https://github.com/microsoft/SqlScriptDOM)|Microsoft.SqlServer.TransactSql.ScriptDom is a NuGet package containing the Transact-SQL parser [ScriptDOM](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsql.scriptdom). The [source code](https://github.com/microsoft/SqlScriptDOM) is licensed MIT.|
 
 ## Microsoft.Build.Sql projects documentation
 

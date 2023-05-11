@@ -55,10 +55,15 @@
         <!-- https://github.com/NuGet/NuGet.Client/blob/dev/src/NuGet.Core/NuGet.Commands/RestoreCommand/Utility/BuildAssetsUtils.cs#L763 -->
         <PackageId>@(PackageReference->'%(Identity)'->Replace('.', '_'))</PackageId>
         <PackagePath>$(Pkg%(_ResolvedDacpacPackageReference.PackageId))</PackagePath>
-        <IsSystemDacpac>@(PackageReference->'%(Identity)'->ToLowerInvariant()->Contains('microsoft.sqlserver.dacpacs'))</IsSystemDacpac>
+        <IsSystemDacpac>@(PackageReference->'%(Identity)'->StartsWith('microsoft.sqlserver.dacpacs', StringComparison.OrdinalIgnoreCase))</IsSystemDacpac>
+        <IsMasterDacpac Condition="'%(_ResolvedDacpacPackageReference.IsSystemDacpac)' == 'true'">@(PackageReference->'%(Identity)'->EndsWith('master', StringComparison.OrdinalIgnoreCase))</IsMasterDacpac>
+        <IsMsdbDacpac Condition="'%(_ResolvedDacpacPackageReference.IsSystemDacpac)' == 'true'">@(PackageReference->'%(Identity)'->EndsWith('msdb', StringComparison.OrdinalIgnoreCase))</IsMsdbDacpac>
 
         <!-- File name of the dacpac inside the package -->
         <DacpacName>%(PackageReference.DacpacName)</DacpacName>
+        <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == '' And '%(_ResolvedDacpacPackageReference.IsMasterDacpac)' == 'true'">master</DacpacName>
+        <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == '' And '%(_ResolvedDacpacPackageReference.IsMsdbDacpac)' == 'true'">msdb</DacpacName>
+        <!-- Default to master for backwards compatibility with first versions of Microsoft.SqlServer.Dacpacs -->
         <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == '' And '%(_ResolvedDacpacPackageReference.IsSystemDacpac)' == 'true'">master</DacpacName>
         <DacpacName Condition="'%(_ResolvedDacpacPackageReference.DacpacName)' == ''">%(PackageReference.Identity)</DacpacName>
 

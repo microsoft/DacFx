@@ -72,12 +72,12 @@ When a database reference is additional objects for the same database as the SQL
 ## Package references
 Package references are used to reference NuGet packages that contain a `.dacpac` file and are used to extend the database model at build time similarly as a [database reference](#database-references).
 
-The following example from a SQL project file references the `Microsoft.SqlServer.Dacpacs` [package](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs) for the `master` database.
+The following example from a SQL project file references the `Microsoft.SqlServer.Dacpacs` [package](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Master) for the `master` database.
 
 ```xml
 ...
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.Dacpacs" Version="160.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.Dacpacs.Master" Version="160.0.0" />
   </ItemGroup>
 </Project>
 ```
@@ -87,8 +87,8 @@ In addition to the attributes available for [database references](#database-refe
 ```xml
 ...
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.Dacpacs" Version="160.0.0">
-      <DacpacName>msdb</DacpacName>
+    <PackageReference Include="Contoso.Applications" Version="160.0.0">
+      <DacpacName>Outfitters</DacpacName>
     </PackageReference>
   </ItemGroup>
 </Project>

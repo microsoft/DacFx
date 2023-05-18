@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Build.Construction;
 using NUnit.Framework;
@@ -44,10 +44,9 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies simple package reference scenario")]
         public void VerifySimplePackageReference()
         {
-            this.AddPackageReference();
+            this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion);
 
-            string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -58,10 +57,9 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies scenario where dacpac reference is from another database")]
         public void VerifyPackageReferenceDifferentDatabase()
         {
-            this.AddPackageReference(databaseSqlcmdVariable: "RefProj");
+            this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, databaseSqlcmdVariable: "RefProj");
 
-            string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -72,10 +70,9 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies scenario where dacpac reference uses a database literal instead of SQLCMD variable.")]
         public void VerifyPackageReferenceWithDatabaseVariableLiteral()
         {
-            this.AddPackageReference(databaseVariableLiteralValue: "RefProjLit");
+            this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, databaseVariableLiteralValue: "RefProjLit");
 
-            string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -86,21 +83,39 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies scenario where dacpac reference is from another server and another database")]
         public void VerifyPackageReferenceDifferentServerDifferentDatabase()
         {
-            this.AddPackageReference(serverSqlcmdVariable: "RefServer", databaseSqlcmdVariable: "RefProj");
+            this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, serverSqlcmdVariable: "RefServer", databaseSqlcmdVariable: "RefProj");
 
-            string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
 
-        private void AddPackageReference(string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", string databaseVariableLiteralValue = "", bool? suppressMissingDependenciesErrors = null)
+        [Test]
+        [Description("Verifies scenario where build fails to generate script when there is a package reference to master.dacpac (Issue #228)")]
+        public void VerifyPackageReferenceToMasterAndGenerateCreateScript()
+        {
+            // Add PackageReference to master.dacpac and set GenerateCreateScript to true
+            this.AddPackageReference(packageName: "Microsoft.SqlServer.Dacpacs.Master", version: "160.*");
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "GenerateCreateScript", "True" }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+            FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), $"{DatabaseProjectName}_Create.sql"));
+        }
+
+        private void AddPackageReference(string packageName, string version, string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", string databaseVariableLiteralValue = "", bool? suppressMissingDependenciesErrors = null)
         {
             // Add a package reference to ReferenceProj version 5.5.5
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { ReferenceProjectName }, (ProjectItemElement item) => {
-                item.AddMetadata("Version", ReferencePackageVersion);
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { packageName }, (ProjectItemElement item) => {
+                item.AddMetadata("Version", version);
 
                 if (!string.IsNullOrEmpty(serverSqlcmdVariable))
                 {

@@ -74,6 +74,8 @@
         <ServerSqlCmdVariable>%(PackageReference.ServerSqlCmdVariable)</ServerSqlCmdVariable>
         <DatabaseSqlCmdVariable>%(PackageReference.DatabaseSqlCmdVariable)</DatabaseSqlCmdVariable>
         <DatabaseVariableLiteralValue>%(PackageReference.DatabaseVariableLiteralValue)</DatabaseVariableLiteralValue>
+        <DatabaseVariableLiteralValue Condition="'%(_ResolvedDacpacPackageReference.DatabaseVariableLiteralValue)' == '' And '%(_ResolvedDacpacPackageReference.IsMasterDacpac)' == 'true'">master</DatabaseVariableLiteralValue>
+        <DatabaseVariableLiteralValue Condition="'%(_ResolvedDacpacPackageReference.DatabaseVariableLiteralValue)' == '' And '%(_ResolvedDacpacPackageReference.IsMsdbDacpac)' == 'true'">msdb</DatabaseVariableLiteralValue>
         <SuppressMissingDependenciesErrors>%(PackageReference.SuppressMissingDependenciesErrors)</SuppressMissingDependenciesErrors>
       </_ResolvedDacpacPackageReference>
 

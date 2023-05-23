@@ -300,7 +300,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             // Verify dacpac exists
             string dacpacPath = this.GetDacpacPath();
-            Assert.IsTrue(File.Exists(dacpacPath), "Dacpac not found: " + dacpacPath);
+            FileAssert.Exists(dacpacPath, "Dacpac not found: " + dacpacPath);
 
             // Verify pre/post-deploy scripts
             using (DacPackage package = DacPackage.Load(dacpacPath))

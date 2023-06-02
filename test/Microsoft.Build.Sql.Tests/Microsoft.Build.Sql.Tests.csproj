@@ -3,7 +3,7 @@
   <PropertyGroup>
     <!-- Multi-targeting to test SDK on different .NET versions, requires all of the following SDKs to be installed. -->
     <!-- To build and test only one version, add -f to dotnet command. -->
-    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <!-- Disable EOL target framework check since we're explicitly testing against older .NET versions. -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>

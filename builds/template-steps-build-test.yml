@@ -27,6 +27,11 @@ steps:
   displayName: 'Install .NET 7 SDK'
   inputs:
     version: '7.x'
+
+- task: UseDotNet@2
+  displayName: 'Install .NET 8 SDK'
+  inputs:
+    version: '8.x'
     includePreviewVersions: true
 
 # Don't generate package so we can sign it before packaging
@@ -141,5 +146,14 @@ steps:
     command: test
     projects: '${{ parameters.solution }}'
     arguments: '--configuration ${{ parameters.configuration }} -f net7.0'
+  env:
+    DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'
+
+- task: DotNetCoreCLI@2
+  displayName: '.NET Test for .NET 8'
+  inputs:
+    command: test
+    projects: '${{ parameters.solution }}'
+    arguments: '--configuration ${{ parameters.configuration }} -f net8.0'
   env:
     DOTNET_TOOL_PATH: '$(Agent.ToolsDirectory)/dotnet'

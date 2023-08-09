@@ -72,12 +72,6 @@ SqlPackage /Action:Publish /SourceFile:"bin\Debug\ProductsTutorial.dacpac" \
     /TargetConnectionString:"Server=tcp:{yourserver}.database.windows.net,1433;Initial Catalog=ProductsTutorial;User ID=sqladmin;Password={your_password};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 ```
 
-## Telemetry
-The .NET SDK for SQL includes a telemetry feature that collects usage data and sends it to Microsoft when you use build commands. The usage data includes exception information when the build command fails. Telemetry data helps the .NET team understand how the tools are used so they can be improved. Information on failures helps the team resolve problems and fix bugs.
-
-### How to opt out
-The .NET SDK for SQL telemetry feature is enabled by default for Microsoft distributions of the SDK. To opt out of the telemetry feature, set the DACFX_TELEMETRY_OPTOUT environment variable to 1 or true. Telemetry feature can also be opt out by opting out [.NET SDK telemetry](https://learn.microsoft.com/dotnet/core/tools/telemetry#how-to-opt-out). 
-
 ## Repository Focus
 
 ### Feedback

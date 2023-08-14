@@ -10,7 +10,7 @@ steps:
 - task: EsrpCodeSigning@1
   displayName: 'ESRP Code Signing - Nuget Package'
   inputs:
-    ConnectedServiceName: 'Code Signing'
+    ConnectedServiceName: 'ESRP Codesign'
     FolderPath: '$(Build.ArtifactStagingDirectory)'
     Pattern: '*.nupkg'
     signConfigType: 'inlineSignParams'

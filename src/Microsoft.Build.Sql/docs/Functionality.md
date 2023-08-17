@@ -9,7 +9,7 @@ In SQL projects there are several capabilities that can be specified in the `.sq
 |[SQLCMD variables](#sqlcmd-variables)|No|Yes|
 |[Pre/post-deployment scripts](#prepost-deployment-scripts)|No|Yes|
 
-If you're new to SQL projects, you might also want to check out the [tutorial](tutorial.md).
+If you're new to SQL projects, you might also want to check out the [tutorial](Tutorial.md).
 
 ## Default SQL files included in build
 The SDK specifies a default globbing pattern to include `**/*.sql` from the project root.

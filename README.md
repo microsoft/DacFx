@@ -67,8 +67,8 @@ dotnet build
 Publish a SQL project to a database using the SqlPackage `publish` command. Learn more about the `publish` command in the [SqlPackage documentation](https://learn.microsoft.com/sql/tools/sqlpackage/sqlpackage-publish), where additional examples and details on the parameters are available.
 
 ```bash
-# example publish from Azure SQL Database using SQL authentication and a connection string
-SqlPackage /Action:Publish /SourceFile:"bin\Debug\ProductsTutorial.dacpac" \
+# example publish to Azure SQL Database using SQL authentication and a connection string
+sqlpackage /Action:Publish /SourceFile:"bin/Debug/ProductsTutorial.dacpac" \
     /TargetConnectionString:"Server=tcp:{yourserver}.database.windows.net,1433;Initial Catalog=ProductsTutorial;User ID=sqladmin;Password={your_password};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
 ```
 

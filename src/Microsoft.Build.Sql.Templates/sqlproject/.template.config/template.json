@@ -50,6 +50,10 @@
                 {
                     "choice": "SqlServerless",
                     "description": "Azure Synapse SQL Serverless"
+                },
+                {
+                    "choice": "SqlDwUnified",
+                    "description": "Synapse Data Warehouse in Microsoft Fabric"
                 }
             ]
         }

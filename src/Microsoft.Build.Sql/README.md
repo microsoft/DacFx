@@ -18,6 +18,12 @@ If you have an existing database project, you can convert it to use this SDK by 
 
 If you're looking to get started with Microsoft.Build.Sql on a new project, you can follow the brief tutorial in [Tutorial.md](docs/Tutorial.md).
 
+## Telemetry
+The .NET SDK for SQL includes a telemetry feature that collects usage data and sends it to Microsoft when you use build commands. The usage data includes exception information when the build command fails. Telemetry data helps the .NET team understand how the tools are used so they can be improved. Information on failures helps the team resolve problems and fix bugs.
+
+### How to opt out
+The .NET SDK for SQL telemetry feature is enabled by default for Microsoft distributions of the SDK. To opt out of the telemetry feature, set the DACFX_TELEMETRY_OPTOUT environment variable to 1 or true. Telemetry feature can also be opt out by opting out [.NET SDK telemetry](https://learn.microsoft.com/dotnet/core/tools/telemetry#how-to-opt-out). 
+
 ## Documentation
 - [Converting Existing Projects](docs/Converting-Existing.md)
 - [Functionality](docs/Functionality.md)

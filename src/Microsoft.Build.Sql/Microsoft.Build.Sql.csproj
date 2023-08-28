@@ -13,11 +13,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.8812.0" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.8905.0" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" />
   </ItemGroup>
 
@@ -30,7 +30,7 @@
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\netstandard2.1\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
-      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp2.0\System.ComponentModel.Composition.dll" />
+      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp3.1\System.ComponentModel.Composition.dll" />
       <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)" />

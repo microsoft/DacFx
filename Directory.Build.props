@@ -13,6 +13,6 @@
     <RepositoryType>git</RepositoryType>
 
     <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.0.52</DacFxPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.1.124-preview</DacFxPackageVersion>
   </PropertyGroup>
 </Project>

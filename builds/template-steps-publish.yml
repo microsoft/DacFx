@@ -40,15 +40,3 @@ steps:
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'drop'
-
-- task: NuGetAuthenticate@0
-  displayName: 'NuGet Authenticate'
-
-- task: NuGetCommand@2
-  displayName: 'Push NuGet Package'
-  inputs:
-    command: push
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    publishVstsFeed: 'SQLDS_SSMS'
-    publishPackageMetadata: false
-    nuGetFeedType: 'internal'

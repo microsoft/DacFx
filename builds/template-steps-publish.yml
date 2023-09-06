@@ -48,7 +48,7 @@ steps:
   displayName: 'Push NuGet Package'
   inputs:
     command: push
-    packagesToPush: '**/*.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     publishVstsFeed: 'SQLDS_SSMS'
     publishPackageMetadata: false
     nuGetFeedType: 'internal'

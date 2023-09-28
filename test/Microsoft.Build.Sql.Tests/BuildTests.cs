@@ -206,5 +206,23 @@ namespace Microsoft.Build.Sql.Tests
                 }
             }
         }
+
+        [Test]
+        [Description("Issue #316: Verifies build with central package management turned on.")]
+        public void VerifyBuildWithCentralPackageManagement()
+        {
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "ManagePackageVersionsCentrally", "True" }
+            });
+
+            string stdOutput, stdError;
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+        }
     }
 }

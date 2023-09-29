@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <!-- This is necessary for building on non-Windows platforms. -->
-    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" IsImplicitlyDefined="true" />
   </ItemGroup>
 
   <ItemGroup>

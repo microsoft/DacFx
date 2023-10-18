@@ -31,7 +31,7 @@ inside the `<Project>` tag.
 ## (Optional) Simplifying the project file
 A major advantage of SDK-style projects is a lot of default properties can be defined in the SDK, which means the project file itself can be dramatically simplified.
 
-In addition to the `<Import>` statements that are no longer needed, properties such as build configuration and platform can be removed as well. See the [sample sqlproj file](../../samples/SdkStyleDatabaseProject/sample.sqlproj) for the minimum properties that are needed to build a DACPAC.
+In addition to the `<Import>` statements that are no longer needed, properties such as build configuration and platform can be removed as well. See the [sample sqlproj file](../../../samples/SdkStyleDatabaseProject/sample.sqlproj) for the minimum properties that are needed to build a DACPAC.
 
 ### Default SQL files included in build
 The SDK specifies a default globbing pattern to include `**/*.sql` from the project root, so all the explicit `<Build Include="filename.sql"/>` can be removed.

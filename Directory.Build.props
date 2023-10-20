@@ -8,11 +8,14 @@
     <Owners>Microsoft</Owners>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <PackageProjectUrl>https://github.com/microsoft/dacfx</PackageProjectUrl>
-    <PackageIconUrl>http://s.gravatar.com/avatar/6f39d8562df0a3509a8240fb281bc5bd?s=80</PackageIconUrl>
+    <PackageIcon>nuspecicon.png</PackageIcon>
     <RepositoryUrl>https://github.com/microsoft/DacFx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
     <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
     <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.1.167</DacFxPackageVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(EnlistmentRoot)\images\nuspecicon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 </Project>

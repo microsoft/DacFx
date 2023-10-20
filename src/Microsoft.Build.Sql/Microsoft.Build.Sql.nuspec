@@ -12,7 +12,7 @@
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <copyright>© Microsoft Corporation. All rights reserved.</copyright>
-    <iconUrl>http://s.gravatar.com/avatar/6f39d8562df0a3509a8240fb281bc5bd?s=80</iconUrl>
+    <icon>images\nuspecicon.png</icon>
     <projectUrl>https://github.com/microsoft/DacFx</projectUrl>
     <repository type="git" url="https://github.com/microsoft/DacFx" branch="main" />
     <tags>dacfx sqlproj build sdk</tags>
@@ -23,5 +23,6 @@
     <file src="sdk\**" target="sdk" />
     <file src="tools\**" target="tools" />
     <file src="..\..\LICENSE.txt" target="LICENSE.txt" />
+    <file src="..\..\images\nuspecicon.png" target="images\nuspecicon.png" />
   </files>
 </package>

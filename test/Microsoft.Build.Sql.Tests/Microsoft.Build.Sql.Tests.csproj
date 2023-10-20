@@ -41,7 +41,7 @@
     <Message Text="Copied template package from '@(TemplatePackage)' to '$(SdkPackagePath)'" Importance="high" />
   </Target>
 
-  <Target Name="DeleteSdkPackage" AfterTargets="Clean">
+  <Target Name="DeleteSdkPackage" BeforeTargets="Clean">
     <RemoveDir Directories="$(SdkPackagePath)" />
   </Target>
 

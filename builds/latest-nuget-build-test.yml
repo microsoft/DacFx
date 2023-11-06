@@ -46,6 +46,7 @@ stages:
         buildType: 'specific'
         project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
+        specificBuildWithTriggering: true
         buildVersionToDownload: 'specific'
         pipelineId: 107579274
         itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'

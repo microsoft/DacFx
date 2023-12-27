@@ -4,10 +4,27 @@ pr: none
 
 # Pipeline trigger - this pipeline will run whenever the 'DacFx-Official' pipeline finishes
 resources:
+  repositories: 
+    - repository: templates
+      type: git
+      name: OneBranch.Pipelines/GovernedTemplates
+      ref: refs/heads/main
+    - repository: dacfx-github
+      type: github
+      endpoint: microsoft
+      name: microsoft/DacFx
   pipelines:
   - pipeline: 'latest-nuget-build-test'
     source: 'DacFx-Official'
     trigger: true
+
+extends:
+  template: v2/OneBranch.NonOfficial.CrossPlat.yml@templates # https://aka.ms/obpipelines/templates
+  parameters:
+    globalSdl: # https://aka.ms/obpipelines/sdl
+      perStage:
+        sdl_sources:
+          checkout_all_repos: true
 
 variables:
   solution: '**/*.sln'
@@ -33,6 +50,8 @@ stages:
       clean: all
 
     steps:
+    - checkout: dacfx-github
+
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
       inputs:

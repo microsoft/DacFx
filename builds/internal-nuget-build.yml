@@ -30,14 +30,6 @@ variables:
   versionSuffix: 'beta'
   nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
 
-extends:
-  template: v2/OneBranch.NonOfficial.CrossPlat.yml@templates # https://aka.ms/obpipelines/templates
-  parameters:
-    globalSdl: # https://aka.ms/obpipelines/sdl
-      perStage:
-        sdl_sources:
-          checkout_all_repos: true
-
 stages:
 - stage: Build
   displayName: 'Nightly Push to Internal Feed'

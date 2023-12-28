@@ -48,7 +48,7 @@ extends:
       - job: BuildPush
         displayName: 'Build and Push'
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'linux'
         workspace:
           clean: all
         steps:

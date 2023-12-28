@@ -41,6 +41,7 @@ extends:
       policheck:
         break: true
 
+    stages:
     - stage: Build
       displayName: 'Nightly Push to Internal Feed'
       jobs:
@@ -84,7 +85,7 @@ extends:
               Write-Host "DacFx package version: $version"
               Write-Host "##vso[task.setvariable variable=dacFxPackageVersion]$version"
             
-        - template: 'template-steps-build-test.yml'
+        - template: template-steps-build-test.yml@self
           parameters:
             solution: '$(solution)'
             configuration: '$(configuration)'
@@ -92,7 +93,7 @@ extends:
             runCodeSign: 'true'
             dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)"'
 
-        - template: 'template-steps-publish.yml'
+        - template: template-steps-publish.yml@self
           parameters:
             configuration: '$(configuration)'
         

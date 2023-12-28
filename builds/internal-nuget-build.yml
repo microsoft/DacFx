@@ -11,7 +11,7 @@ resources:
       ref: refs/heads/main
     - repository: dacfx-github
       type: github
-      endpoint: microsoft
+      endpoint: GitHub_Microsoft
       name: microsoft/DacFx
   pipelines:
   - pipeline: 'latest-nuget-build-test'

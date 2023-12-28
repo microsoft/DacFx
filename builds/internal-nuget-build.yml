@@ -49,6 +49,8 @@ extends:
         displayName: 'Build and Push'
         pool:
           type: linux
+        variables:
+          ob_outputDirectory: '$(Build.SourcesDirectory)'
         workspace:
           clean: all
         steps:

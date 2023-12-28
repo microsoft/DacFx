@@ -41,7 +41,6 @@ extends:
       policheck:
         break: true
 
-    stages:
     - stage: Build
       displayName: 'Nightly Push to Internal Feed'
       jobs:

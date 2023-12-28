@@ -42,8 +42,6 @@ stages:
       clean: all
 
     steps:
-    - checkout: dacfx-github
-
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
       inputs:

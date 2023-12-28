@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.1.167" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.8910.0" GeneratePathProperty="true" />

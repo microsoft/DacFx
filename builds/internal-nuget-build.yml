@@ -18,17 +18,6 @@ resources:
       endpoint: GitHub_Microsoft
       name: microsoft/DacFx
 
-extends:
-  template: v2/OneBranch.NonOfficial.CrossPlat.yml@templates # https://aka.ms/obpipelines/templates
-  parameters:
-    globalSdl: # https://aka.ms/obpipelines/sdl
-      # tsa:
-      #  enabled: true # SDL results of non-official builds aren't uploaded to TSA by default.
-      credscan:
-        suppressionsFile: $(Build.SourcesDirectory)\.config\CredScanSuppressions.json
-      policheck:
-        break: true
-
 variables:
   solution: '**/*.sln'
   configuration: 'Release'
@@ -41,70 +30,81 @@ variables:
   versionSuffix: 'beta'
   nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
 
-stages:
-- stage: Build
-  displayName: 'Nightly Push to Internal Feed'
-  jobs:
-  - job: BuildPush
-    displayName: 'Build and Push'
-    pool:
-      vmImage: 'ubuntu-latest'
-    workspace:
-      clean: all
-    steps:
-    - task: DownloadPipelineArtifact@2
-      displayName: 'Download Pipeline Artifact'
-      inputs:
-        buildType: 'specific'
-        project: '$(azureProjectId)'
-        definition: '$(azureSourcePipelineId)'
-        buildVersionToDownload: 'latest'
-        itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
-        targetPath: '$(dacFxPackagePath)'
+extends:
+  template: v2/OneBranch.NonOfficial.CrossPlat.yml@templates # https://aka.ms/obpipelines/templates
+  parameters:
+    globalSdl: # https://aka.ms/obpipelines/sdl
+      # tsa:
+      #  enabled: true # SDL results of non-official builds aren't uploaded to TSA by default.
+      credscan:
+        suppressionsFile: $(Build.SourcesDirectory)\.config\CredScanSuppressions.json
+      policheck:
+        break: true
 
-    # Note: The download task above preserves the relative folder structure
-    - script: 'dotnet nuget add source "$(dacFxPackagePath)/drop_build_main/release"'
-      displayName: 'Nuget Add Source to Path Containing DacFx Package'
+  stages:
+  - stage: Build
+    displayName: 'Nightly Push to Internal Feed'
+    jobs:
+    - job: BuildPush
+      displayName: 'Build and Push'
+      pool:
+        vmImage: 'ubuntu-latest'
+      workspace:
+        clean: all
+      steps:
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Pipeline Artifact'
+        inputs:
+          buildType: 'specific'
+          project: '$(azureProjectId)'
+          definition: '$(azureSourcePipelineId)'
+          buildVersionToDownload: 'latest'
+          itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
+          targetPath: '$(dacFxPackagePath)'
 
-    - task: PowerShell@2
-      displayName: 'Extract Version from DacFx nupkg file'
-      inputs:
-        failOnStderr: true
-        targetType: 'inline'
-        script: |
-          # Locate the nupkg file from the package path
-          $files =  Get-ChildItem "$(dacFxPackagePath)" -Recurse -Include "$(dacFxPackagePattern)"
-          Write-Host "DacFx package found in $files"
-          if ($files.length -eq 0) {
-            Write-Error "Failed to find Nuget package with pattern $(dacFxPackagePattern) in $(dacFxPackagePath)"
-          }
+      # Note: The download task above preserves the relative folder structure
+      - script: 'dotnet nuget add source "$(dacFxPackagePath)/drop_build_main/release"'
+        displayName: 'Nuget Add Source to Path Containing DacFx Package'
 
-          # Parse the nupkg file name for the version number
-          $filename = Split-Path $files[0] -leaf
-          $version = $filename.Replace("Microsoft.SqlServer.DacFx.", "").Replace(".nupkg", "")
-          Write-Host "DacFx package version: $version"
-          Write-Host "##vso[task.setvariable variable=dacFxPackageVersion]$version"
-        
-    - template: 'template-steps-build-test.yml'
-      parameters:
-        solution: '$(solution)'
-        configuration: '$(configuration)'
-        nugetVersion: '$(nugetVersion)'
-        runCodeSign: 'true'
-        dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)"'
+      - task: PowerShell@2
+        displayName: 'Extract Version from DacFx nupkg file'
+        inputs:
+          failOnStderr: true
+          targetType: 'inline'
+          script: |
+            # Locate the nupkg file from the package path
+            $files =  Get-ChildItem "$(dacFxPackagePath)" -Recurse -Include "$(dacFxPackagePattern)"
+            Write-Host "DacFx package found in $files"
+            if ($files.length -eq 0) {
+              Write-Error "Failed to find Nuget package with pattern $(dacFxPackagePattern) in $(dacFxPackagePath)"
+            }
 
-    - template: 'template-steps-publish.yml'
-      parameters:
-        configuration: '$(configuration)'
-    
-    - task: NuGetAuthenticate@0
-      displayName: 'NuGet Authenticate'
+            # Parse the nupkg file name for the version number
+            $filename = Split-Path $files[0] -leaf
+            $version = $filename.Replace("Microsoft.SqlServer.DacFx.", "").Replace(".nupkg", "")
+            Write-Host "DacFx package version: $version"
+            Write-Host "##vso[task.setvariable variable=dacFxPackageVersion]$version"
+          
+      - template: 'template-steps-build-test.yml'
+        parameters:
+          solution: '$(solution)'
+          configuration: '$(configuration)'
+          nugetVersion: '$(nugetVersion)'
+          runCodeSign: 'true'
+          dacFxPackageVersionArgument: '-p:DacFxPackageVersion="$(dacFxPackageVersion)"'
 
-    - task: NuGetCommand@2
-      displayName: 'Push NuGet Package'
-      inputs:
-        command: push
-        packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-        publishVstsFeed: 'SQLDS_SSMS'
-        publishPackageMetadata: false
-        nuGetFeedType: 'internal'
+      - template: 'template-steps-publish.yml'
+        parameters:
+          configuration: '$(configuration)'
+      
+      - task: NuGetAuthenticate@0
+        displayName: 'NuGet Authenticate'
+
+      - task: NuGetCommand@2
+        displayName: 'Push NuGet Package'
+        inputs:
+          command: push
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+          publishVstsFeed: 'SQLDS_SSMS'
+          publishPackageMetadata: false
+          nuGetFeedType: 'internal'

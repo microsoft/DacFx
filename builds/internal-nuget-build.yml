@@ -25,6 +25,7 @@ variables:
   versionPatch: $[counter(variables['versionMajorMinor'], 0)] # This will reset when we bump either major or minor version
   versionSuffix: 'beta'
   nugetVersion: '$(versionMajor).$(versionMinor).$(versionPatch)-$(versionSuffix)'
+  LinuxContainerImage: 'onebranch.azurecr.io/linux/ubuntu-2004:latest'
 
 extends:
   template: v2/OneBranch.NonOfficial.CrossPlat.yml@templates # https://aka.ms/obpipelines/templates

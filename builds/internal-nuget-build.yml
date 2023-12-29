@@ -13,10 +13,6 @@ resources:
       type: git
       name: OneBranch.Pipelines/GovernedTemplates
       ref: refs/heads/main
-    - repository: dacfx
-      type: github
-      endpoint: GitHub_Microsoft
-      name: microsoft/dacfx
 
 variables:
   solution: '**/*.sln'

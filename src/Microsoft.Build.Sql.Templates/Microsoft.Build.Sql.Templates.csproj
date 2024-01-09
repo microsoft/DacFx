@@ -10,6 +10,7 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
     <TemplateIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)\sqlproject</TemplateIntermediateOutputPath>
     <!-- NU5128 warns about dependencies, template package has no dependencies. -->
     <NoWarn>$(NoWarn);NU5128</NoWarn>

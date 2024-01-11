@@ -46,6 +46,8 @@ stages:
         buildType: 'specific'
         project: '$(azureProjectId)'
         definition: '$(azureSourcePipelineId)'
+        specificBuildWithTriggering: true
+        allowPartiallySucceededBuilds: true
         buildVersionToDownload: 'latest'
         itemPattern: 'drop_build_main/release/$(dacFxPackagePattern)'
         targetPath: '$(dacFxPackagePath)'

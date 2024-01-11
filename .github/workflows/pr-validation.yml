@@ -26,6 +26,7 @@ jobs:
       with:
         dotnet-version: '8.x'
     - run: dotnet build DacFx.sln
+    - run: dotnet pack DacFx.sln
     - run: dotnet test DacFx.sln -f netcoreapp3.1
     - run: dotnet test DacFx.sln -f net5.0
     - run: dotnet test DacFx.sln -f net6.0

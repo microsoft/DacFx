@@ -3,7 +3,7 @@ name: pr-validation
 on: pull_request
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,8 +26,8 @@ jobs:
       with:
         dotnet-version: '8.x'
     - run: dotnet build DacFx.sln
-    - run: dotnet test -f netcoreapp3.1
-    - run: dotnet test -f net5.0
-    - run: dotnet test -f net6.0
-    - run: dotnet test -f net7.0
-    - run: dotnet test -f net8.0
+    - run: dotnet test DacFx.sln -f netcoreapp3.1
+    - run: dotnet test DacFx.sln -f net5.0
+    - run: dotnet test DacFx.sln -f net6.0
+    - run: dotnet test DacFx.sln -f net7.0
+    - run: dotnet test DacFx.sln -f net8.0

@@ -15,7 +15,25 @@
     },
     "sourceName": "SqlProject1",
     "preferNameDirectory": true,
+    "sources": [
+        {
+            "source": "./",
+            "target": "./",
+            "include": ["SqlProject1.sqlproj", "README.md"]
+        },
+        {
+            "source": "./",
+            "target": "./",
+            "include": [ ".gitignore"],
+            "condition": "(gitignore)"
+        }
+    ],
     "symbols": {
+        "gitignore": {
+            "type": "parameter",
+            "description": "Adds a gitignore file to the project",
+            "datatype": "bool"
+        },
         "target-platform": {
             "type": "parameter",
             "description": "Target SQL platform",

@@ -5,7 +5,7 @@
 The templates are available on [NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates/).  To install the templates, run the following command:
 
 ```bash
-dotnet new -i Microsoft.Build.Sql.Templates
+dotnet new install Microsoft.Build.Sql.Templates
 ```
 
 ## Using the templates
@@ -30,6 +30,11 @@ Creating a new project "AdventureWorksLT" for Azure SQL Database (`-tp` or `--ta
 dotnet new sqlproj -n "AdventureWorksLT" -tp "SqlAzureV12"
 ```
 
+Creating a new project "AdventureWorks" with a `.gitignore` file (-g):
+
+```bash
+dotnet new sqlproj -n "AdventureWorks" -g
+```
 
 ## Building the templates
 
@@ -39,12 +44,12 @@ The templates automatically generate a nupkg on build. To build and install the 
 
 ```bash
 dotnet build
-dotnet new --install bin/Debug/Microsoft.Build.Sql.Templates.1.0.0.nupkg
+dotnet new install bin/Debug/Microsoft.Build.Sql.Templates.1.0.0.nupkg
 ```
 
 
 To uninstall the templates
 
 ```bash
-dotnet new --uninstall Microsoft.Build.Sql.Templates
+dotnet new uninstall Microsoft.Build.Sql.Templates
 ```

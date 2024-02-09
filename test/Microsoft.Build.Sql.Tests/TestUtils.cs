@@ -72,5 +72,10 @@ namespace Microsoft.Build.Sql.Tests
                 CopyDirectoryRecursive(subDir.FullName, destDirName);
             }
         }
+
+        public static string EscapeTestName(string testName)
+        {
+            return testName.Replace("\"", "_");
+        }
     }
 }

@@ -224,5 +224,45 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
+
+        [Test]
+        [TestCase("net46")]
+        [TestCase("net461")]
+        [TestCase("net462")]
+        [TestCase("net47")]
+        [TestCase("net471")]
+        [TestCase("net472")]
+        [TestCase("net48")]
+        [TestCase("net481")]
+        [TestCase("netstandard2.1")]
+        [TestCase("netcoreapp3.1")]
+#if NET5_0_OR_GREATER
+        [TestCase("net5.0")]
+#endif
+#if NET6_0_OR_GREATER
+        [TestCase("net6.0")]
+#endif
+#if NET7_0_OR_GREATER
+        [TestCase("net7.0")]
+#endif
+#if NET8_0_OR_GREATER
+        [TestCase("net8.0")]
+#endif
+        // https://github.com/microsoft/DacFx/issues/330
+        public void VerifyBuildWithDifferentTargetFrameworks(string targetFramework)
+        {
+
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "TargetFramework", targetFramework }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+        }
     }
 }

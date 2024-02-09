@@ -10,6 +10,7 @@ namespace Microsoft.Build.Sql.Tests
     public static class TestUtils
     {
         private const string DotnetToolPathEnvironmentVariable = "DOTNET_TOOL_PATH";
+        private const string DotnetInstallDirEnvironmentVariable = "DOTNET_INSTALL_DIR";
 
         /// <summary>
         /// Returns the full path to the dotnet executable based on the current operating system.
@@ -18,7 +19,7 @@ namespace Microsoft.Build.Sql.Tests
         public static string GetDotnetPath()
         {
             string dotnetExecutable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
-            string? dotnetPath = Environment.GetEnvironmentVariable(DotnetToolPathEnvironmentVariable);
+            string? dotnetPath = Environment.GetEnvironmentVariable(DotnetToolPathEnvironmentVariable) ?? Environment.GetEnvironmentVariable(DotnetInstallDirEnvironmentVariable);
             if (string.IsNullOrEmpty(dotnetPath))
             {
                 // Determine OS specific dotnet installation path

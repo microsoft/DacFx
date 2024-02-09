@@ -226,6 +226,28 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
+        // https://github.com/microsoft/DacFx/issues/278
+        public void VerifyBuildWithTransitiveProjectReferences()
+        {
+            string projectA = Path.Combine(WorkingDirectory, "A", "A.sqlproj");
+            string projectB = Path.Combine(WorkingDirectory, "B", "B.sqlproj");
+
+            // Add A.sqlproj as a reference in B.sqlproj
+            ProjectUtils.AddItemGroup(projectB, "ProjectReference", new string[] { projectA });
+
+            // Add B.sqlproj as a reference in the main project
+            this.AddProjectReference(projectB);
+
+            // Build and verify a.dacpac is copied to the output directory
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+            FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), "A.dacpac"));
+            FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), "B.dacpac"));
+        }
+
+        [Test]
         [TestCase("net46")]
         [TestCase("net461")]
         [TestCase("net462")]

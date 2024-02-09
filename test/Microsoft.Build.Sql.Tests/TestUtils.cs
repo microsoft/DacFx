@@ -29,7 +29,7 @@ namespace Microsoft.Build.Sql.Tests
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    dotnetPath = "/usr/bin/dotnet";
+                    dotnetPath = "/usr/share/dotnet";
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {

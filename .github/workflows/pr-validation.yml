@@ -26,6 +26,7 @@ jobs:
     - uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnetVersion }}
+    - run: dotnet restore DacFx.sln
     - run: dotnet build DacFx.sln -f ${{ matrix.targetFramework }}
     - run: dotnet pack DacFx.sln -f ${{ matrix.targetFramework }}
     - run: dotnet test DacFx.sln -f ${{ matrix.targetFramework }}

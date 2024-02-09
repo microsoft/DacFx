@@ -40,7 +40,7 @@
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
     <ItemGroup>
-    <Content Remove="$(TemplateIntermediateOutputPath)\**" />
+      <Content Remove="$(TemplateIntermediateOutputPath)\**" />
       <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
     </ItemGroup>
   </Target>

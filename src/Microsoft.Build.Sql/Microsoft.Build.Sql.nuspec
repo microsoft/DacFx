@@ -21,7 +21,7 @@
   </metadata>
   <files>
     <file src="sdk\**" target="sdk" />
-    <file src="tools\**" target="tools" />
+    <!-- <file src="tools\**" target="tools" /> -->
     <file src="..\..\LICENSE.txt" target="LICENSE.txt" />
     <file src="..\..\images\nuspecicon.png" target="images\nuspecicon.png" />
   </files>

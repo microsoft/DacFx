@@ -14,6 +14,7 @@
     <TemplateIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)\sqlproject</TemplateIntermediateOutputPath>
     <!-- NU5128 warns about dependencies, template package has no dependencies. -->
     <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,6 +41,7 @@
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
     <ItemGroup>
+      <Content Remove="$(TemplateIntermediateOutputPath)\**" />
       <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
     </ItemGroup>
   </Target>

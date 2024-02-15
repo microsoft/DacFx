@@ -64,12 +64,12 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="Microsoft.SqlServer.DacFx" Version="161.8089.0" GeneratePathProperty="true" ExcludeAssets="all" />
-      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.2.82-preview" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" GeneratePathProperty="true" ExcludeAssets="all" />
       <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" ExcludeAssets="all" />
       <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" ExcludeAssets="all" />
-      <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" GeneratePathProperty="true" ExcludeAssets="all" />
-      <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" GeneratePathProperty="true" ExcludeAssets="all" />
+      <PackageReference Include="System.IO.Packaging" Version="8.0.0" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

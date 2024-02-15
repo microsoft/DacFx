@@ -6,12 +6,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.BeforeCommon.targets" />
-  <Target Name="AfterRestore" AfterTargets="Restore">
-    <Message Text="Hello from Microsoft.Build.Sql after restore" Importance="high" />
-    <PropertyGroup>
-      <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1</NETCoreTargetsPath>
-    </PropertyGroup>
-
+  
+  <Target Name="_CopyDllsForSqlBuild" AfterTargets="Restore">
+    <ItemGroup>
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_SqlServer_DacFx)/lib/netstandard2.1/*.dll" />
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_Data_SqlClient)/lib/netstandard2.1/Microsoft.Data.SqlClient.dll" />
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_SqlServer_Server)/lib/netstandard2.0/Microsoft.SqlServer.Server.dll" />
+      <__SqlBuildBinaries Include="$(PkgMicrosoft_SqlServer_Types)/lib/netstandard2.1/Microsoft.SqlServer.Types.dll" />
+      <__SqlBuildBinaries Include="$(PkgSystem_ComponentModel_Composition)/lib/net6.0/System.ComponentModel.Composition.dll" />
+      <__SqlBuildBinaries Include="$(PkgSystem_IO_Packaging)/lib/netstandard2.0/System.IO.Packaging.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(__SqlBuildBinaries)" DestinationFolder="$(NETCoreTargetsPath)" SkipUnchangedFiles="true" />
   </Target>
 
   <!-- Pack target properties -->

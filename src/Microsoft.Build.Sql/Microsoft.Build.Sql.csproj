@@ -21,7 +21,7 @@
     <PackageReference Include="System.IO.Packaging" Version="5.0.0" GeneratePathProperty="true" />
   </ItemGroup>
 
-  <Target Name="CopyBuildBinaries" BeforeTargets="Build">
+  <!-- <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.dll" />
@@ -34,7 +34,7 @@
       <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)" />
-  </Target>
+  </Target> -->
 
   <Target Name="DeleteToolsFolder" AfterTargets="Clean">
     <RemoveDir Directories="$(MSBuildThisFileDirectory)\tools" />

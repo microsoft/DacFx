@@ -23,7 +23,7 @@ namespace Microsoft.Build.Sql.Tests
 
         protected string WorkingDirectory
         {
-            get { return Path.Combine(TestContext.CurrentContext.WorkDirectory, TestContext.CurrentContext.Test.Name); }
+            get { return Path.Combine(TestContext.CurrentContext.WorkDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
         protected string CommonTestDataDirectory
@@ -33,7 +33,7 @@ namespace Microsoft.Build.Sql.Tests
 
         protected string CurrentTestDataDirectory
         {
-            get { return Path.Combine(this.CommonTestDataDirectory, TestContext.CurrentContext.Test.Name); }
+            get { return Path.Combine(this.CommonTestDataDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
         [SetUp]

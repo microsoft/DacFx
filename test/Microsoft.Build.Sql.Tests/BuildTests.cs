@@ -273,7 +273,6 @@ namespace Microsoft.Build.Sql.Tests
         // https://github.com/microsoft/DacFx/issues/330
         public void VerifyBuildWithDifferentTargetFrameworks(string targetFramework)
         {
-
             ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
             {
                 { "TargetFramework", targetFramework }
@@ -285,6 +284,23 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
+        }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/117
+        public void VerifyBuildWithReleaseConfiguration()
+        {
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "Configuration", "Release" }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            FileAssert.Exists(Path.Combine(WorkingDirectory, "bin", "Release", DatabaseProjectName + ".dacpac"));
         }
     }
 }

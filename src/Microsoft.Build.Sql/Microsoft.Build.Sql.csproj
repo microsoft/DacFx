@@ -13,9 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.8910.0" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.9109.0" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" Version="6.0.0" GeneratePathProperty="true" />

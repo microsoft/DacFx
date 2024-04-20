@@ -41,12 +41,12 @@
   </PropertyGroup>
   
   <PropertyGroup>
-		<CSharpDesignTimeTargetsPath Condition="'$(CSharpDesignTimeTargetsPath)'==''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets</CSharpDesignTimeTargetsPath>
-	</PropertyGroup>
+    <CSharpDesignTimeTargetsPath Condition="'$(CSharpDesignTimeTargetsPath)'==''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets</CSharpDesignTimeTargetsPath>
+  </PropertyGroup>
 
-	<Import Project="$(CSharpDesignTimeTargetsPath)" Condition="'$(CSharpDesignTimeTargetsPath)' != '' and Exists('$(CSharpDesignTimeTargetsPath)')" />
-	<Target Name="CoreCompile" />
-	<Target Name="CreateManifestResourceNames" />
+  <Import Project="$(CSharpDesignTimeTargetsPath)" Condition="'$(CSharpDesignTimeTargetsPath)' != '' and Exists('$(CSharpDesignTimeTargetsPath)')" />
+  <Target Name="CoreCompile" />
+  <Target Name="CreateManifestResourceNames" />
 
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/netstandard2.1/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />

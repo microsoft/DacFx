@@ -6,30 +6,28 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Default build configurations -->
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup>
+    <WarningLevel Condition=" '$(WarningLevel)' == '' ">4</WarningLevel>
+    <TreatWarningsAsErrors Condition=" '$(TreatWarningsAsErrors)' == '' ">false</TreatWarningsAsErrors>
+    <BuildScriptName Condition=" '$(BuildScriptName)' == '' ">$(MSBuildProjectName).sql</BuildScriptName>
+    <DefineTrace Condition=" '$(DefineTrace)' == '' ">true</DefineTrace>
+    <ErrorReport Condition=" '$(ErrorReport)' == '' ">prompt</ErrorReport>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\Release\</OutputPath>
+    <DebugType Condition=" '$(DebugType)' == '' ">pdbonly</DebugType>
+    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+    <DefineDebug Condition=" '$(DefineDebug)' == '' ">false</DefineDebug>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">false</DebugSymbols>
   </PropertyGroup>
-  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\Debug\</OutputPath>
+    <DebugType Condition=" '$(DebugType)' == '' ">full</DebugType>
+    <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
+    <DefineDebug Condition=" '$(DefineDebug)' == '' ">true</DefineDebug>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+  </PropertyGroup>
+
   <!-- Pack target properties -->
   <PropertyGroup>
     <PackageType>$(PackageType);DACPAC</PackageType>

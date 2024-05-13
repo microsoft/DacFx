@@ -7,6 +7,8 @@
 
   <!-- Default build configurations -->
   <PropertyGroup>
+    <Platforms>AnyCPU</Platforms>
+    <Configurations>Debug;Release</Configurations>
     <WarningLevel Condition=" '$(WarningLevel)' == '' ">4</WarningLevel>
     <TreatWarningsAsErrors Condition=" '$(TreatWarningsAsErrors)' == '' ">false</TreatWarningsAsErrors>
     <BuildScriptName Condition=" '$(BuildScriptName)' == '' ">$(MSBuildProjectName).sql</BuildScriptName>

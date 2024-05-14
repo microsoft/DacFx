@@ -66,7 +66,6 @@
     <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" IsImplicitlyDefined="true" />
   </ItemGroup>
 
-  
   <ItemGroup>
     <!-- Remove files specified as PreDeploy, PostDeploy, and None scripts from build -->
     <Build Remove="@(PreDeploy)" />

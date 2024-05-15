@@ -25,6 +25,6 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnetVersion }}
         dotnet-quality: preview
-    - run: dotnet build DacFx.sln
-    - run: dotnet pack DacFx.sln --no-build
+    - run: dotnet build DacFx.sln -f ${{ matrix.targetFramework }}
+    - run: dotnet pack DacFx.sln --no-build -f ${{ matrix.targetFramework }}
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}

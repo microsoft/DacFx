@@ -258,17 +258,16 @@ namespace Microsoft.Build.Sql.Tests
         [TestCase("net481")]
         [TestCase("netstandard2.1")]
         [TestCase("netcoreapp3.1")]
-#if NET5_0_OR_GREATER
         [TestCase("net5.0")]
-#endif
-#if NET6_0_OR_GREATER
         [TestCase("net6.0")]
-#endif
 #if NET7_0_OR_GREATER
         [TestCase("net7.0")]
 #endif
 #if NET8_0_OR_GREATER
         [TestCase("net8.0")]
+#endif
+#if NET9_0_OR_GREATER
+        [TestCase("net9.0")]
 #endif
         // https://github.com/microsoft/DacFx/issues/330
         public void VerifyBuildWithDifferentTargetFrameworks(string targetFramework)

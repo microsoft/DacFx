@@ -9,23 +9,22 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        dotnetVersion: [3.1.x, 5.x, 6.x, 7.x, 8.x]
+        dotnetVersion: [6.x, 7.x, 8.x, 9.x]
         include:
-          - dotnetVersion: 3.1.x
-            targetFramework: netcoreapp3.1
-          - dotnetVersion: 5.x
-            targetFramework: net5.0
           - dotnetVersion: 6.x
             targetFramework: net6.0
           - dotnetVersion: 7.x
             targetFramework: net7.0
           - dotnetVersion: 8.x
             targetFramework: net8.0
+          - dotnetVersion: 9.x
+            targetFramework: net9.0
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnetVersion }}
+        dotnet-quality: preview
     - run: dotnet build DacFx.sln
     - run: dotnet pack DacFx.sln --no-build
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}

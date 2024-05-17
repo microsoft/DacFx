@@ -37,9 +37,13 @@
     <!-- Suppress NU5128 since SQL NuGet Packages have no target framework dependencies -->
     <NoWarn>$(NoWarn),NU5128</NoWarn>
   </PropertyGroup>
-  
-  <Target Name="CoreCompile" />
+
   <Target Name="CreateManifestResourceNames" />
+  <!-- CoreCompile is a target inside target Build on Microsoft.Common.targets that is not implemented there but allows us to personalize our compile/build flow, while
+    executing all the other targets inside Build regularly. We implement it before importing Common.targets because it's not implemented there, so it will not be
+    overriden when importing the targets.
+    -->
+  <Target Name="CoreCompile" />
 
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/netstandard2.1/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />

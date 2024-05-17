@@ -16,10 +16,9 @@
   
   <!-- Defaults from SSDT -->
   <PropertyGroup>
-    <Platforms>AnyCPU</Platforms>
-    <Configurations>Debug;Release</Configurations>
-  
     <!-- Required -->
+    <Platforms Condition=" '$(Platforms)' == '' ">AnyCPU</Platforms>
+    <Configurations Condition=" '$(Configurations)' == '' ">Debug;Release</Configurations>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformName Condition="'$(PlatformName)' == ''">$(Platform)</PlatformName>

@@ -2,7 +2,7 @@
 
 |Component|Links|Summary|
 |:--|:--|:--|
-|SqlPackage|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlPackage)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
+|SqlPackage|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlPackage)<br/>[📗&nbsp;Docs](https://aka.ms/sqlpackage-ref)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
 |DacFx|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)|The Microsoft SQL Server Data-Tier Application Framework (Microsoft.SqlServer.DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
 |Dacpacs.(Master,Msdb)|[📦&nbsp;Master](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Master)<br/>[📦&nbsp;Msdb](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Msdb)|Microsoft.SqlServer.Dacpacs.Master and Microsoft.SqlServer.Dacpacs.Msdb is a set of NuGet packages containing .dacpac files for Microsoft SQL Server system databases (master, msdb) with versions across SQL Server 2008 (100) through SQL Server 2022 (160).|
 |Dacpacs.Azure.Master|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Azure.Master)|Microsoft.SqlServer.Dacpacs.Azure.Master is a NuGet package containing a .dacpac file for the Azure SQL Database master database.|
@@ -12,12 +12,19 @@
 |Microsoft.Build.Sql|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql/)|Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac). In preview, [source code](/src/Microsoft.Build.Sql/) in this repository.|
 |Project Templates|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql.Templates/)|Microsoft.Build.Sql.Templates (preview) is a set of [.NET project templates](https://learn.microsoft.com/dotnet/core/tools/custom-templates) for SQL projects. In preview, [source code](/src/Microsoft.Build.Sql.Templates/) in this repository.|
 
-## Microsoft.Build.Sql projects documentation
+## Microsoft.Build.Sql SDK-style projects documentation
 
 - [Converting Existing Projects](src/Microsoft.Build.Sql/docs/Converting-Existing.md)
 - [Functionality](src/Microsoft.Build.Sql/docs/Functionality.md)
 - [Troubleshooting](src/Microsoft.Build.Sql/docs/Troubleshooting.md)
 - [Tutorial](src/Microsoft.Build.Sql/docs/Tutorial.md)
+
+## Related tools and libraries
+
+- [GitHub sql-action](https://github.com/azure/sql-action): deploy SQL projects and T-SQL scripts using GitHub Actions
+- [Azure DevOps SQL deployments](https://learn.microsoft.com/azure/devops/pipelines/targets/azure-sqldb): deploy SQL projects and run other SqlPackage commands using Azure DevOps
+- [Azure Data Studio and VS Code extension for SQL projects](https://aka.ms/azuredatastudio-sqlprojects): create and edit SQL projects in Azure Data Studio and Visual Studio Code on Windows, macOS, and Linux
+- [SQL Server Data Tools in Visual Studio](https://learn.microsoft.com/sql/ssdt/): create and edit SQL projects in Visual Studio on Windows
 
 ## Quickstart
 
@@ -31,7 +38,7 @@ If you would like to use the command-line utility SqlPackage for creating and de
 dotnet tool install -g microsoft.sqlpackage
 ```
 
-Optionally, SqlPackage can be downloaded as a zip file from the [SqlPackage documentation](https://learn.microsoft.com/sql/tools/sqlpackage/sqlpackage-download).
+Alternatively, SqlPackage can be downloaded as a zip file from the [SqlPackage documentation](https://learn.microsoft.com/sql/tools/sqlpackage/sqlpackage-download).
 
 ### 📁 Create a SQL project
 

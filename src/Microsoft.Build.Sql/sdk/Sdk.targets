@@ -6,30 +6,28 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Default build configurations -->
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup>
+    <WarningLevel Condition=" '$(WarningLevel)' == '' ">4</WarningLevel>
+    <TreatWarningsAsErrors Condition=" '$(TreatWarningsAsErrors)' == '' ">false</TreatWarningsAsErrors>
+    <BuildScriptName Condition=" '$(BuildScriptName)' == '' ">$(MSBuildProjectName).sql</BuildScriptName>
+    <DefineTrace Condition=" '$(DefineTrace)' == '' ">true</DefineTrace>
+    <ErrorReport Condition=" '$(ErrorReport)' == '' ">prompt</ErrorReport>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\Release\</OutputPath>
+    <DebugType Condition=" '$(DebugType)' == '' ">pdbonly</DebugType>
+    <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+    <DefineDebug Condition=" '$(DefineDebug)' == '' ">false</DefineDebug>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">false</DebugSymbols>
   </PropertyGroup>
-  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\Debug\</OutputPath>
+    <DebugType Condition=" '$(DebugType)' == '' ">full</DebugType>
+    <Optimize Condition=" '$(Optimize)' == '' ">false</Optimize>
+    <DefineDebug Condition=" '$(DefineDebug)' == '' ">true</DefineDebug>
+    <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
+  </PropertyGroup>
+
   <!-- Pack target properties -->
   <PropertyGroup>
     <PackageType>$(PackageType);DACPAC</PackageType>
@@ -40,8 +38,13 @@
     <NoWarn>$(NoWarn),NU5128</NoWarn>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  
+  <Target Name="CreateManifestResourceNames" />
+  <!-- CoreCompile is a target inside target Build on Microsoft.Common.targets that is not implemented there but allows us to personalize our compile/build flow, while
+    executing all the other targets inside Build regularly. We implement it before importing Common.targets because it's not implemented there, so it will not be
+    overriden when importing the targets.
+    -->
+  <Target Name="CoreCompile" />
+
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/netstandard2.1/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
@@ -62,10 +65,6 @@
     <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" IsImplicitlyDefined="true" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties" />
-  </ItemGroup>
-  
   <ItemGroup>
     <!-- Remove files specified as PreDeploy, PostDeploy, and None scripts from build -->
     <Build Remove="@(PreDeploy)" />

@@ -5,6 +5,8 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
   <PropertyGroup>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
@@ -12,12 +14,20 @@
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <!-- building in Visual Studio requires some sort of TargetFrameworkVersion. So we condition to NetCoreBuild as false to avoid failures -->
+  <PropertyGroup Condition="'$(NetCoreBuild)'=='false'">
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
+  </PropertyGroup>
+  
   <!-- Defaults from SSDT -->
   <PropertyGroup>
-
     <!-- Required -->
+    <Platforms Condition=" '$(Platforms)' == '' ">AnyCPU</Platforms>
+    <Configurations Condition=" '$(Configurations)' == '' ">Debug;Release</Configurations>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <PlatformName Condition="'$(PlatformName)' == ''">$(Platform)</PlatformName>
     <OutputType>Database</OutputType>
     
     <!-- Optional -->
@@ -26,12 +36,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
-    <!-- Default to the v16.0 targets path if the targets file for the current VS version is not found -->
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
+    <!-- Default to the v17.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
-    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">16.0</VisualStudioVersion>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">17.0</VisualStudioVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <!-- Build default globbing pattern includes all sql files in all subfolders, excluding bin and obj -->
     <Build Include="**/*.sql" />

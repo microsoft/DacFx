@@ -36,9 +36,12 @@ Valid settings for the target platform are:
 - `Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider`
 - `Microsoft.Data.Tools.Schema.Sql.Sql140DatabaseSchemaProvider`
 - `Microsoft.Data.Tools.Schema.Sql.Sql150DatabaseSchemaProvider`
-- `Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider`
+- `Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider` (161.6374.0 and higher)
 - `Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider`
+- `Microsoft.Data.Tools.Schema.Sql.SqlDbFabricDatabaseSchemaProvider` (162.3 and higher)
 - `Microsoft.Data.Tools.Schema.Sql.SqlDwDatabaseSchemaProvider`
+- `Microsoft.Data.Tools.Schema.Sql.SqlServerlessDatabaseSchemaProvider` (161.8089.0 and higher)
+- `Microsoft.Data.Tools.Schema.Sql.SqlDwUnifiedDatabaseSchemaProvider` (162.1 and higher)
 
 ## Database references
 The database model validation at build time can be extended past the contents of the SQL project through database references. Database references specified in the `.sqlproj` file can reference another SQL project or a `.dacpac` file, representing either another database or more components of the same database.

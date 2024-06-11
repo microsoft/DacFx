@@ -62,6 +62,10 @@
                     "description": "Azure SQL Database"
                 },
                 {
+                    "choice": "SqlDbFabric",
+                    "description": "Fabric mirrored SQL database"
+                },
+                {
                     "choice": "SqlDw",
                     "description": "Azure Synapse SQL"
                 },

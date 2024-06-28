@@ -73,6 +73,8 @@
     <Build Remove="@(PreDeploy)" />
     <Build Remove="@(PostDeploy)" />
     <Build Remove="@(None)" />
+    <Build Remove="@(BuildExtensionConfiguration)" />
+    <Build Remove="@(DeployExtensionConfiguration)" />
   </ItemGroup>
 
   <!-- Target to resolve package references into database references to the underlying DACPACs inside the packages -->

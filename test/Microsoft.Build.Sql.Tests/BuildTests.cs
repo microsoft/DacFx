@@ -60,6 +60,7 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies build with deployment extension configuration script.")]
         public void SuccessfulBuildWithDeploymentExtensionConfigurationScript()
         {
+            this.RemoveBuildFiles("Table2.sql"); 
             this.AddDeploymentExtensionConfigurationScripts("Table2.sql");
 
             string stdOutput, stdError;
@@ -89,6 +90,7 @@ namespace Microsoft.Build.Sql.Tests
         [Description("Verifies build with build extension configuration script.")]
         public void SuccessfulBuildWithBuildExtensionConfigurationScript()
         {
+            this.RemoveBuildFiles("Table2.sql"); 
             this.AddBuildExtensionConfigurationScripts("Table2.sql");
 
             string stdOutput, stdError;

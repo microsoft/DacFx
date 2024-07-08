@@ -251,6 +251,22 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
+        /// Add deploymentextensionconfiguration scripts to the project. <paramref name="files"/> paths are relative.
+        /// </summary>
+        protected void AddDeploymentExtensionConfigurationScripts(params string[] files)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "DeploymentExtensionConfiguration", files);
+        }
+
+        /// <summary>
+        /// Add buildextensionconfiguration scripts to the project. <paramref name="files"/> paths are relative.
+        /// </summary>
+        protected void AddBuildExtensionConfigurationScripts(params string[] files)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "BuildExtensionConfiguration", files);
+        }
+
+        /// <summary>
         /// Add scripts to the project that are not part of build. <paramref name="files"/> paths are relative.
         /// </summary>
         protected void AddNoneScripts(params string[] files)

@@ -63,7 +63,7 @@
                 },
                 {
                     "choice": "SqlDbFabric",
-                    "description": "Fabric mirrored SQL database"
+                    "description": "Fabric mirrored SQL database (preview)"
                 },
                 {
                     "choice": "SqlDw",

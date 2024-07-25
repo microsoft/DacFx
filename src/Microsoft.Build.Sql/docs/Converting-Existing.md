@@ -9,7 +9,7 @@ This page provides guidance in converting existing SQL projects from Visual Stud
 ## Changes to .sqlproj file
 To convert a database project into SDK-style, edit the .sqlproj file by adding
 ```xml
-<Sdk Name="Microsoft.Build.Sql" Version="0.1.19-preview" />
+<Sdk Name="Microsoft.Build.Sql" Version="0.2.0-preview" />
 ``` 
 inside the `<Project>` tag.
 
@@ -17,7 +17,7 @@ inside the `<Project>` tag.
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0">
-  <Sdk Name="Microsoft.Build.Sql" Version="0.1.19-preview" />
+  <Sdk Name="Microsoft.Build.Sql" Version="0.2.0-preview" />
   ...
 </Project>
 ```

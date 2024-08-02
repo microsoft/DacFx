@@ -103,7 +103,7 @@ namespace Microsoft.Build.Sql.Tests
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
                 FileName = TestUtils.GetDotnetPath(),
-                Arguments = $"{dotnetCommandWithArgs}",
+                Arguments = $"{dotnetCommandWithArgs} --configfile nuget.config",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,

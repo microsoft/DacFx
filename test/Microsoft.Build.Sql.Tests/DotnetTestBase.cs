@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Isam.Esent.Interop;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
@@ -40,6 +41,8 @@ namespace Microsoft.Build.Sql.Tests
         public void TestSetup()
         {
             EnvironmentSetup();
+
+            RunGenericDotnetCommand($"nuget list source", out _, out _);
         }
 
         [TearDown]

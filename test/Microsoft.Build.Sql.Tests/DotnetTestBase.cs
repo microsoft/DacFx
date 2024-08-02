@@ -50,13 +50,6 @@ namespace Microsoft.Build.Sql.Tests
         {
             try
             {
-                // Remove local nuget source
-                RunGenericDotnetCommand($"nuget remove source TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
-                if (!string.IsNullOrEmpty(stdError))
-                {
-                    Assert.Warn("Failed to remove local nuget source: " + stdError);
-                }
-
                 // Delete working directory unless test failed
                 if (TestContext.CurrentContext.Result.Outcome == ResultState.Success && Directory.Exists(this.WorkingDirectory))
                 {
@@ -88,8 +81,7 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Copy SDK nuget package to Workingdirectory/pkg/
-            string localNugetSource = Path.Combine(this.WorkingDirectory, "pkg");
-            TestUtils.CopyDirectoryRecursive("../../../pkg", localNugetSource);
+            TestUtils.CopyDirectoryRecursive("../../../pkg", Path.Combine(this.WorkingDirectory, "pkg"));
 
             // Copy common project files from Template to WorkingDirectory
             TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
@@ -99,10 +91,6 @@ namespace Microsoft.Build.Sql.Tests
             {
                 TestUtils.CopyDirectoryRecursive(this.CurrentTestDataDirectory, this.WorkingDirectory);
             }
-
-            // Add pkg folder as a nuget source
-            RunGenericDotnetCommand($"nuget add source \"{localNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
-            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
         /// <summary>

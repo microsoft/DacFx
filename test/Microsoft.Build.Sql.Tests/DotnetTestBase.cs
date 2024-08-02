@@ -136,7 +136,7 @@ namespace Microsoft.Build.Sql.Tests
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
                 FileName = TestUtils.GetDotnetPath(),
-                Arguments = $"{dotnetCommand} {DatabaseProjectName}.sqlproj {arguments}",
+                Arguments = $"{dotnetCommand} {DatabaseProjectName}.sqlproj {arguments} -v n",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,
@@ -226,6 +226,8 @@ namespace Microsoft.Build.Sql.Tests
                 stdOutput = threadShared_ReceivedOutput.ToString();
                 stdError = threadShared_ReceivedErrors.ToString();
             }
+
+            Console.WriteLine(stdOutput);
 
             return dotnet.ExitCode;
         }

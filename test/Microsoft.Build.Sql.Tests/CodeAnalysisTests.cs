@@ -13,7 +13,8 @@ namespace Microsoft.Build.Sql.Tests
         [Test]
         public void VerifyCodeAnalyzerFromProjectReference()
         {
-            string tempFolder = Path.Combine(Path.GetTempPath(), TestContext.CurrentContext.Test.Name);
+            // Copy the analyzer project to a temp folder
+            string tempFolder = TestUtils.CreateTempDirectory();
             TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "CodeAnalyzerSample"), tempFolder);
 
             // Add the analyzer csproj as a ProjectReference to the test sqlproj
@@ -44,7 +45,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifyCodeAnalyzerFromPackageReference()
         {
             // Set up and create the analyzer package
-            string tempFolder = Path.Combine(Path.GetTempPath(), TestContext.CurrentContext.Test.Name);
+            string tempFolder = TestUtils.CreateTempDirectory();
             TestUtils.CopyDirectoryRecursive(Path.Combine(CommonTestDataDirectory, "CodeAnalyzerSample"), tempFolder);
             RunGenericDotnetCommand($"pack {Path.Combine(tempFolder, "CodeAnalyzerSample.csproj")} -o {tempFolder}", out _, out _);
 

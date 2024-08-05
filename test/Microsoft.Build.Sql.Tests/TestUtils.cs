@@ -78,5 +78,15 @@ namespace Microsoft.Build.Sql.Tests
         {
             return testName.Replace("\"", "_");
         }
+
+        /// <summary>
+        /// Creates and returns the path to a temporary directory in the current directory.
+        /// </summary>
+        public static string CreateTempDirectory()
+        {
+            string tempDir = Path.Combine(Directory.GetCurrentDirectory(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempDir);
+            return tempDir;
+        }
     }
 }

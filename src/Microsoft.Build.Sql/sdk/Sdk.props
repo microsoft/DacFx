@@ -14,7 +14,7 @@
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
     <!-- Allow packages of all target frameworks to be referenced by the sqlproj -->
-    <PackageTargetFallback Condition="'@(SupportedTargetFramework)' != ''">@(SupportedTargetFramework->'%(Alias)')</PackageTargetFallback>
+    <PackageTargetFallback Condition="'$(PackageTargetFallback)' == ''">@(SupportedTargetFramework->'%(Alias)')</PackageTargetFallback>
   </PropertyGroup>
 
   <!-- building in Visual Studio requires some sort of TargetFrameworkVersion. So we condition to NetCoreBuild as false to avoid failures -->

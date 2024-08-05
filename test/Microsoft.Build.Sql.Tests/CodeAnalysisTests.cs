@@ -13,8 +13,10 @@ namespace Microsoft.Build.Sql.Tests
         [Test]
         public void VerifyCodeAnalyzerFromProjectReference()
         {
+            string tempFolder = Path.Combine(Path.GetTempPath(), TestContext.CurrentContext.Test.Name);
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "CodeAnalyzerSample"), tempFolder);
             ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ProjectReference",
-                new string[] { Path.Combine(CommonTestDataDirectory, "CodeAnalyzerSample", "CodeAnalyzerSample.csproj") },
+                new string[] { Path.Combine(tempFolder, "CodeAnalyzerSample.csproj") },
                 item =>
                 {
                     item.AddMetadata("PrivateAssets", "All");
@@ -29,11 +31,10 @@ namespace Microsoft.Build.Sql.Tests
                 { "SqlCodeAnalysisRules", "+!CodeAnalyzerSample.TableNameRule001" }   // Should fail build on this rule
             });
 
-            string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
 
             Assert.AreNotEqual(0, exitCode, "Build should have failed");
-            Assert.IsTrue(stdError.Contains("Table name [dbo].[NotAView] ends in View. This can cause confusion and should be avoided"), "Unexpected stderr");
+            Assert.IsTrue(stdOutput.Contains("Table name [dbo].[NotAView] ends in View. This can cause confusion and should be avoided"), "Unexpected stderr");
         }
     }
 }

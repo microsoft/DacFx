@@ -18,14 +18,13 @@ namespace CodeAnalyzerSample
     /// Simple test class - note it doesn't use resources since these aren't handled by the test harness
     /// that builds dll files
     /// </summary>
-    [ExportCodeAnalysisRule("CodeAnalyzerSample" + TableNameEndingInViewRule.RuleId,
+    [ExportCodeAnalysisRule("CodeAnalyzerSample.TableNameRule001",
         "SampleRule",
         Description = "Table names should not end in 'View'",
         Category = "Naming",
         PlatformCompatibility = TSqlPlatformCompatibility.OnPremises)]
     class TableNameEndingInViewRule : SqlCodeAnalysisRule
     {
-        private const string RuleId = "TableNameRule001";
         private static readonly ModelTypeClass[] _supportedElementTypes = new[] { ModelSchema.Table };
 
         public TableNameEndingInViewRule()

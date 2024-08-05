@@ -203,7 +203,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifyBuildWithProjectReference()
         {
             // We will copy the ReferenceProj to a temp folder and then add it as project reference
-            string tempFolder = Path.Combine(Path.GetTempPath(), TestContext.CurrentContext.Test.Name);
+            string tempFolder = TestUtils.CreateTempDirectory();
             TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
 
             this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"));

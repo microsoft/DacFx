@@ -5,7 +5,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Microsoft.Isam.Esent.Interop;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
@@ -41,8 +40,6 @@ namespace Microsoft.Build.Sql.Tests
         public void TestSetup()
         {
             EnvironmentSetup();
-
-            RunGenericDotnetCommand($"nuget list source", out _, out _);
         }
 
         [TearDown]
@@ -50,6 +47,13 @@ namespace Microsoft.Build.Sql.Tests
         {
             try
             {
+                // Remove local nuget source
+                RunGenericDotnetCommand($"nuget remove source TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+                if (!string.IsNullOrEmpty(stdError))
+                {
+                    Assert.Warn("Failed to remove local nuget source: " + stdError);
+                }
+
                 // Delete working directory unless test failed
                 if (TestContext.CurrentContext.Result.Outcome == ResultState.Success && Directory.Exists(this.WorkingDirectory))
                 {
@@ -81,7 +85,8 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Copy SDK nuget package to Workingdirectory/pkg/
-            TestUtils.CopyDirectoryRecursive("../../../pkg", Path.Combine(this.WorkingDirectory, "pkg"));
+            string localNugetSource = Path.Combine(this.WorkingDirectory, "pkg");
+            TestUtils.CopyDirectoryRecursive("../../../pkg", localNugetSource);
 
             // Copy common project files from Template to WorkingDirectory
             TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
@@ -91,6 +96,10 @@ namespace Microsoft.Build.Sql.Tests
             {
                 TestUtils.CopyDirectoryRecursive(this.CurrentTestDataDirectory, this.WorkingDirectory);
             }
+
+            // Add pkg folder as a nuget source
+            RunGenericDotnetCommand($"nuget add source \"{localNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
         /// <summary>
@@ -103,7 +112,7 @@ namespace Microsoft.Build.Sql.Tests
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
                 FileName = TestUtils.GetDotnetPath(),
-                Arguments = $"{dotnetCommandWithArgs} --configfile nuget.config",
+                Arguments = $"{dotnetCommandWithArgs}",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,
@@ -217,8 +226,6 @@ namespace Microsoft.Build.Sql.Tests
                 stdOutput = threadShared_ReceivedOutput.ToString();
                 stdError = threadShared_ReceivedErrors.ToString();
             }
-
-            Console.WriteLine(stdOutput);
 
             return dotnet.ExitCode;
         }

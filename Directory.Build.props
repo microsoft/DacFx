@@ -14,6 +14,7 @@
 
     <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
     <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.3.566</DacFxPackageVersion>
+    <!-- TODO: update dacfx version -->
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(EnlistmentRoot)\images\nuspecicon.png" Pack="true" PackagePath="" />

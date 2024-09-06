@@ -58,7 +58,7 @@
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
           
   <!-- Override some .NET targets that aren't necessary for SqlBuild but may cause issues if not overridden -->
-  <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
+  <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" Condition="true" />
 
   <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">

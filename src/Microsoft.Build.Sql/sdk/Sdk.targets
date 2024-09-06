@@ -28,8 +28,6 @@
     <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
   </PropertyGroup>
 
-  <Import Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/Sdk/Sdk.BeforeCommon.targets" />
-
   <!-- Pack target properties -->
   <PropertyGroup>
     <PackageType>$(PackageType);DACPAC</PackageType>
@@ -51,12 +49,16 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   
+  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/Sdk/Sdk.BeforeCommon.targets" />
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.DefaultAssemblyInfo.targets" />
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.targets" />
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/NuGet.Build.Tasks.Pack/build/NuGet.Build.Tasks.Pack.targets" />
 
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
+          
+  <!-- Override some .NET targets that aren't necessary for SqlBuild but may cause issues if not overridden -->
+  <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
 
   <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">

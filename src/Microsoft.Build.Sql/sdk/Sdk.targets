@@ -28,6 +28,8 @@
     <DebugSymbols Condition=" '$(DebugSymbols)' == '' ">true</DebugSymbols>
   </PropertyGroup>
 
+  <Import Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/Sdk/Sdk.BeforeCommon.targets" />
+
   <!-- Pack target properties -->
   <PropertyGroup>
     <PackageType>$(PackageType);DACPAC</PackageType>
@@ -60,6 +62,12 @@
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">
     <ItemGroup>
       <BuiltProjectOutputGroupOutput Include="$(SqlTargetPath)" TargetPath="$(SqlTargetFile)" FinalOutputPath="$(SqlTargetPath)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AddDacpacToPublishList" BeforeTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="$(SqlTargetPath)" RelativePath="$(SqlTargetFile)" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
   </Target>
 

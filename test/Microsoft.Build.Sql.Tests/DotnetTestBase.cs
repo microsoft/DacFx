@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Build.Construction;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
@@ -292,6 +293,36 @@ namespace Microsoft.Build.Sql.Tests
         protected void AddProjectReference(params string[] projects)
         {
             ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ProjectReference", projects);
+        }
+
+        /// <summary>
+        /// Add a package reference to a Nuget package.
+        /// </summary>
+        protected void AddPackageReference(string packageName, string version, string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", string databaseVariableLiteralValue = "", bool? suppressMissingDependenciesErrors = null)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { packageName }, (ProjectItemElement item) => {
+                item.AddMetadata("Version", version);
+
+                if (!string.IsNullOrEmpty(serverSqlcmdVariable))
+                {
+                    item.AddMetadata("ServerSqlCmdVariable", serverSqlcmdVariable);
+                }
+
+                if (!string.IsNullOrEmpty(databaseSqlcmdVariable))
+                {
+                    item.AddMetadata("DatabaseSqlCmdVariable", databaseSqlcmdVariable);
+                }
+
+                if (!string.IsNullOrEmpty(databaseVariableLiteralValue))
+                {
+                    item.AddMetadata("DatabaseVariableLiteralValue", databaseVariableLiteralValue);
+                }
+
+                if (suppressMissingDependenciesErrors.HasValue)
+                {
+                    item.AddMetadata("SuppressMissingDependenciesErrors", suppressMissingDependenciesErrors.ToString());
+                }
+            });
         }
 
         /// <summary>

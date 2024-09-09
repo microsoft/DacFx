@@ -37,10 +37,19 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(this.CommonTestDataDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
+        private string LocalNugetSource
+        {
+            get { return Path.Combine(this.WorkingDirectory, "pkg"); }
+        }
+
         [SetUp]
         public void TestSetup()
         {
             EnvironmentSetup();
+
+            // Add pkg folder as a nuget source
+            RunGenericDotnetCommand($"nuget add source \"{LocalNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
         [TearDown]
@@ -86,8 +95,7 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Copy SDK nuget package to Workingdirectory/pkg/
-            string localNugetSource = Path.Combine(this.WorkingDirectory, "pkg");
-            TestUtils.CopyDirectoryRecursive("../../../pkg", localNugetSource);
+            TestUtils.CopyDirectoryRecursive("../../../pkg", LocalNugetSource);
 
             // Copy common project files from Template to WorkingDirectory
             TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
@@ -97,10 +105,6 @@ namespace Microsoft.Build.Sql.Tests
             {
                 TestUtils.CopyDirectoryRecursive(this.CurrentTestDataDirectory, this.WorkingDirectory);
             }
-
-            // Add pkg folder as a nuget source
-            RunGenericDotnetCommand($"nuget add source \"{localNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
-            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
         /// <summary>

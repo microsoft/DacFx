@@ -12,6 +12,7 @@
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
+    <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
   </PropertyGroup>
 
   <!-- building in Visual Studio requires some sort of TargetFrameworkVersion. So we condition to NetCoreBuild as false to avoid failures -->

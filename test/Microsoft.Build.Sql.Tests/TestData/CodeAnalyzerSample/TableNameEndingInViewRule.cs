@@ -44,7 +44,6 @@ namespace CodeAnalyzerSample
                     string problemDescription = string.Format("Table name {0} ends in View. This can cause confusion and should be avoided",
                                                               GetQualifiedTableName(table.Name));
                     SqlRuleProblem problem = new SqlRuleProblem(problemDescription, table);
-                    //SqlRuleProblem problem = new SqlRuleProblem(this, problemDescription, table);
                     problems.Add(problem);
                 }
             }

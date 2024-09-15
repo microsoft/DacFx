@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.Build.Sql/###ASSEMBLY_VERSION###" DefaultTargets="Build">
 
     <PropertyGroup>
-        <Name>SqlProject1</Name>
+        <SqlTargetName>SqlProject1</SqlTargetName>
+        <DacVersion>1.0.0.0<DacVersion>
         <DSP>Microsoft.Data.Tools.Schema.Sql.{TargetPlatform}DatabaseSchemaProvider</DSP>
         <ModelCollation>1033, CI</ModelCollation>
     </PropertyGroup>

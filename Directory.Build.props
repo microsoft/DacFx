@@ -12,8 +12,9 @@
     <RepositoryUrl>https://github.com/microsoft/DacFx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
-    <!-- Microsoft.Build.Sql SDK will use DLLs from this version of DacFx Nuget. -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.3.566</DacFxPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.4.87-preview</DacFxPackageVersion>
+    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">161.9142.1</ScriptDomPackageVersion>
+    <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">5.1.6</SqlClientPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(EnlistmentRoot)\images\nuspecicon.png" Pack="true" PackagePath="" />

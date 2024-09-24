@@ -361,5 +361,33 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             FileAssert.Exists(Path.Combine(WorkingDirectory, "bin", "Release", DatabaseProjectName + ".dacpac"));
         }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/103
+        public void VerifyBuildWithIncludeFiles()
+        {
+            // Post-deployment script includes Table2.sql which creates Table2, it should not be part of the model
+            this.AddPostDeployScripts("Script.PostDeployment1.sql");
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError, "-bl");
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage(expectPostDeployScript: true);
+
+            // Verify the Table2 is not part of the model
+            using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
+            {
+                var tables = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Table);
+                Assert.IsTrue(tables.Any(), "Expected at least 1 table in the model.");
+                foreach (var table in tables)
+                {
+                    if (table.Name.ToString().IndexOf("Table2", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        Assert.Fail("Table2 should have been excluded from the model.");
+                    }
+                }
+            }
+        }
     }
 }

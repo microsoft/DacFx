@@ -63,6 +63,13 @@
     </ItemGroup>
   </Target>
 
+  <!-- Remove files included via :r in pre/post-deployment scripts from build. Fix for https://github.com/microsoft/DacFx/issues/103 -->
+  <Target Name="RemoveSqlCmdIncludeFilesFromBuild" BeforeTargets="SqlBuild" DependsOnTargets="_SetupSqlBuildInputs">
+    <ItemGroup>
+      <Build Remove="@(__SqlScriptDependentFiles)" MatchOnMetadata="Identity" MatchOnMetadataOptions="PathLike" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <!-- This is necessary for building on non-Windows platforms. -->
     <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" IsImplicitlyDefined="true" />

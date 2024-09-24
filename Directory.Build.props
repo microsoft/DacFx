@@ -12,6 +12,7 @@
     <RepositoryUrl>https://github.com/microsoft/DacFx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
+    <!-- TODO: vBump DacFx -->
     <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.4.92</DacFxPackageVersion>
     <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">161.9142.1</ScriptDomPackageVersion>
     <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">5.1.6</SqlClientPackageVersion>

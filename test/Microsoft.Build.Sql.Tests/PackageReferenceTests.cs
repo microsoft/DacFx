@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Build.Construction;
 using NUnit.Framework;
 
 namespace Microsoft.Build.Sql.Tests
@@ -109,34 +108,6 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
             FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), $"{DatabaseProjectName}_Create.sql"));
-        }
-
-        private void AddPackageReference(string packageName, string version, string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", string databaseVariableLiteralValue = "", bool? suppressMissingDependenciesErrors = null)
-        {
-            // Add a package reference to ReferenceProj version 5.5.5
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { packageName }, (ProjectItemElement item) => {
-                item.AddMetadata("Version", version);
-
-                if (!string.IsNullOrEmpty(serverSqlcmdVariable))
-                {
-                    item.AddMetadata("ServerSqlCmdVariable", serverSqlcmdVariable);
-                }
-
-                if (!string.IsNullOrEmpty(databaseSqlcmdVariable))
-                {
-                    item.AddMetadata("DatabaseSqlCmdVariable", databaseSqlcmdVariable);
-                }
-
-                if (!string.IsNullOrEmpty(databaseVariableLiteralValue))
-                {
-                    item.AddMetadata("DatabaseVariableLiteralValue", databaseVariableLiteralValue);
-                }
-
-                if (suppressMissingDependenciesErrors.HasValue)
-                {
-                    item.AddMetadata("SuppressMissingDependenciesErrors", suppressMissingDependenciesErrors.ToString());
-                }
-            });
         }
     }
 }

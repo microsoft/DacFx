@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.SqlServer.Dac.CodeAnalysis;
 using Microsoft.SqlServer.Dac.Model;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
@@ -10,10 +11,11 @@ namespace Sample.SqlCodeAnalysis1 {
     /// whenever there is a WAITFOR DELAY statement appears inside a subroutine body.
     /// This rule only applies to stored procedures, functions and triggers.
     /// </summary>
-    [ExportCodeAnalysisRule(id: AvoidWaitForDelayRule.RuleId,
-        displayName: AvoidWaitForDelayRule.RuleName,
-        Description = AvoidWaitForDelayRule.ProblemDescription,
-        Category = AvoidWaitForDelayRule.RuleCategory,
+    [ExportCodeAnalysisRule(
+        id: RuleId,
+        displayName: RuleName,
+        Description = ProblemDescription,
+        Category = RuleCategory,
         RuleScope = SqlRuleScope.Element)]
     public sealed class AvoidWaitForDelayRule : SqlCodeAnalysisRule
     {
@@ -38,10 +40,9 @@ namespace Sample.SqlCodeAnalysis1 {
                 ModelSchema.Procedure,
                 ModelSchema.TableValuedFunction,
                 ModelSchema.ScalarFunction,
-
                 ModelSchema.DatabaseDdlTrigger,
                 ModelSchema.DmlTrigger,
-                ModelSchema.ServerDdlTrigger
+                ModelSchema.ServerDdlTrigger,
             };
         }
 
@@ -60,9 +61,8 @@ namespace Sample.SqlCodeAnalysis1 {
         public override IList<SqlRuleProblem> Analyze(
             SqlRuleExecutionContext ruleExecutionContext)
         {
-            IList<SqlRuleProblem> problems = new List<SqlRuleProblem>();
-
-            TSqlObject modelElement = ruleExecutionContext.ModelElement;
+            var problems = new List<SqlRuleProblem>();
+            var modelElement = ruleExecutionContext.ModelElement;
 
             // this rule does not apply to inline table-valued function
             // we simply do not return any problem in that case.
@@ -71,19 +71,19 @@ namespace Sample.SqlCodeAnalysis1 {
                 return problems;
             }
 
-            string elementName = GetElementName(ruleExecutionContext, modelElement);
+            var elementName = GetElementName(ruleExecutionContext, modelElement);
 
             // The rule execution context has all the objects we'll need, including the
             // fragment representing the object,
             // and a descriptor that lets us access rule metadata
-            TSqlFragment fragment = ruleExecutionContext.ScriptFragment;
-            RuleDescriptor ruleDescriptor = ruleExecutionContext.RuleDescriptor;
+            var fragment = ruleExecutionContext.ScriptFragment;
+            var ruleDescriptor = ruleExecutionContext.RuleDescriptor;
 
             // To process the fragment and identify WAITFOR DELAY statements we will use a
             // visitor
-            WaitForDelayVisitor visitor = new WaitForDelayVisitor();
+            var visitor = new WaitForDelayVisitor();
             fragment.Accept(visitor);
-            IList<WaitForStatement> waitforDelayStatements = visitor.WaitForDelayStatements;
+            var waitforDelayStatements = visitor.WaitForDelayStatements;
 
             // Create problems for each WAITFOR DELAY statement found
             // When creating a rule problem, always include the TSqlObject being analyzed. This
@@ -92,17 +92,18 @@ namespace Sample.SqlCodeAnalysis1 {
             // line/column the problem was found at.
             //
             // In addition if you have a specific TSqlFragment that is related to the problem
-            //also include this
+            // also include this
             // since the most accurate source position information (start line and column) will
             // be read from the fragment
             foreach (WaitForStatement waitForStatement in waitforDelayStatements)
             {
-                SqlRuleProblem problem = new SqlRuleProblem(
-                    String.Format(ruleDescriptor.DisplayDescription, elementName),
+                var problem = new SqlRuleProblem(
+                    string.Format(CultureInfo.InvariantCulture, ruleDescriptor.DisplayDescription, elementName),
                     modelElement,
                     waitForStatement);
                 problems.Add(problem);
             }
+
             return problems;
         }
 
@@ -114,7 +115,7 @@ namespace Sample.SqlCodeAnalysis1 {
             // useful formatting options to
             // make a name user-readable
             var displayServices = ruleExecutionContext.SchemaModel.DisplayServices;
-            string elementName = displayServices.GetElementName(
+            var elementName = displayServices.GetElementName(
                 modelElement, ElementNameStyle.EscapedFullyQualifiedName);
             return elementName;
         }
@@ -122,23 +123,28 @@ namespace Sample.SqlCodeAnalysis1 {
         private static bool IsInlineTableValuedFunction(TSqlObject modelElement)
         {
             return TableValuedFunction.TypeClass.Equals(modelElement.ObjectType)
-                        && FunctionType.InlineTableValuedFunction ==
-                modelElement.GetMetadata<FunctionType>(TableValuedFunction.FunctionType);
+                && modelElement.GetMetadata<FunctionType>(TableValuedFunction.FunctionType)
+                == FunctionType.InlineTableValuedFunction;
         }
     }
 
-    class WaitForDelayVisitor: TSqlConcreteFragmentVisitor {
+    internal class WaitForDelayVisitor : TSqlConcreteFragmentVisitor
+    {
         public IList<WaitForStatement> WaitForDelayStatements { get; private set; }
 
         // Define the class constructor
-        public WaitForDelayVisitor() {
+        public WaitForDelayVisitor()
+        {
             WaitForDelayStatements = new List<WaitForStatement>();
         }
 
-        public override void ExplicitVisit(WaitForStatement node) {
-        // We are only interested in WAITFOR DELAY occurrences
-        if (node.WaitForOption == WaitForOption.Delay)
-            WaitForDelayStatements.Add(node);
+        public override void ExplicitVisit(WaitForStatement node)
+        {
+            // We are only interested in WAITFOR DELAY occurrences
+            if (node.WaitForOption == WaitForOption.Delay)
+            {
+                WaitForDelayStatements.Add(node);
+            }
         }
     }
 }

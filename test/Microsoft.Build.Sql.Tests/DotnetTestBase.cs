@@ -16,12 +16,6 @@ namespace Microsoft.Build.Sql.Tests
     {
         protected string DatabaseProjectName = "project";
 
-#if DEBUG
-        protected const bool IsDebug = true;
-#else
-        protected const bool IsDebug = false;
-#endif
-
         protected string WorkingDirectory
         {
             get { return Path.Combine(TestContext.CurrentContext.WorkDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
@@ -350,8 +344,7 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         protected string GetOutputDirectory()
         {
-            string configuration = IsDebug ? "Debug" : "Release";
-            return Path.Combine(this.WorkingDirectory, "bin", configuration);
+            return Path.Combine(this.WorkingDirectory, "bin", "Debug");
         }
 
         /// <summary>

@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="$(ScriptDomPackageVersion)" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="System.IO.Packaging" Version="6.0.0" GeneratePathProperty="true" />
+    <PackageReference Include="System.IO.Packaging" Version="6.0.1" GeneratePathProperty="true" />
   </ItemGroup>
 
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">

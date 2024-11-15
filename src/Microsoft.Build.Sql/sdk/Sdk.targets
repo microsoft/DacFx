@@ -62,7 +62,7 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
 
-  <UsingTask TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
+  <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
 
   <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">

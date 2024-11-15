@@ -5,7 +5,7 @@
         "Database",
         "SqlServer"
     ],
-    "identity": "Microsoft.Build.Sql",
+    "identity": "Microsoft.Build.Sql.Project",
     "name": "SQL Server Database Project",
     "description": "A project that creates a SQL Server Data-Tier Application package (.dacpac)",
     "shortName": "sqlproj",

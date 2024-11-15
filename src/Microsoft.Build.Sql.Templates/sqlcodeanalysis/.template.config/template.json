@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Microsoft",
+    "classifications": [
+        "Database",
+        "SqlServer"
+    ],
+    "identity": "Microsoft.Build.Sql.CodeAnalysis",
+    "name": "SQL Server Database Code Analysis",
+    "description": "A a .NET library project that contains the scaffolding for SQL Code Analysis",
+    "shortName": "sqlcodeanalysis",
+    "tags": {
+        "language": "SQL",
+        "type": "project"
+    },
+    "sourceName": "SqlCodeAnalysis1",
+    "preferNameDirectory": true,
+    "sources": [
+        {
+            "source": "./",
+            "target": "./",
+            "include": ["SqlCodeAnalysis1.csproj", "SqlCodeAnalysis1.cs", "README.md"]
+        }
+    ]
+}

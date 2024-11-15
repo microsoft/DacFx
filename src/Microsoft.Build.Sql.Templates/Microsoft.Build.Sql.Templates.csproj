@@ -11,7 +11,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NoDefaultExcludes>true</NoDefaultExcludes>
-    <TemplateIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)\sqlproject</TemplateIntermediateOutputPath>
+    <TemplateIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)</TemplateIntermediateOutputPath>
     <!-- NU5128 warns about dependencies, template package has no dependencies. -->
     <NoWarn>$(NoWarn);NU5128</NoWarn>
     <NoDefaultExcludes>true</NoDefaultExcludes>
@@ -29,20 +29,45 @@
     <RemoveDir Directories="$(TemplateIntermediateOutputPath)" />
   </Target>
 
-  <!-- This target copies template files to intermediate output path, then sets the SDK version to the current assembly version -->
+  <!-- This target copies SQLproj template files to intermediate output path, then sets the SDK version to the current assembly version -->
   <Target Name="CopyTemplateFiles" BeforeTargets="GenerateNuspec;Build">
+    <PropertyGroup>
+      <SqlProjTemplateIntermediateOutputPath>$(TemplateIntermediateOutputPath)\sqlproject</SqlProjTemplateIntermediateOutputPath>
+    </PropertyGroup>
     <ItemGroup>
       <TemplateFiles Include="sqlproject/**" />
     </ItemGroup>
-    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(TemplateIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(SqlProjTemplateIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
     <ReplaceFileText 
-      InputFilename="$(TemplateIntermediateOutputPath)/SqlProject1.sqlproj"
-      OutputFilename="$(TemplateIntermediateOutputPath)/SqlProject1.sqlproj" 
+      InputFilename="$(SqlProjTemplateIntermediateOutputPath)/SqlProject1.sqlproj"
+      OutputFilename="$(SqlProjTemplateIntermediateOutputPath)/SqlProject1.sqlproj" 
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
     <ItemGroup>
-      <Content Remove="$(TemplateIntermediateOutputPath)\**" />
-      <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
+      <Content Remove="$(SqlProjTemplateIntermediateOutputPath)\**" />
+      <Content Include="$(SqlProjTemplateIntermediateOutputPath)\**" PackagePath="content/sqlproject/" Pack="true" />
+    </ItemGroup>
+  </Target>
+
+
+  <!-- This target copies code analysis template files to intermediate output path, then sets the SDK version to the current assembly version -->
+  <Target Name="CopyTemplateFiles_CodeAnalysis" BeforeTargets="GenerateNuspec;Build">
+    <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
+    <PropertyGroup>
+      <CodeAnalysisTemplateIntermediateOutputPath>$(TemplateIntermediateOutputPath)\sqlcodeanalysis</CodeAnalysisTemplateIntermediateOutputPath>
+      </PropertyGroup>
+    <ItemGroup>
+      <TemplateFilesCodeAnalysis Include="sqlcodeanalysis/**" />
+    </ItemGroup>
+    <Copy SourceFiles="@(TemplateFilesCodeAnalysis)" DestinationFiles="$(CodeAnalysisTemplateIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
+      <ReplaceFileText 
+        InputFilename="$(CodeAnalysisTemplateIntermediateOutputPath)/SqlCodeAnalysis1.csproj"
+        OutputFilename="$(CodeAnalysisTemplateIntermediateOutputPath)/SqlCodeAnalysis1.csproj" 
+        MatchExpression="###DACFX_ASSEMBLY_VERSION###"
+        ReplacementText="$(DacFxPackageVersion)" />
+    <ItemGroup>
+      <Content Remove="$(CodeAnalysisTemplateIntermediateOutputPath)\**" />
+      <Content Include="$(CodeAnalysisTemplateIntermediateOutputPath)\**" PackagePath="content/sqlcodeanalysis/" Pack="true" />
     </ItemGroup>
   </Target>
 

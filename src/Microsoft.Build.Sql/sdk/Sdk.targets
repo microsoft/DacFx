@@ -70,16 +70,17 @@
       <BuiltProjectOutputGroupOutput Include="$(SqlTargetPath)" TargetPath="$(SqlTargetFile)" FinalOutputPath="$(SqlTargetPath)" />
     </ItemGroup>
   </Target>
+  
+  <Target Name="AddDacpacToPublishList" BeforeTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="$(SqlTargetPath)" RelativePath="$(SqlTargetFile)" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
 
   <!-- Remove files included via :r in pre/post-deployment scripts from build. Fix for https://github.com/microsoft/DacFx/issues/103 -->
   <Target Name="RemoveSqlCmdIncludeFilesFromBuild" BeforeTargets="SqlBuild" DependsOnTargets="_SetupSqlBuildInputs">
     <ItemGroup>
       <Build Remove="@(__SqlScriptDependentFiles)" MatchOnMetadata="Identity" MatchOnMetadataOptions="PathLike" />
-  </Target>
-  
-  <Target Name="AddDacpacToPublishList" BeforeTargets="ComputeResolvedFilesToPublishList">
-    <ItemGroup>
-      <ResolvedFileToPublish Include="$(SqlTargetPath)" RelativePath="$(SqlTargetFile)" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
   </Target>
 

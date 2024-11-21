@@ -10,6 +10,7 @@ dotnet new install Microsoft.Build.Sql.Templates
 
 ## Using the templates
 
+### SQL project
 
 Creating a new project "AdventureWorks" (`-n` or `--name`):
 
@@ -35,6 +36,21 @@ Creating a new project "AdventureWorks" with a `.gitignore` file (-g):
 ```bash
 dotnet new sqlproj -n "AdventureWorks" -g
 ```
+
+### New sample code analysis rule
+
+Creating a new sample code analysis rule "WaitForDelay" (`-n` or `--name`):
+
+```bash
+dotnet new sqlcodeanalysis -n "WaitForDelay"
+```
+
+Displaying help information for the SQL code analysis template (`-h`):
+
+```bash
+dotnet new sqlcodeanalysis -h
+```
+
 
 ## Building the templates
 

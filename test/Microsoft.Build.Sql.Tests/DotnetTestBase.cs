@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Microsoft.Build.Construction;
 using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
@@ -14,12 +15,6 @@ namespace Microsoft.Build.Sql.Tests
     public abstract class DotnetTestBase
     {
         protected string DatabaseProjectName = "project";
-
-#if DEBUG
-        protected const bool IsDebug = true;
-#else
-        protected const bool IsDebug = false;
-#endif
 
         protected string WorkingDirectory
         {
@@ -36,10 +31,19 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(this.CommonTestDataDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
+        private string LocalNugetSource
+        {
+            get { return Path.Combine(this.WorkingDirectory, "pkg"); }
+        }
+
         [SetUp]
         public void TestSetup()
         {
             EnvironmentSetup();
+
+            // Add pkg folder as a nuget source
+            RunGenericDotnetCommand($"nuget add source \"{LocalNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
         [TearDown]
@@ -85,8 +89,7 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Copy SDK nuget package to Workingdirectory/pkg/
-            string localNugetSource = Path.Combine(this.WorkingDirectory, "pkg");
-            TestUtils.CopyDirectoryRecursive("../../../pkg", localNugetSource);
+            TestUtils.CopyDirectoryRecursive("../../../pkg", LocalNugetSource);
 
             // Copy common project files from Template to WorkingDirectory
             TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
@@ -96,10 +99,6 @@ namespace Microsoft.Build.Sql.Tests
             {
                 TestUtils.CopyDirectoryRecursive(this.CurrentTestDataDirectory, this.WorkingDirectory);
             }
-
-            // Add pkg folder as a nuget source
-            RunGenericDotnetCommand($"nuget add source \"{localNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
-            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
         /// <summary>
@@ -295,6 +294,36 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
+        /// Add a package reference to a Nuget package.
+        /// </summary>
+        protected void AddPackageReference(string packageName, string version, string serverSqlcmdVariable = "", string databaseSqlcmdVariable = "", string databaseVariableLiteralValue = "", bool? suppressMissingDependenciesErrors = null)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference", new string[] { packageName }, (ProjectItemElement item) => {
+                item.AddMetadata("Version", version);
+
+                if (!string.IsNullOrEmpty(serverSqlcmdVariable))
+                {
+                    item.AddMetadata("ServerSqlCmdVariable", serverSqlcmdVariable);
+                }
+
+                if (!string.IsNullOrEmpty(databaseSqlcmdVariable))
+                {
+                    item.AddMetadata("DatabaseSqlCmdVariable", databaseSqlcmdVariable);
+                }
+
+                if (!string.IsNullOrEmpty(databaseVariableLiteralValue))
+                {
+                    item.AddMetadata("DatabaseVariableLiteralValue", databaseVariableLiteralValue);
+                }
+
+                if (suppressMissingDependenciesErrors.HasValue)
+                {
+                    item.AddMetadata("SuppressMissingDependenciesErrors", suppressMissingDependenciesErrors.ToString());
+                }
+            });
+        }
+
+        /// <summary>
         /// Returns the full path to the sqlproj file used for this test.
         /// </summary>
         protected string GetProjectFilePath()
@@ -315,8 +344,7 @@ namespace Microsoft.Build.Sql.Tests
         /// </summary>
         protected string GetOutputDirectory()
         {
-            string configuration = IsDebug ? "Debug" : "Release";
-            return Path.Combine(this.WorkingDirectory, "bin", configuration);
+            return Path.Combine(this.WorkingDirectory, "bin", "Debug");
         }
 
         /// <summary>

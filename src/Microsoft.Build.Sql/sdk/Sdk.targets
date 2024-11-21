@@ -38,6 +38,12 @@
     <NoWarn>$(NoWarn),NU5128</NoWarn>
   </PropertyGroup>
 
+  <!-- Publish target properties -->
+  <PropertyGroup>
+    <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
+    <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)$(PublishDirName)\</PublishDir>
+  </PropertyGroup>
+
   <Target Name="CreateManifestResourceNames" />
   <!-- CoreCompile is a target inside target Build on Microsoft.Common.targets that is not implemented there but allows us to personalize our compile/build flow, while
     executing all the other targets inside Build regularly. We implement it before importing Common.targets because it's not implemented there, so it will not be
@@ -48,13 +54,15 @@
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/netstandard2.1/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
-  
+
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.DefaultAssemblyInfo.targets" />
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.targets" />
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/NuGet.Build.Tasks.Pack/build/NuGet.Build.Tasks.Pack.targets" />
 
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
+
+  <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
 
   <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">
@@ -67,6 +75,11 @@
   <Target Name="RemoveSqlCmdIncludeFilesFromBuild" BeforeTargets="SqlBuild" DependsOnTargets="_SetupSqlBuildInputs">
     <ItemGroup>
       <Build Remove="@(__SqlScriptDependentFiles)" MatchOnMetadata="Identity" MatchOnMetadataOptions="PathLike" />
+  </Target>
+  
+  <Target Name="AddDacpacToPublishList" BeforeTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="$(SqlTargetPath)" RelativePath="$(SqlTargetFile)" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
   </Target>
 

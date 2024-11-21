@@ -70,7 +70,7 @@
       <BuiltProjectOutputGroupOutput Include="$(SqlTargetPath)" TargetPath="$(SqlTargetFile)" FinalOutputPath="$(SqlTargetPath)" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="AddDacpacToPublishList" BeforeTargets="ComputeResolvedFilesToPublishList">
     <ItemGroup>
       <ResolvedFileToPublish Include="$(SqlTargetPath)" RelativePath="$(SqlTargetFile)" CopyToPublishDirectory="PreserveNewest" />

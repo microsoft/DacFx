@@ -11,7 +11,7 @@
   <PropertyGroup>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
-    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
+    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\net6.0</NETCoreTargetsPath>
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
     <!-- Allow packages of all target frameworks to be referenced by the sqlproj -->
     <PackageTargetFallback Condition="'$(PackageTargetFallback)' == ''">@(SupportedTargetFramework->'%(Alias)')</PackageTargetFallback>

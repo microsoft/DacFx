@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <NuspecFile>$(MSBuildThisFileDirectory)Microsoft.Build.Sql.nuspec</NuspecFile>
     <PackageType>MSBuildSDK</PackageType>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <!-- Path where all the DLLs build depends on will be copied to -->
-    <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\netstandard2.1\</BuildBinariesPath>
+    <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\net6.0\</BuildBinariesPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,14 +24,14 @@
   <Target Name="CopyBuildBinaries" BeforeTargets="Build">
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.targets" />
-      <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.1\Microsoft.Data.SqlClient.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net6.0\*.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net6.0\*.targets" />
+      <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\net6.0\Microsoft.Data.SqlClient.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\netstandard2.1\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net6.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
-      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp3.1\System.ComponentModel.Composition.dll" />
-      <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" />
+      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\net6.0\System.ComponentModel.Composition.dll" />
+      <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\net6.0\System.IO.Packaging.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)" />
   </Target>

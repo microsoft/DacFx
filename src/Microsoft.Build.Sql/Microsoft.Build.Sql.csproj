@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="$(ScriptDomPackageVersion)" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" GeneratePathProperty="true" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" Version="8.0.1" GeneratePathProperty="true" />
   </ItemGroup>
 
@@ -26,11 +26,11 @@
     <ItemGroup>
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.targets" />
-      <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\net8.0\Microsoft.Data.SqlClient.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\net6.0\Microsoft.Data.SqlClient.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net6.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
-      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\net6.0\System.ComponentModel.Composition.dll" />
+      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
       <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)" />

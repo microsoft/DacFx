@@ -25,6 +25,7 @@
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\**\*.resources.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\netstandard2.1\*.targets" />
       <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\netstandard2.1\Microsoft.Data.SqlClient.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
@@ -33,7 +34,7 @@
       <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\netcoreapp3.1\System.ComponentModel.Composition.dll" />
       <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\netstandard2.0\System.IO.Packaging.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)" />
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)\%(PackageFiles.RecursiveDir)" />
   </Target>
 
   <Target Name="DeleteToolsFolder" AfterTargets="Clean">

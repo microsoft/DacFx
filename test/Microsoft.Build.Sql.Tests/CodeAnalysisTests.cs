@@ -47,19 +47,19 @@ namespace Microsoft.Build.Sql.Tests
             // Set up and create the analyzer package
             string tempFolder = TestUtils.CreateTempDirectory();
             TestUtils.CopyDirectoryRecursive(Path.Combine(CommonTestDataDirectory, "CodeAnalyzerSample"), tempFolder);
-            RunGenericDotnetCommand($"pack {Path.Combine(tempFolder, "CodeAnalyzerSample.csproj")} -o {tempFolder}", out _, out _);
+            RunGenericDotnetCommand($"pack {Path.Combine(tempFolder, "CodeAnalyzerSample.csproj")} -o {tempFolder} -p:Version=1.1.1-test", out _, out _);
 
             // Copy analyzer package to local Nuget source
-            string analyzerPackagePath = Path.Combine(tempFolder, "CodeAnalyzerSample.1.0.0.nupkg");
+            string analyzerPackagePath = Path.Combine(tempFolder, "CodeAnalyzerSample.1.1.1-test.nupkg");
             FileAssert.Exists(analyzerPackagePath);
-            File.Copy(analyzerPackagePath, Path.Combine(WorkingDirectory, "pkg", "CodeAnalyzerSample.1.0.0.nupkg"));
+            File.Copy(analyzerPackagePath, Path.Combine(WorkingDirectory, "pkg", "CodeAnalyzerSample.1.1.1-test.nupkg"));
 
             // Add the analyzer package as a PackageReference to the test sqlproj
             ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference",
                 new string[] { "CodeAnalyzerSample" },
                 item =>
                 {
-                    item.AddMetadata("Version", "1.0.0");
+                    item.AddMetadata("Version", "1.1.1-test");
                 });
 
             // Set up code analysis properties

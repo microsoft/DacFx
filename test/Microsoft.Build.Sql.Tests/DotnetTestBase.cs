@@ -286,11 +286,16 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
-        /// Add references to another project(s). <paramref name="projects"/> paths are relative.
+        /// Add reference to another project. <paramref name="project"/> path is relative.
         /// </summary>
-        protected void AddProjectReference(params string[] projects)
+        protected void AddProjectReference(string project, string databaseSqlcmdVariable = "")
         {
-            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ProjectReference", projects);
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ProjectReference", new string[] { project }, (ProjectItemElement item) => {
+                if (!string.IsNullOrEmpty(databaseSqlcmdVariable))
+                {
+                    item.AddMetadata("DatabaseSqlCmdVariable", databaseSqlcmdVariable);
+                }
+            });
         }
 
         /// <summary>

@@ -6,7 +6,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="$(MSBuildSdksPath)\Microsoft.NET.Sdk\targets\Microsoft.NET.SupportedTargetFrameworks.props" Condition="Exists('$(MSBuildSdksPath)\Microsoft.NET.Sdk\targets\Microsoft.NET.SupportedTargetFrameworks.props')" />
 
   <PropertyGroup>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
@@ -14,8 +13,9 @@
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\netstandard2.1</NETCoreTargetsPath>
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
     <!-- Allow packages of all target frameworks to be referenced by the sqlproj -->
-    <PackageTargetFallback Condition="'$(PackageTargetFallback)' == ''">@(SupportedTargetFramework->'%(Alias)')</PackageTargetFallback>
+    <AssetTargetFallback Condition="'$(AssetTargetFallback)' == ''">@(SupportedTargetFramework->'%(Alias)')</AssetTargetFallback>
     <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
+    <ImplicitlyExpandNETStandardFacades Condition="'$(ImplicitlyExpandNETStandardFacades)' == ''">false</ImplicitlyExpandNETStandardFacades>
   </PropertyGroup>
 
   <!-- building in Visual Studio requires some sort of TargetFrameworkVersion. So we condition to NetCoreBuild as false to avoid failures -->

@@ -320,12 +320,8 @@ namespace Microsoft.Build.Sql.Tests
         [TestCase("netcoreapp3.1")]
         [TestCase("net5.0")]
         [TestCase("net6.0")]
-#if NET7_0_OR_GREATER
         [TestCase("net7.0")]
-#endif
-#if NET8_0_OR_GREATER
         [TestCase("net8.0")]
-#endif
 #if NET9_0_OR_GREATER
         [TestCase("net9.0")]
 #endif

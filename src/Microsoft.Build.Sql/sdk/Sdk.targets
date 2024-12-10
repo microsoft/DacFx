@@ -34,8 +34,8 @@
     <IsTool Condition="'$(IsTool)' == ''">true</IsTool>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.dacpac</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
-    <!-- Suppress NU5128 since SQL NuGet Packages have no target framework dependencies -->
-    <NoWarn>$(NoWarn),NU5128</NoWarn>
+    <!-- Suppress NuGet warnings since SQL NuGet Packages have no target framework dependencies -->
+    <NoWarn>$(NoWarn),NU1701,NU5128</NoWarn>
   </PropertyGroup>
 
   <!-- Publish target properties -->
@@ -51,6 +51,8 @@
     -->
   <Target Name="CoreCompile" />
 
+  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.BeforeCommon.targets" />
+
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/net8.0/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
@@ -61,6 +63,9 @@
 
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
+
+  <!-- Override target to skip invalid .NET Framework check -->
+  <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
 
   <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
 
@@ -86,7 +91,7 @@
 
   <ItemGroup>
     <!-- This is necessary for building on non-Windows platforms. -->
-    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" IsImplicitlyDefined="true" />
+    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" IsImplicitlyDefined="true" />
   </ItemGroup>
 
   <ItemGroup>

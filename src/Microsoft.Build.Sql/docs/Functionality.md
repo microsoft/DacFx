@@ -1,4 +1,8 @@
 # Functionality
+
+> [!WARNING]
+> This article has been replaced by https://learn.microsoft.com/sql/tools/sql-database-projects/sql-database-projects and is no longer updated. Please refer to the new documentation for the latest information.
+
 In SQL projects there are several capabilities that can be specified in the `.sqlproj` file that impact the database model either at project build or deployment.  The following sections describe some of these capabilities that are available for Microsoft.Build.Sql projects.
 
 |Capability|Build time validation|Included in deployment|

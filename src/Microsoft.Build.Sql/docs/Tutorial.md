@@ -1,4 +1,9 @@
 # Tutorial
+
+> [!WARNING]
+> This article has been replaced by https://learn.microsoft.com/sql/tools/sql-database-projects/tutorials/create-deploy-sql-project and is no longer updated. Please refer to the new documentation for the latest information.
+
+
 This page walks through creating a new SQL project and publishing it to a database from the command line and any text editor. For more information on using SQL projects in Azure Data Studio or VS Code, check out the [SQL Database Projects extension documentation](https://aka.ms/azuredatastudio-sqlprojects).
 
 ## 📁 Create a SQL project

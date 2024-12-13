@@ -55,6 +55,7 @@ Depending on where you are developing, additional steps may be required. A walk-
 
 ## Resources
 
+- [Release notes](https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql)
 - [Primary documentation](https://aka.ms/sqlprojects)
 - [CI/CD workflow samples](https://aka.ms/sqlprojects-samples)
 - [GitHub repository](https://github.com/microsoft/dacfx)

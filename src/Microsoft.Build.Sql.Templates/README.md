@@ -1,5 +1,9 @@
 # Microsoft.Build.Sql.Templates
 
+SQL projects templates for a new project and a sample code analysis rule.
+
+📗 Learn more about SQL projects at https://learn.microsoft.com/sql/tools/sql-database-projects/sql-database-projects
+
 ## Installing the templates
 
 The templates are available on [NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates/).  To install the templates, run the following command:
@@ -8,9 +12,12 @@ The templates are available on [NuGet](https://www.nuget.org/packages/Microsoft.
 dotnet new install Microsoft.Build.Sql.Templates
 ```
 
+Microsoft.Build.Sql projects and code analysis rules can be created using the `sqlproj` and `sqlcodeanalysis` templates, respectively. Both projects require .NET SDK 8 or higher.
+
 ## Using the templates
 
 ### SQL project
+
 
 Creating a new project "AdventureWorks" (`-n` or `--name`):
 
@@ -63,9 +70,15 @@ dotnet build
 dotnet new install bin/Debug/Microsoft.Build.Sql.Templates.1.0.0.nupkg
 ```
 
-
 To uninstall the templates
 
 ```bash
 dotnet new uninstall Microsoft.Build.Sql.Templates
 ```
+
+
+## Resources
+
+- [Primary documentation](https://aka.ms/sqlprojects)
+- [CI/CD workflow samples](https://aka.ms/sqlprojects-samples)
+- [GitHub repository](https://github.com/microsoft/dacfx)

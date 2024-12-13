@@ -59,14 +59,6 @@ Depending on where you are developing, additional steps may be required. A walk-
 - [CI/CD workflow samples](https://aka.ms/sqlprojects-samples)
 - [GitHub repository](https://github.com/microsoft/dacfx)
 
-## Current Status
-This project is in preview and we are currently building tests for different functionality. Contributors welcome. Please feel free to open issues for bugs or improvements, or send PRs directly.
-
-The latest release can be found on [Nuget.org](https://www.nuget.org/packages/Microsoft.Build.Sql/).
-
-Building and publishing database project is supported in [Azure Data Studio](https://github.com/microsoft/azuredatastudio) and [VS Code](https://marketplace.visualstudio.com/items?itemName=ms-mssql.sql-database-projects-vscode). Support for SDK-style projects will be added in Visual Studio SQL Server Data Tools (SSDT) in a future release.
-
-
 ## Telemetry
 The .NET SDK for SQL includes a telemetry feature that collects usage data and sends it to Microsoft when you use build commands. The usage data includes exception information when the build command fails. Telemetry data helps the .NET team understand how the tools are used so they can be improved. Information on failures helps the team resolve problems and fix bugs.
 

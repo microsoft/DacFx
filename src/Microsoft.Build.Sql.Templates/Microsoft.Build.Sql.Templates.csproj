@@ -8,6 +8,7 @@
     <Description>Templates for creating new Microsoft.Build.Sql projects.</Description>
     <PackageTags>DacFx sqlproj</PackageTags>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NoDefaultExcludes>true</NoDefaultExcludes>
@@ -22,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(EnlistmentRoot)/LICENSE.txt" PackagePath="/" Pack="true" />
+    <Content Include="README.md" PackagePath="/" Pack="true" />
     <Content Include="$(TemplateIntermediateOutputPath)\**" PackagePath="content/" Pack="true" />
   </ItemGroup>
 

@@ -4,6 +4,7 @@
     <PackageId>Sample.SqlCodeAnalysis1</PackageId>
     <PackageVersion>1.0.0</PackageVersion>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
   <ItemGroup>

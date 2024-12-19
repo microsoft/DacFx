@@ -385,5 +385,25 @@ namespace Microsoft.Build.Sql.Tests
                 }
             }
         }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/520
+        public void BuildWithExternalReference()
+        {
+            // Build a ReferenceProj with a table
+            string tempFolder = TestUtils.CreateTempDirectory();
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
+
+            // Add project reference and build with a synonym created from the external table, and a view on the synonym
+            this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"), databaseSqlcmdVariable: "ReferenceDb");
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            Directory.Delete(tempFolder, true);
+        }
     }
 }

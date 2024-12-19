@@ -1,0 +1,1 @@
+CREATE SYNONYM Synonym1 FOR [$(ReferenceDb)].[dbo].[Table1]

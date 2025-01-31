@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
 
     <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">162.5.57</DacFxPackageVersion>
-    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">170.12.0</ScriptDomPackageVersion>
+    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">170.18.0</ScriptDomPackageVersion>
     <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">5.1.6</SqlClientPackageVersion>
   </PropertyGroup>
   <ItemGroup>

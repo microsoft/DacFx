@@ -68,6 +68,28 @@
   <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
 
   <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
+  <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="CheckForDuplicateItems" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
+
+  <Target Name="CheckForDuplicateSqlItems" BeforeTargets="_SetupSqlBuildInputs">
+
+    <PropertyGroup>
+      <DefaultItemsMoreInformationLink>https://aka.ms/upgrade-sqlproject</DefaultItemsMoreInformationLink>
+    </PropertyGroup>
+
+    <CheckForDuplicateItems
+      Items="@(Build)"
+      ItemName="Build"
+      DefaultItemsEnabled="$(EnableDefaultSqlItems)"
+      DefaultItemsOfThisTypeEnabled="$(EnableDefaultSqlItems)"
+      PropertyNameToDisableDefaultItems="EnableDefaultSqlItems"
+      MoreInformationLink="$(DefaultItemsMoreInformationLink)"
+      ContinueOnError="$(ContinueOnError)">
+      <Output TaskParameter="DeduplicatedItems" ItemName="DeduplicatedSqlItems" />
+    </CheckForDuplicateItems>
+
+    <!-- Currently do nothing with DeduplicatedItems. There are some design time logic in Microsoft.NET.Sdk.DefaultItems.Shared.targets that we can implement in the future. -->
+
+  </Target>
 
   <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">
@@ -138,4 +160,11 @@
       <ArtifactReference Include="@(_ResolvedDacpacPackageReference->'%(HintPath)')" Condition="Exists(%(_ResolvedDacpacPackageReference.HintPath))" />
     </ItemGroup>
   </Target>
+
+  <!-- Default properties to be evaluated last -->
+  <PropertyGroup>
+    <EnableDefaultSqlItems Condition=" '$(EnableDefaultSqlItems)' == '' ">true</EnableDefaultSqlItems>
+    <DefaultSqlItemExcludes>$(DefaultSqlItemExcludes);$(BaseOutputPath)/**;$(BaseIntermediateOutputPath)/**</DefaultSqlItemExcludes> 
+  </PropertyGroup>
+
 </Project>

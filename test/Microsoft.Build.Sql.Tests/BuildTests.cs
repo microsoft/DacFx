@@ -405,5 +405,38 @@ namespace Microsoft.Build.Sql.Tests
 
             Directory.Delete(tempFolder, true);
         }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/561
+        public void FailBuildOnDuplicatedItems()
+        {
+            // Add a file that should be included in the default globbing pattern already
+            this.AddBuildFiles("Table1.sql");
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out _);
+
+            // Verify failure
+            Assert.AreEqual(1, exitCode, "Build is expected to fail.");
+        }
+
+        [Test]
+        public void BuildWithDefaultItemsDisabled()
+        {
+            // Add a file that should be included in the default globbing pattern already
+            this.AddBuildFiles("Table1.sql");
+
+            // Disable default items
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "EnableDefaultSqlItems", "False" }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+        }
     }
 }

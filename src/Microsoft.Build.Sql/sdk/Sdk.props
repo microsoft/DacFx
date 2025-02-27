@@ -48,8 +48,6 @@
 
   <ItemGroup>
     <!-- Build default globbing pattern includes all sql files in all subfolders, excluding bin and obj -->
-    <Build Include="**/*.sql" />
-    <Build Remove="bin/**/*.sql" />
-    <Build Remove="obj/**/*.sql" />
+    <Build Condition="'$(EnableDefaultSqlItems)' == 'true'" Include="**/*.sql" Exclude="$(DefaultSqlItemExcludes)" />
   </ItemGroup>
 </Project>

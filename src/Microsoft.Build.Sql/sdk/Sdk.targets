@@ -73,7 +73,7 @@
   <Target Name="CheckForDuplicateSqlItems" BeforeTargets="_SetupSqlBuildInputs">
 
     <PropertyGroup>
-      <DefaultItemsMoreInformationLink>https://learn.microsoft.com/sql/tools/sql-database-projects/howto/convert-original-sql-project</DefaultItemsMoreInformationLink>
+      <DefaultItemsMoreInformationLink>https://aka.ms/upgrade-sqlproject</DefaultItemsMoreInformationLink>
     </PropertyGroup>
 
     <CheckForDuplicateItems

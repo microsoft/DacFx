@@ -15,11 +15,13 @@ jobs:
             dotnetVersion: 8.x
           - targetFramework: net9.0
             dotnetVersion: 9.x
+          - targetFramework: net10.0
+            dotnetVersion: 10.x
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-dotnet@v4  # Latest version is always required
       with:
-        dotnet-version: 9.x
+        dotnet-version: 10.x
         dotnet-quality: preview
     - uses: actions/setup-dotnet@v4
       with:

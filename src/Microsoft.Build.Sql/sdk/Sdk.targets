@@ -70,7 +70,7 @@
   <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
   <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="CheckForDuplicateItems" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
 
-  <Target Name="CheckForDuplicateSqlItems" BeforeTargets="_SetupSqlBuildInputs">
+  <Target Name="CheckForDuplicateSqlItems" Condition="'$(NetCoreBuild)' == 'true'" BeforeTargets="_SetupSqlBuildInputs">
 
     <PropertyGroup>
       <DefaultItemsMoreInformationLink>https://aka.ms/upgrade-sqlproject</DefaultItemsMoreInformationLink>

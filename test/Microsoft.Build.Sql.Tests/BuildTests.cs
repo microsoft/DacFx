@@ -325,6 +325,9 @@ namespace Microsoft.Build.Sql.Tests
 #if NET9_0_OR_GREATER
         [TestCase("net9.0")]
 #endif
+#if NET10_0_OR_GREATER
+        [TestCase("net10.0")]
+#endif
         // https://github.com/microsoft/DacFx/issues/330
         public void VerifyBuildWithDifferentTargetFrameworks(string targetFramework)
         {

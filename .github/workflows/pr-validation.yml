@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET ${{ env.LATEST_DOTNET_VERSION }}
       uses: actions/setup-dotnet@v4  # Latest version is always required
       with:
-        dotnet-version: 10.x
+        dotnet-version: ${{ env.LATEST_DOTNET_VERSION }}
         dotnet-quality: preview
     - name: Setup .NET ${{ matrix.dotnetVersion }}
       if: ${{ matrix.dotnetVersion != env.LATEST_DOTNET_VERSION }}

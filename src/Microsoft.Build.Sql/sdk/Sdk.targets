@@ -73,7 +73,7 @@
   <Target Name="CheckForDuplicateSqlItems" Condition="'$(NetCoreBuild)' == 'true'" BeforeTargets="_SetupSqlBuildInputs">
 
     <PropertyGroup>
-      <DefaultItemsMoreInformationLink>https://aka.ms/upgrade-sqlproject</DefaultItemsMoreInformationLink>
+      <DefaultItemsMoreInformationLink>https://aka.ms/upgrade-sqlproject#required-remove-build-items-included-by-default</DefaultItemsMoreInformationLink>
     </PropertyGroup>
 
     <CheckForDuplicateItems

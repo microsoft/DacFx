@@ -47,7 +47,7 @@ Use the [Microsoft.Build.Sql.Templates](https://www.nuget.org/packages/Microsoft
 
 Depending on the complexity of your project, the conversion to a Microsoft.Build.Sql project may be straightforward. Building the project before the process and retaining the `.dacpac` for comparison after the conversion is highly recommended. The primary step in the conversion is to add the SDK reference. Edit the .sqlproj file by adding
 ```xml
-<Sdk Name="Microsoft.Build.Sql" Version="1.0.0" />
+<Sdk Name="Microsoft.Build.Sql" Version="###ASSEMBLY_VERSION###" />
 ``` 
 inside the `<Project>` tag.
 

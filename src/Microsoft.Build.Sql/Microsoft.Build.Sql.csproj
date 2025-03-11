@@ -8,6 +8,7 @@
     <PackageReleaseNotes>https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql</PackageReleaseNotes>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <SdkIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)</SdkIntermediateOutputPath>
 
     <!-- Path where all the DLLs build depends on will be copied to -->
     <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\net8.0\</BuildBinariesPath>
@@ -39,12 +40,29 @@
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)\%(PackageFiles.RecursiveDir)" />
   </Target>
 
+  <!-- Sets the SDK version correctly in the README -->
+  <Target Name="SetSdkAssemblyVersion" BeforeTargets="GenerateNuspec;Build">
+    <ItemGroup>
+      <TemplateFiles Include="README.md" />
+    </ItemGroup>
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(SdkIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
+    <ReplaceFileText 
+      InputFilename="$(SdkIntermediateOutputPath)/README.md"
+      OutputFilename="$(SdkIntermediateOutputPath)/README.md" 
+      MatchExpression="###ASSEMBLY_VERSION###"
+      ReplacementText="$(PackageVersion)" />
+    <ItemGroup>
+      <None Remove="$(SdkIntermediateOutputPath)\README.md" />
+      <None Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+  </Target>
+
   <Target Name="DeleteToolsFolder" AfterTargets="Clean">
     <RemoveDir Directories="$(MSBuildThisFileDirectory)\tools" />
   </Target>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
     <None Remove="tools\**" />
   </ItemGroup>
 

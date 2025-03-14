@@ -2,16 +2,32 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <NuspecFile>$(MSBuildThisFileDirectory)Microsoft.Build.Sql.nuspec</NuspecFile>
-    <PackageType>MSBuildSDK</PackageType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql</PackageReleaseNotes>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SdkIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)</SdkIntermediateOutputPath>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
 
     <!-- Path where all the DLLs build depends on will be copied to -->
     <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\net8.0\</BuildBinariesPath>
+
+    <!-- NuGet Package Properties -->
+    <Authors>Microsoft</Authors>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <Description>This package contains the SDK for building SQL Database Projects (.sqlproj) in .NET.</Description>
+    <Owners>Microsoft</Owners>
+    <PackageIcon>images\nuspecicon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/microsoft/DacFx</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>dacfx sqlproj build sdk</PackageTags>
+    <PackageType>MSBuildSDK</PackageType>
+    <RepositoryBranch>main</RepositoryBranch>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/microsoft/DacFx</RepositoryUrl>
+    <Title>Microsoft SQL Database Project Build SDK</Title>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,8 +78,11 @@
   </Target>
 
   <ItemGroup>
+    <None Include="sdk\**" Pack="true" PackagePath="sdk\" />
+    <None Include="tools\**" Pack="true" PackagePath="tools\" />
     <None Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
-    <None Remove="tools\**" />
+    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
+    <None Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
   </ItemGroup>
 
 </Project>

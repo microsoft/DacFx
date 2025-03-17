@@ -325,6 +325,9 @@ namespace Microsoft.Build.Sql.Tests
 #if NET9_0_OR_GREATER
         [TestCase("net9.0")]
 #endif
+#if NET10_0_OR_GREATER
+        [TestCase("net10.0")]
+#endif
         // https://github.com/microsoft/DacFx/issues/330
         public void VerifyBuildWithDifferentTargetFrameworks(string targetFramework)
         {
@@ -384,6 +387,59 @@ namespace Microsoft.Build.Sql.Tests
                     }
                 }
             }
+        }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/520
+        public void BuildWithExternalReference()
+        {
+            // Build a ReferenceProj with a table
+            string tempFolder = TestUtils.CreateTempDirectory();
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
+
+            // Add project reference and build with a synonym created from the external table, and a view on the synonym
+            this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"), databaseSqlcmdVariable: "ReferenceDb");
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            Directory.Delete(tempFolder, true);
+        }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/561
+        public void FailBuildOnDuplicatedItems()
+        {
+            // Add a file that should be included in the default globbing pattern already
+            this.AddBuildFiles("Table1.sql");
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out _);
+
+            // Verify failure
+            Assert.AreEqual(1, exitCode, "Build is expected to fail.");
+        }
+
+        [Test]
+        public void BuildWithDefaultItemsDisabled()
+        {
+            // Add a file that should be included in the default globbing pattern already
+            this.AddBuildFiles("Table1.sql");
+
+            // Disable default items
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "EnableDefaultSqlItems", "False" }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
         }
     }
 }

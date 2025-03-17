@@ -2,6 +2,9 @@ name: pr-validation
 
 on: pull_request
 
+env:
+  LATEST_DOTNET_VERSION: 10.x
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -9,22 +12,28 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        targetFramework: [net8.0, net9.0]
+        targetFramework: [net8.0, net9.0, net10.0]
         include:
           - targetFramework: net8.0
             dotnetVersion: 8.x
           - targetFramework: net9.0
             dotnetVersion: 9.x
+          - targetFramework: net10.0
+            dotnetVersion: 10.x
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-dotnet@v4  # Latest version is always required
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup .NET ${{ env.LATEST_DOTNET_VERSION }}
+      uses: actions/setup-dotnet@v4  # Latest version is always required
       with:
-        dotnet-version: 9.x
+        dotnet-version: ${{ env.LATEST_DOTNET_VERSION }}
         dotnet-quality: preview
-    - uses: actions/setup-dotnet@v4
+    - name: Setup .NET ${{ matrix.dotnetVersion }}
+      if: ${{ matrix.dotnetVersion != env.LATEST_DOTNET_VERSION }}
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnetVersion }}
-        dotnet-quality: preview
+        dotnet-quality: ga
     - run: dotnet build DacFx.sln
     - run: dotnet pack DacFx.sln --no-build
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}

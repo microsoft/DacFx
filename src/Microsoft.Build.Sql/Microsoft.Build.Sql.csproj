@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <NuspecFile>$(MSBuildThisFileDirectory)Microsoft.Build.Sql.nuspec</NuspecFile>
     <PackageType>MSBuildSDK</PackageType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql</PackageReleaseNotes>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
@@ -42,6 +44,7 @@
   </Target>
 
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
     <None Remove="tools\**" />
   </ItemGroup>
 

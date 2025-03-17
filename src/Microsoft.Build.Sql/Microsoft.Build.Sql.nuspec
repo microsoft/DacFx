@@ -18,11 +18,14 @@
     <tags>dacfx sqlproj build sdk</tags>
     <license type="file">LICENSE.txt</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <readme>README.md</readme>
+    <releaseNotes>https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql</releaseNotes>
   </metadata>
   <files>
     <file src="sdk\**" target="sdk" />
     <file src="tools\**" target="tools" />
     <file src="..\..\LICENSE.txt" target="LICENSE.txt" />
     <file src="..\..\images\nuspecicon.png" target="images\nuspecicon.png" />
+    <file src="README.md" target="README.md" />
   </files>
 </package>

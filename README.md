@@ -2,8 +2,9 @@
 
 |Component|Links|Summary|
 |:--|:--|:--|
-|SqlPackage|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlPackage)<br/>[📗&nbsp;Docs](https://aka.ms/sqlpackage-ref)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
+|SqlPackage|[📦&nbsp;Tool](https://www.nuget.org/packages/Microsoft.SqlPackage)<br/>[📗&nbsp;Docs](https://aka.ms/sqlpackage-ref)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
 |DacFx|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)<br/>[📘&nbsp;API Docs](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac)|The Microsoft SQL Server Data-Tier Application Framework (Microsoft.SqlServer.DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
+|DacpacVerify|[📦&nbsp;Tool](https://www.nuget.org/packages/Microsoft.DacpacVerify)|Microsoft.DacpacVerify is a cross-platform command-line utility for checking that two .dacpac packages match, including pre/post-deployment scripts and SQLCMD variables.|
 |Dacpacs.(Master,Msdb)|[📦&nbsp;Master](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Master)<br/>[📦&nbsp;Msdb](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Msdb)|Microsoft.SqlServer.Dacpacs.Master and Microsoft.SqlServer.Dacpacs.Msdb is a set of NuGet packages containing .dacpac files for Microsoft SQL Server system databases (master, msdb) with versions across SQL Server 2008 (100) through SQL Server 2022 (160).|
 |Dacpacs.Azure.Master|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Azure.Master)|Microsoft.SqlServer.Dacpacs.Azure.Master is a NuGet package containing a .dacpac file for the Azure SQL Database master database.|
 |Dacpacs.Synapse.Master|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Synapse.Master)|Microsoft.SqlServer.Dacpacs.Synapse.Master is a NuGet package containing a .dacpac file for the Azure Synapse Analytics master database.|
@@ -14,10 +15,12 @@
 
 ## Microsoft.Build.Sql SDK-style projects documentation
 
-- [Converting Existing Projects](src/Microsoft.Build.Sql/docs/Converting-Existing.md)
-- [Functionality](src/Microsoft.Build.Sql/docs/Functionality.md)
-- [Troubleshooting](src/Microsoft.Build.Sql/docs/Troubleshooting.md)
-- [Tutorial](src/Microsoft.Build.Sql/docs/Tutorial.md)
+- [Overview](https://aka.ms/sqlprojects)
+- [Release notes](release-notes/Microsoft.Build.Sql/README.md)
+- [Getting Started](https://learn.microsoft.com/sql/tools/sql-database-projects/get-started)
+- [Converting Existing Projects](https://learn.microsoft.com/sql/tools/sql-database-projects/howto/convert-original-sql-project)
+- [Troubleshooting](https://learn.microsoft.com/sql/tools/sql-database-projects/howto/troubleshoot-sql-project-build)
+- [CI/CD Workflow Samples](https://aka.ms/sqlprojects-samples)
 
 ## Related tools and libraries
 

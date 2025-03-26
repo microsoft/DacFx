@@ -161,6 +161,11 @@
     </ItemGroup>
   </Target>
 
+  <!-- Correct the build in Visual Studio so it doesn't trigger a NuGet Framework Reference error.
+  <Target Name="DeleteProjectAssetsJson" BeforeTargets="PreBuildEvent" Condition="'$(NetCoreBuild)' != 'true'">
+    <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
+  </Target>
+
   <!-- Default properties to be evaluated last -->
   <PropertyGroup>
     <EnableDefaultSqlItems Condition=" '$(EnableDefaultSqlItems)' == '' ">true</EnableDefaultSqlItems>

@@ -161,7 +161,7 @@
     </ItemGroup>
   </Target>
 
-  <!-- Correct the build in Visual Studio so it doesn't trigger a NuGet Framework Reference error.
+  <!-- project.assets.json from dotnet build causes issues if switched to SSDT build -->
   <Target Name="DeleteProjectAssetsJson" BeforeTargets="PreBuildEvent" Condition="'$(NetCoreBuild)' != 'true'">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
   </Target>

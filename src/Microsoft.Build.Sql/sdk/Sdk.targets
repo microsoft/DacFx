@@ -162,7 +162,7 @@
   </Target>
 
   <!-- project.assets.json from dotnet build causes issues if switched to SSDT build -->
-  <Target Name="DeleteProjectAssetsJson" BeforeTargets="PreBuildEvent" Condition="'$(NetCoreBuild)' != 'true'">
+  <Target Name="DeleteProjectAssetsJson" BeforeTargets="BeforeBuild" Condition="'$(NetCoreBuild)' != 'true'">
     <Delete Files="$(BaseIntermediateOutputPath)\project.assets.json" />
   </Target>
 

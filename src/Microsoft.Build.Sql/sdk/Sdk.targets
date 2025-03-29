@@ -3,7 +3,73 @@
   Copyright (c) Microsoft Corporation. All rights reserved.
   Licensed under the MIT license.
 -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <LanguageTargets Condition=" '$(LanguageTargets)' == ''">$(MSBuildToolsPath)\Microsoft.Common.targets</LanguageTargets>
+    <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
+    <IncludeBuildOutput Condition="'$(IncludeBuildOutput)' == ''">false</IncludeBuildOutput>
+  </PropertyGroup>
+  
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition=" '$(CommonTargetsPath)' == '' " />
+
+  <PropertyGroup>
+    <!-- This property must be overridden to remove a few targets that compile assemblies -->
+    <CoreBuildDependsOn>
+      BuildOnlySettings;
+      PrepareForBuild;
+      PreBuildEvent;
+      ResolveReferences;
+      Compile;
+      GetTargetPath;
+      PrepareForRun;
+      IncrementalClean;
+      PostBuildEvent
+    </CoreBuildDependsOn>
+    
+    <!-- Disable symbol generation -->
+    <DebugType>None</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    
+    <!-- Don't emit a reference assembly -->
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+
+    <!-- Mark language targets as imported -->
+    <LanguageTargetsImported>true</LanguageTargetsImported>
+  </PropertyGroup>
+  
+  <!-- Clear output group items which are read by the IDE and NuGet. -->
+  <ItemGroup>
+    <BuiltProjectOutputGroupKeyOutput Remove="@(BuiltProjectOutputGroupKeyOutput)" />
+    <DebugSymbolsProjectOutputGroupOutput Remove="@(DebugSymbolsProjectOutputGroupOutput)" />
+    <IntermediateAssembly Remove="@(IntermediateAssembly)" />
+    <IntermediateRefAssembly Remove="@(IntermediateRefAssembly)" />
+    <Reference Remove="mscorlib" />
+  </ItemGroup>
+  
+  <!--
+    The CopyFilesToOutputDirectory target is hard coded to depend on ComputeIntermediateSatelliteAssemblies.  NoTargets projects do no generate resource assemblies
+    so the target is replaced with a no-op
+  -->
+  <Target Name="ComputeIntermediateSatelliteAssemblies" />
+
+  <!--
+    The GetReferenceAssemblyPaths does not need to run since reference assemblies aren't needed.
+  -->
+  <Target Name="GetFrameworkPaths" DependsOnTargets="$(GetFrameworkPathsDependsOn)" />
+  <Target Name="GetReferenceAssemblyPaths" DependsOnTargets="$(GetReferenceAssemblyPathsDependsOn)" />
+  
+  <!-- 
+    Microsoft.Managed.Targets is imported by the managed language target files in MSBuild 16.0 and above, but most of the msbuild tasks are actually in Microsoft.Common.Currentversion.targets.
+    So import it when the managed targets do not get imported.
+  -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.targets" Condition="'$(MSBuildAssemblyVersion)' >= '16.0' And '$(ManagedLanguageTargetsGotImported)' != 'true'" />
+
+  <Target Name="_GenerateCompileInputs" />
+  <Target Name="_GenerateCompileDependencyCache" />
+
+  <!-- Disables the _CopyFilesMarkedCopyLocal target to not copy references when SkipCopyFilesMarkedCopyLocal is set to true. -->
+  <Import Project="DisableCopyFilesMarkedCopyLocal.targets" Condition="'$(SkipCopyFilesMarkedCopyLocal)' == 'true'" />
 
   <!-- Default build configurations -->
   <PropertyGroup>
@@ -34,8 +100,10 @@
     <IsTool Condition="'$(IsTool)' == ''">true</IsTool>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.dacpac</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
-    <!-- Suppress NuGet warnings since SQL NuGet Packages have no target framework dependencies -->
-    <NoWarn>$(NoWarn),NU1701,NU5128</NoWarn>
+    <!-- Suppress NU5128 since SQL NuGet Packages have no target framework dependencies -->
+    <NoWarn>$(NoWarn),NU5128</NoWarn>
+    <TargetFrameworks></TargetFrameworks>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
 
   <!-- Publish target properties -->
@@ -51,24 +119,16 @@
     -->
   <Target Name="CoreCompile" />
 
-  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.BeforeCommon.targets" />
-
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/net8.0/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
 
-  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.DefaultAssemblyInfo.targets" />
-  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.targets" />
-  <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildSdksPath)/NuGet.Build.Tasks.Pack/build/NuGet.Build.Tasks.Pack.targets" />
-
+  
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
 
   <!-- Override target to skip invalid .NET Framework check -->
   <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
-
-  <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="AllowEmptyTelemetry" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
-  <UsingTask Condition="'$(NetCoreBuild)' == 'true'" TaskName="CheckForDuplicateItems" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
 
   <Target Name="CheckForDuplicateSqlItems" Condition="'$(NetCoreBuild)' == 'true'" BeforeTargets="_SetupSqlBuildInputs">
 
@@ -110,11 +170,6 @@
       <Build Remove="@(__SqlScriptDependentFiles)" MatchOnMetadata="Identity" MatchOnMetadataOptions="PathLike" />
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <!-- This is necessary for building on non-Windows platforms. -->
-    <PackageReference Condition="'$(NetCoreBuild)' == 'true'" Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" IsImplicitlyDefined="true" />
-  </ItemGroup>
 
   <ItemGroup>
     <!-- Remove files specified as PreDeploy, PostDeploy, and None scripts from build -->
@@ -161,10 +216,13 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="RemoveProjectAssetsJson" BeforeTargets="PreBuildEvent" Condition=" '$(NetCoreBuild)' != 'True' ">
+    <Delete Files="$(IntermediateOutputPath)\project.assets.json" />
+  </Target>
+
   <!-- Default properties to be evaluated last -->
   <PropertyGroup>
     <EnableDefaultSqlItems Condition=" '$(EnableDefaultSqlItems)' == '' ">true</EnableDefaultSqlItems>
     <DefaultSqlItemExcludes>$(DefaultSqlItemExcludes);$(BaseOutputPath)/**;$(BaseIntermediateOutputPath)/**</DefaultSqlItemExcludes> 
   </PropertyGroup>
-
 </Project>

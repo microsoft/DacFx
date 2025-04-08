@@ -48,7 +48,7 @@
   </ItemGroup>
   
   <!--
-    The CopyFilesToOutputDirectory target is hard coded to depend on ComputeIntermediateSatelliteAssemblies.  NoTargets projects do no generate resource assemblies
+    The CopyFilesToOutputDirectory target is hard coded to depend on ComputeIntermediateSatelliteAssemblies.  Database projects do no generate resource assemblies
     so the target is replaced with a no-op
   -->
   <Target Name="ComputeIntermediateSatelliteAssemblies" />
@@ -108,6 +108,7 @@
 
   <!-- Publish target properties -->
   <PropertyGroup>
+    <UseSqlPublish>false</UseSqlPublish>
     <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
     <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)$(PublishDirName)\</PublishDir>
   </PropertyGroup>
@@ -151,10 +152,12 @@
 
   </Target>
 
-  <!-- Add dacpac file BuiltProjectOutputGroupOutput, so that it will get included in the NuGet package by the Pack target -->
-  <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" BeforeTargets="BuiltProjectOutputGroup">
+  <Target Name="GetTargetPath" Returns="$(SqlTargetPath)" />
+
+  <!-- Add dacpac file to _PackageFiles, so that it will get included in the NuGet package by the Pack target -->
+  <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" DependsOnTargets="Build" BeforeTargets="GenerateNuspec">
     <ItemGroup>
-      <BuiltProjectOutputGroupOutput Include="$(SqlTargetPath)" TargetPath="$(SqlTargetFile)" FinalOutputPath="$(SqlTargetPath)" />
+      <_PackageFiles Include="$(SqlTargetPath)" Pack="true" PackagePath="tools/" />
     </ItemGroup>
   </Target>
 

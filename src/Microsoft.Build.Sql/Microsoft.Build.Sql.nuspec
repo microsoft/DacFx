@@ -3,7 +3,7 @@
   <metadata>
     <id>Microsoft.Build.Sql</id>
     <!-- Version is set by build pipelines -->
-    <version>1.0.0</version>
+    <version>1.0.0-test</version>
     <title>Microsoft SQL Database Project Build SDK</title>
     <description>This package contains the SDK for building SQL Database Projects (.sqlproj) in .NET.</description>
     <packageTypes>

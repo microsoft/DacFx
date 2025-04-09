@@ -36,46 +36,46 @@
         },
         "target-platform": {
             "type": "parameter",
-            "description": "Target SQL platform",
+            "displayName": "Target SQL platform",
             "datatype": "choice",
             "defaultValue": "Sql160",
             "replaces": "{TargetPlatform}",
             "choices": [
                 {
                     "choice": "Sql130",
-                    "description": "SQL Server 2016"
+                    "displayName": "SQL Server 2016"
                 },
                 {
                     "choice": "Sql140",
-                    "description": "SQL Server 2017"
+                    "displayName": "SQL Server 2017"
                 },
                 {
                     "choice": "Sql150",
-                    "description": "SQL Server 2019"
+                    "displayName": "SQL Server 2019"
                 },
                 {
                     "choice": "Sql160",
-                    "description": "SQL Server 2022/Azure SQL MI"
+                    "displayName": "SQL Server 2022/Azure SQL MI"
                 },
                 {
                     "choice": "SqlAzureV12",
-                    "description": "Azure SQL Database"
+                    "displayName": "Azure SQL Database"
                 },
                 {
                     "choice": "SqlDbFabric",
-                    "description": "Fabric mirrored SQL database (preview)"
+                    "displayName": "Fabric mirrored SQL database (preview)"
                 },
                 {
                     "choice": "SqlDw",
-                    "description": "Azure Synapse SQL"
+                    "displayName": "Azure Synapse SQL"
                 },
                 {
                     "choice": "SqlServerless",
-                    "description": "Azure Synapse SQL Serverless"
+                    "displayName": "Azure Synapse SQL Serverless"
                 },
                 {
                     "choice": "SqlDwUnified",
-                    "description": "Synapse Data Warehouse in Microsoft Fabric"
+                    "displayName": "Synapse Data Warehouse in Microsoft Fabric"
                 }
             ]
         }

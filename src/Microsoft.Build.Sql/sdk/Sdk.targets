@@ -109,8 +109,6 @@
   <!-- Publish target properties -->
   <PropertyGroup>
     <UseSqlPublish>false</UseSqlPublish>
-    <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
-    <PublishDir Condition="'$(PublishDir)' == ''">$(OutputPath)$(PublishDirName)\</PublishDir>
   </PropertyGroup>
 
   <Target Name="CreateManifestResourceNames" />
@@ -151,8 +149,6 @@
     <!-- Currently do nothing with DeduplicatedItems. There are some design time logic in Microsoft.NET.Sdk.DefaultItems.Shared.targets that we can implement in the future. -->
 
   </Target>
-
-  <Target Name="GetTargetPath" Returns="$(SqlTargetPath)" />
 
   <!-- Add dacpac file to _PackageFiles, so that it will get included in the NuGet package by the Pack target -->
   <Target Name="AddDacpacToBuiltProjectOutputGroupOutput" DependsOnTargets="Build" BeforeTargets="GenerateNuspec">

@@ -8,10 +8,11 @@
   <PropertyGroup>
     <UsingMicrosoftBuildSqlSdk>true</UsingMicrosoftBuildSqlSdk>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
+    
+    <!-- Output properties -->
+    <TargetExt>.dacpac</TargetExt>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <!-- Disable default Compile and EmbeddedResource items -->
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
@@ -24,10 +25,6 @@
 
     <!-- Targeting packs shouldn't be referenced as database projects don't compile assemblies besides dacpac. -->
     <DisableImplicitFrameworkReferences Condition="'$(DisableImplicitFrameworkReferences)' == ''">true</DisableImplicitFrameworkReferences>
-
-    <!-- Disable publish actions -->
-    <CopyBuildOutputToPublishDirectory Condition="'$(CopyBuildOutputToPublishDirectory)' == ''">false</CopyBuildOutputToPublishDirectory>
-    <CopyOutputSymbolsToPublishDirectory Condition="'$(CopyOutputSymbolsToPublishDirectory)' == ''">false</CopyOutputSymbolsToPublishDirectory>
 
     <!-- Don't generate a deps file -->
     <GenerateDependencyFile Condition="'$(GenerateDependencyFile)' == ''">false</GenerateDependencyFile>
@@ -50,13 +47,12 @@
     <DisableFastUpToDateCheck Condition="'$(DisableFastUpToDateCheck)' == ''">true</DisableFastUpToDateCheck>
   </PropertyGroup>
 
-  <ItemDefinitionGroup Condition=" '$(SqlDoNotReferenceOutputAssemblies)' != 'false' ">
+  <ItemDefinitionGroup>
     <ProjectReference>
       <!--
         Setting ReferenceOutputAssembly skips target framework cross-project validation in NuGet.  Since database projects don't define runtime
         constraints like a target framework, there's no point in checking the compatibilty of project references.
       -->
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
     </ProjectReference>
   </ItemDefinitionGroup>
@@ -73,7 +69,6 @@
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
     <!-- Allow packages of all target frameworks to be referenced by the sqlproj -->
     <AssetTargetFallback Condition="'$(AssetTargetFallback)' == ''">@(SupportedTargetFramework->'%(Alias)')</AssetTargetFallback>
-    <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
     <ImplicitlyExpandNETStandardFacades Condition="'$(ImplicitlyExpandNETStandardFacades)' == ''">false</ImplicitlyExpandNETStandardFacades>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>

@@ -218,10 +218,6 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="RemoveProjectAssetsJson" BeforeTargets="PreBuildEvent" Condition=" '$(NetCoreBuild)' != 'True' ">
-    <Delete Files="$(IntermediateOutputPath)\project.assets.json" />
-  </Target>
-
   <!-- Default properties to be evaluated last -->
   <PropertyGroup>
     <EnableDefaultSqlItems Condition=" '$(EnableDefaultSqlItems)' == '' ">true</EnableDefaultSqlItems>

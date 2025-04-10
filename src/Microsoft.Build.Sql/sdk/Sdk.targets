@@ -9,6 +9,9 @@
     <LanguageTargets Condition=" '$(LanguageTargets)' == ''">$(MSBuildToolsPath)\Microsoft.Common.targets</LanguageTargets>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
     <IncludeBuildOutput Condition="'$(IncludeBuildOutput)' == ''">false</IncludeBuildOutput>
+
+    <!-- For CPS/VS support. See https://github.com/dotnet/project-system/blob/master/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/DesignTimeTargets/Microsoft.Managed.DesignTime.targets#L60 -->
+    <CustomBeforeMicrosoftCommonTargets Condition="'$(ManagedLanguageTargetsGotImported)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')">$(CustomBeforeMicrosoftCommonTargets);$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
   
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition=" '$(CommonTargetsPath)' == '' " />

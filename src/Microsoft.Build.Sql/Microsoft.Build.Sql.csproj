@@ -31,7 +31,7 @@
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\**\*.resources.dll" />
       <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\net6.0\Microsoft.Data.SqlClient.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net6.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+      <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net8.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
       <PackageFiles Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
       <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
       <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />

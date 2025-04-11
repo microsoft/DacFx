@@ -39,6 +39,9 @@
 
     <!-- Mark language targets as imported -->
     <LanguageTargetsImported>true</LanguageTargetsImported>
+
+    <!-- Default language to C# mainly for code analyzer packages -->
+    <Language>C#</Language>
   </PropertyGroup>
   
   <!-- Clear output group items which are read by the IDE and NuGet. -->

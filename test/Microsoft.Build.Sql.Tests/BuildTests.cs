@@ -459,7 +459,7 @@ namespace Microsoft.Build.Sql.Tests
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
-            FileAssert.Exists(Path.Combine(WorkingDirectory, "artifacts", "bin", DatabaseProjectName, "Debug", DatabaseProjectName + ".dacpac"));
+            FileAssert.Exists(Path.Combine(WorkingDirectory, "artifacts", "bin", DatabaseProjectName, "debug", DatabaseProjectName + ".dacpac"));
             FileAssert.DoesNotExist(GetDacpacPath());
         }
 

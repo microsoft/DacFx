@@ -6,7 +6,7 @@
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="170.0.94" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="162.5.57" PrivateAssets="all" />
   </ItemGroup>
   <Target Name="GetTargetPath" />
   <Target Name="_AddAnalyzersToOutput">

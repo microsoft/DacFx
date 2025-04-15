@@ -68,8 +68,8 @@
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
     <ItemGroup>
-      <None Remove="$(SdkIntermediateOutputPath)\README.md" />
-      <None Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
+      <Content Remove="$(SdkIntermediateOutputPath)\README.md" />
+      <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
   </Target>
 
@@ -78,11 +78,11 @@
   </Target>
 
   <ItemGroup>
-    <None Include="sdk\**" Pack="true" PackagePath="sdk\" />
-    <None Include="tools\**\*.*" Pack="true" PackagePath="tools\" />
-    <None Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
-    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
-    <None Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
+    <Content Include="sdk\**" Pack="true" PackagePath="sdk\" />
+    <Content Include="tools\**" Pack="true" PackagePath="tools\" />
+    <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
+    <Content Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
+    <Content Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
   </ItemGroup>
 
 </Project>

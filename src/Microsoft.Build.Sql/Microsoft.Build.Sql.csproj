@@ -54,6 +54,9 @@
       <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)\%(PackageFiles.RecursiveDir)" />
+    <ItemGroup>
+      <Content Include="tools\**" Pack="true" PackagePath="tools\" />
+    </ItemGroup>
   </Target>
 
   <!-- Sets the SDK version correctly in the README -->
@@ -79,7 +82,6 @@
 
   <ItemGroup>
     <Content Include="sdk\**" Pack="true" PackagePath="sdk\" />
-    <Content Include="tools\**" Pack="true" PackagePath="tools\" />
     <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
     <Content Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
     <Content Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />

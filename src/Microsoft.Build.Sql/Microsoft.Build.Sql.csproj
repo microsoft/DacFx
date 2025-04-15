@@ -79,7 +79,7 @@
 
   <ItemGroup>
     <None Include="sdk\**" Pack="true" PackagePath="sdk\" />
-    <None Include="tools\**" Pack="true" PackagePath="tools\" />
+    <None Include="tools\**\*.*" Pack="true" PackagePath="tools\" />
     <None Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
     <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
     <None Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />

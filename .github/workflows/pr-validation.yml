@@ -35,5 +35,5 @@ jobs:
         dotnet-version: ${{ matrix.dotnetVersion }}
         dotnet-quality: ga
     - run: dotnet build DacFx.sln
-    - run: dotnet pack DacFx.sln --no-build
+    - run: dotnet pack DacFx.sln --no-build -c Debug  # Default pack configuration changed to Release in .NET 8
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}

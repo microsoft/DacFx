@@ -48,7 +48,7 @@ Alternatively, SqlPackage can be downloaded as a zip file from the [SqlPackage d
 Install the Microsoft.Build.Sql.Templates NuGet package to get started with a new SQL project.
 
 ```bash
-dotnet new -i Microsoft.Build.Sql.Templates
+dotnet new install Microsoft.Build.Sql.Templates
 ```
 
 Create a new SQL project using the `sqlproj` [template](src/Microsoft.Build.Sql.Templates/).

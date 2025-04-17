@@ -5,21 +5,76 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <UsingMicrosoftBuildSqlSdk>true</UsingMicrosoftBuildSqlSdk>
+    <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
+    
+    <!-- Output properties -->
+    <TargetExt>.dacpac</TargetExt>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!-- Disable default Compile and EmbeddedResource items -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+
+    <!--
+      NuGet should always restore projects with "PackageReference" style restore.  Setting this property will cause the right thing to happen even if there aren't any PackageReference items in the project.
+    -->
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+
+    <!-- Targeting packs shouldn't be referenced as database projects don't compile assemblies besides dacpac. -->
+    <DisableImplicitFrameworkReferences Condition="'$(DisableImplicitFrameworkReferences)' == ''">true</DisableImplicitFrameworkReferences>
+
+    <!-- Don't generate a deps file -->
+    <GenerateDependencyFile Condition="'$(GenerateDependencyFile)' == ''">false</GenerateDependencyFile>
+
+    <!-- Don't generate assembly info -->
+    <GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)' == ''">false</GenerateAssemblyInfo>
+
+    <!-- Don't generate editor config file -->
+    <GenerateMSBuildEditorConfigFile Condition="'$(GenerateMSBuildEditorConfigFile)' == ''">false</GenerateMSBuildEditorConfigFile>
+    
+    <!-- Don't log the high priority message mentioning this project's name (or copy the product we didn't build). -->
+    <SkipCopyBuildProduct Condition="'$(SkipCopyBuildProduct)' == ''">true</SkipCopyBuildProduct>
+
+    <!-- Don't automatically reference assembly packages since we don't need reference assemblies -->
+    <AutomaticallyUseReferenceAssemblyPackages Condition="'$(AutomaticallyUseReferenceAssemblyPackages)' == ''">false</AutomaticallyUseReferenceAssemblyPackages>
+    <NoCompilerStandardLib Condition="'$(NoCompilerStandardLib)' == ''">false</NoCompilerStandardLib>
+    <NoStdLib Condition="'$(NoStdLib)' == ''">true</NoStdLib>
+    
+    <!-- Disable Visual Studio's Fast Up-to-date Check and rely on MSBuild to determine -->
+    <DisableFastUpToDateCheck Condition="'$(DisableFastUpToDateCheck)' == ''">true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ProjectReference>
+      <!--
+        Setting ReferenceOutputAssembly skips target framework cross-project validation in NuGet.  Since database projects don't define runtime
+        constraints like a target framework, there's no point in checking the compatibilty of project references.
+      -->
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition=" '$(MicrosoftCommonPropsHasBeenImported)' != 'true' "/>
+
+  <!-- For CPS/VS support. Importing in .props allows any subsequent targets to redefine this if needed -->
+  <Target Name="CompileDesignTime" />
 
   <PropertyGroup>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
     <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\net8.0</NETCoreTargetsPath>
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
-    <!-- Allow packages of all target frameworks to be referenced by the sqlproj -->
-    <AssetTargetFallback Condition="'$(AssetTargetFallback)' == ''">@(SupportedTargetFramework->'%(Alias)')</AssetTargetFallback>
-    <PublishDirName Condition="'$(PublishDirName)' == ''">publish</PublishDirName>
     <ImplicitlyExpandNETStandardFacades Condition="'$(ImplicitlyExpandNETStandardFacades)' == ''">false</ImplicitlyExpandNETStandardFacades>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
   </PropertyGroup>
 
   <!-- building in Visual Studio requires some sort of TargetFrameworkVersion. So we condition to NetCoreBuild as false to avoid failures -->
   <PropertyGroup Condition="'$(NetCoreBuild)'=='false'">
+    <TargetFramework>net472</TargetFramework>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
   </PropertyGroup>
@@ -49,5 +104,6 @@
   <ItemGroup>
     <!-- Build default globbing pattern includes all sql files in all subfolders, excluding bin and obj -->
     <Build Condition="'$(EnableDefaultSqlItems)' == 'true'" Include="**/*.sql" Exclude="$(DefaultSqlItemExcludes)" />
+    <SqlBuildInputItem Include="$(MSBuildProjectFullPath)" />
   </ItemGroup>
 </Project>

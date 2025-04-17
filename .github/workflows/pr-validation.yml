@@ -35,5 +35,4 @@ jobs:
         dotnet-version: ${{ matrix.dotnetVersion }}
         dotnet-quality: ga
     - run: dotnet build DacFx.sln
-    - run: dotnet pack DacFx.sln --no-build
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}

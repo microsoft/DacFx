@@ -1,0 +1,24 @@
+<Project>
+  <!-- Utility task to replace a search string with new text in the provided files -->
+  <UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll" >
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+              File.WriteAllText(
+                  OutputFilename,
+                  Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
+                  );
+            ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>

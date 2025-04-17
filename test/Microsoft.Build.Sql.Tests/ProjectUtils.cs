@@ -94,6 +94,20 @@ namespace Microsoft.Build.Sql.Tests
             }
         }
 
+        public static void AddTarget(string projectFilePath, string targetName, Action<ProjectTargetElement> targetAction)
+        {
+            using (ProjectCollection projectCollection = GetNewEngine())
+            {
+                Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+
+                ProjectTargetElement target = project.Xml.AddTarget(targetName);
+                targetAction(target);
+
+                project.Save(project.FullPath);
+                projectCollection.UnloadAllProjects();
+            }
+        }
+
         /// <summary>
         /// Gets the target platform value for the sql project
         /// </summary>

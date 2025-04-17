@@ -8,6 +8,9 @@
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <NoWarn>$(NoWarn);NU5128</NoWarn>
 
+    <!-- Default package version used for tests. Actual version set by pipeline. -->
+    <PackageVersion>1.0.0-test</PackageVersion>
+
     <!-- Path where all the DLLs build depends on will be copied to -->
     <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\net8.0\</BuildBinariesPath>
 

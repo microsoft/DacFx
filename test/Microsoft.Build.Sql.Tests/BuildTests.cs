@@ -441,5 +441,69 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/446
+        public void BuildWithArtifactsOutput()
+        {
+            // Set UseArtifactsOutput to true in Directory.Build.props
+            File.WriteAllText(Path.Combine(WorkingDirectory, "Directory.Build.props"), @"
+<Project>
+    <PropertyGroup>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
+    </PropertyGroup>
+</Project>");
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            FileAssert.Exists(Path.Combine(WorkingDirectory, "artifacts", "bin", DatabaseProjectName, "debug", DatabaseProjectName + ".dacpac"));
+            FileAssert.DoesNotExist(GetDacpacPath());
+        }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/448
+        public void IncrementalBuildWithNoChanges()
+        {
+            // Build the project first
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            Assert.AreEqual(0, exitCode, "First build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Get the last modified time of the dacpac
+            DateTime lastModifiedTime = File.GetLastWriteTime(GetDacpacPath());
+
+            // Run build again and verify it is incremental
+            exitCode = this.RunDotnetCommandOnProject("build", out _, out stdError, "-flp:v=diag");
+            Assert.AreEqual(0, exitCode, "Second build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            StringAssert.Contains(
+                "Skipping target \"SqlBuild\" because all output files are up-to-date with respect to the input files.",
+                File.ReadAllText(Path.Combine(WorkingDirectory, "msbuild.log")));
+            Assert.AreEqual(lastModifiedTime, File.GetLastWriteTime(GetDacpacPath()), "Dacpac should not be modified on incremental build.");
+        }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/450
+        public void VerifyBuildTargetPath()
+        {
+            // Add a target to print the target path
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintTargetPath", target =>
+            {
+                target.AfterTargets = "AfterBuild";
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "Target path from PrintTargetPath: $(TargetPath)");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            // Build the project and verify the target path is printed
+            int exitCode = this.RunGenericDotnetCommand("build -v d", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains($"Target path from PrintTargetPath: {GetDacpacPath()}", stdOutput, "Target path not found in output.");
+        }
     }
 }

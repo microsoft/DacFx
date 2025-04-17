@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build">
-  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0" />
+  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0-test" />
   <PropertyGroup>
     <Name>A</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql150DatabaseSchemaProvider</DSP>
     <ModelCollation>1033, CI</ModelCollation>
+    <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
   </PropertyGroup>
 </Project>

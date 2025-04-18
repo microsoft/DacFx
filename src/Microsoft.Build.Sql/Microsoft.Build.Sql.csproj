@@ -85,6 +85,7 @@
 
   <ItemGroup>
     <Content Include="sdk\**" Pack="true" PackagePath="sdk\" />
+    <Content Include="tools\**" Pack="true" PackagePath="tools\" />
     <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
     <Content Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
     <Content Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />

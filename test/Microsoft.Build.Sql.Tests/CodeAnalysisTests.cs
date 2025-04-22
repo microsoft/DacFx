@@ -35,7 +35,7 @@ namespace Microsoft.Build.Sql.Tests
                 { "SqlCodeAnalysisRules", "+!CodeAnalyzerSample.TableNameRule001" }   // Should fail build on this rule
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build -flp:v=diag", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
 
             Assert.AreNotEqual(0, exitCode, "Build should have failed");
             Assert.IsTrue(stdOutput.Contains("Table name [dbo].[NotAView] ends in View. This can cause confusion and should be avoided"), "Unexpected stderr");

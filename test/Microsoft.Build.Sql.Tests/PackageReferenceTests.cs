@@ -30,7 +30,7 @@ namespace Microsoft.Build.Sql.Tests
             // Build, pack, and verify output
             string stdOutput, stdError;
             ReferencePackageDirectory = Path.Combine(this.WorkingDirectory, "pkg");
-            int exitCode = this.RunGenericDotnetCommand($"pack {ReferenceProjectName}/{ReferenceProjectName}.sqlproj -p:Version={ReferencePackageVersion} -o \"{packagesFolder}\"", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand($"pack {ReferenceProjectName}/{ReferenceProjectName}.sqlproj -p:Version={ReferencePackageVersion} -o \"{ReferencePackageDirectory}\"", out stdOutput, out stdError);
 
             Assert.AreEqual(0, exitCode, "dotnet pack failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);

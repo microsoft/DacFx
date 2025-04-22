@@ -23,7 +23,7 @@ namespace Microsoft.Build.Sql.Tests
 
         protected string CommonTestDataDirectory
         {
-            get { return Path.GetFullPath("../../../TestData"); }
+            get { return Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData"); }
         }
 
         protected string CurrentTestDataDirectory
@@ -31,9 +31,14 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(this.CommonTestDataDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
-        private string LocalNugetSource
+        private static string LocalNugetSource
         {
-            get { return Path.Combine(this.WorkingDirectory, "pkg"); }
+            // Path to <source_root>/artifacts/package/<debug|release> folder
+#if DEBUG
+            get{ return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "package", "debug")); }
+#else
+            get{ return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "package", "release")); }
+#endif
         }
 
         [SetUp]
@@ -73,9 +78,7 @@ namespace Microsoft.Build.Sql.Tests
         /// <summary>
         /// Sets up the working directory to test building the project in. The end result will look like:
         /// WorkingDirectory/
-        /// ├── pkg/
-        /// │   ├── cache/
-        /// │   └── Microsoft.Build.Sql.nupkg
+        /// ├── package_cache/
         /// ├── nuget.config
         /// ├── project.sqlproj
         /// └── SQL files...
@@ -88,11 +91,8 @@ namespace Microsoft.Build.Sql.Tests
                 Directory.Delete(this.WorkingDirectory, true);
             }
 
-            // Copy SDK nuget package to Workingdirectory/pkg/
-            TestUtils.CopyDirectoryRecursive("../../../pkg", LocalNugetSource);
-
             // Copy common project files from Template to WorkingDirectory
-            TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
+            TestUtils.CopyDirectoryRecursive(Path.Combine(TestContext.CurrentContext.TestDirectory, "Template"), this.WorkingDirectory);
 
             // Copy test specific files to WorkingDirectory
             if (Directory.Exists(this.CurrentTestDataDirectory))

@@ -14,7 +14,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifyCodeAnalyzerFromProjectReference()
         {
             // Copy the analyzer project to a temp folder
-            string tempFolder = TestUtils.CreateTempDirectory();
+            string tempFolder = Path.Combine(WorkingDirectory, Path.GetRandomFileName());
             TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "CodeAnalyzerSample"), tempFolder);
 
             // Add the analyzer csproj as a ProjectReference to the test sqlproj
@@ -35,7 +35,7 @@ namespace Microsoft.Build.Sql.Tests
                 { "SqlCodeAnalysisRules", "+!CodeAnalyzerSample.TableNameRule001" }   // Should fail build on this rule
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build -flp:v=diag", out string stdOutput, out string stdError);
 
             Assert.AreNotEqual(0, exitCode, "Build should have failed");
             Assert.IsTrue(stdOutput.Contains("Table name [dbo].[NotAView] ends in View. This can cause confusion and should be avoided"), "Unexpected stderr");
@@ -45,14 +45,10 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifyCodeAnalyzerFromPackageReference()
         {
             // Set up and create the analyzer package
-            string tempFolder = TestUtils.CreateTempDirectory();
+            string tempFolder = Path.Combine(WorkingDirectory, Path.GetRandomFileName());
             TestUtils.CopyDirectoryRecursive(Path.Combine(CommonTestDataDirectory, "CodeAnalyzerSample"), tempFolder);
             RunGenericDotnetCommand($"pack {Path.Combine(tempFolder, "CodeAnalyzerSample.csproj")} -o {tempFolder} -p:Version=1.1.1-test", out _, out _);
-
-            // Copy analyzer package to local Nuget source
-            string analyzerPackagePath = Path.Combine(tempFolder, "CodeAnalyzerSample.1.1.1-test.nupkg");
-            FileAssert.Exists(analyzerPackagePath);
-            File.Copy(analyzerPackagePath, Path.Combine(WorkingDirectory, "pkg", "CodeAnalyzerSample.1.1.1-test.nupkg"));
+            FileAssert.Exists(Path.Combine(tempFolder, "CodeAnalyzerSample.1.1.1-test.nupkg"), "Analyzer package not found");
 
             // Add the analyzer package as a PackageReference to the test sqlproj
             ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PackageReference",
@@ -69,7 +65,7 @@ namespace Microsoft.Build.Sql.Tests
                 { "SqlCodeAnalysisRules", "+!CodeAnalyzerSample.TableNameRule001" }   // Should fail build on this rule
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject($"build --source {tempFolder}", out string stdOutput, out string stdError);
 
             Assert.AreNotEqual(0, exitCode, "Build should have failed");
             Assert.IsTrue(stdOutput.Contains("Table name [dbo].[NotAView] ends in View. This can cause confusion and should be avoided"), "Unexpected stderr");

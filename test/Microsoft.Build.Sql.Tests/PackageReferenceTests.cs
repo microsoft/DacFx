@@ -15,6 +15,7 @@ namespace Microsoft.Build.Sql.Tests
 
         private const string ReferenceProjectName = "ReferenceProj";
         private const string ReferencePackageVersion = "5.5.5";
+        private string ReferencePackageDirectory = "";
 
         /// <summary>
         /// Runs before each test, builds and packs a common reference project into .dacpac file
@@ -28,12 +29,12 @@ namespace Microsoft.Build.Sql.Tests
             
             // Build, pack, and verify output
             string stdOutput, stdError;
-            string packagesFolder = Path.Combine(this.WorkingDirectory, "pkg");
+            ReferencePackageDirectory = Path.Combine(this.WorkingDirectory, "pkg");
             int exitCode = this.RunGenericDotnetCommand($"pack {ReferenceProjectName}/{ReferenceProjectName}.sqlproj -p:Version={ReferencePackageVersion} -o \"{packagesFolder}\"", out stdOutput, out stdError);
 
             Assert.AreEqual(0, exitCode, "dotnet pack failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
-            FileAssert.Exists(Path.Combine(packagesFolder, $"{ReferenceProjectName}.{ReferencePackageVersion}.nupkg"));
+            FileAssert.Exists(Path.Combine(ReferencePackageDirectory, $"{ReferenceProjectName}.{ReferencePackageVersion}.nupkg"));
 
             // Delete the reference project folder now that we have a dacpac
             Directory.Delete(Path.Combine(this.WorkingDirectory, ReferenceProjectName), true);
@@ -45,7 +46,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion);
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject($"build --source {ReferencePackageDirectory}", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -58,7 +59,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, databaseSqlcmdVariable: "RefProj");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject($"build --source {ReferencePackageDirectory}", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -71,7 +72,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, databaseVariableLiteralValue: "RefProjLit");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject($"build --source {ReferencePackageDirectory}", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -84,7 +85,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, serverSqlcmdVariable: "RefServer", databaseSqlcmdVariable: "RefProj");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject($"build --source {ReferencePackageDirectory}", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -102,7 +103,7 @@ namespace Microsoft.Build.Sql.Tests
                 { "GenerateCreateScript", "True" }
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject($"build --source {ReferencePackageDirectory}", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);

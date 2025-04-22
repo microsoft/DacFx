@@ -103,7 +103,7 @@ namespace Microsoft.Build.Sql.Tests
                 { "GenerateCreateScript", "True" }
             });
 
-            int exitCode = this.RunDotnetCommandOnProject($"build --source {ReferencePackageDirectory}", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
 
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);

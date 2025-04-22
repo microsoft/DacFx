@@ -3,6 +3,9 @@
     <!-- Root directory of the code base. Do not set this anywhere else. -->
     <EnlistmentRoot>$(MSBuildThisFileDirectory)</EnlistmentRoot>
 
+    <!-- No need to warn about using preview .NET SDKs, we want to test against them. -->
+    <SuppressNETCoreSdkPreviewMessages>true</SuppressNETCoreSdkPreviewMessages>
+
     <!-- Use artifacts output. Packages will be in $(PackageOutputPath) or artifacts/package/$(Configuration) -->
     <UseArtifactsOutput>true</UseArtifactsOutput>
 

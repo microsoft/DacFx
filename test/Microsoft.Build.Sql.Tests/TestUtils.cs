@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.Build.Sql.Tests
@@ -16,33 +17,55 @@ namespace Microsoft.Build.Sql.Tests
         /// Returns the full path to the dotnet executable based on the current operating system.
         /// Path to dotnet tool can be set by build pipelines via DotnetToolPathEnvironmentVariable.
         /// </summary>
-        public static string GetDotnetPath()
+        public static string DotnetPath
         {
-            string dotnetExecutable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
-            string? dotnetPath = Environment.GetEnvironmentVariable(DotnetToolPathEnvironmentVariable) ?? Environment.GetEnvironmentVariable(DotnetRootEnvironmentVariable);
-            if (string.IsNullOrEmpty(dotnetPath))
+            get
             {
-                // Determine OS specific dotnet installation path
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                string dotnetExecutable = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
+                string? dotnetPath = Environment.GetEnvironmentVariable(DotnetToolPathEnvironmentVariable) ?? Environment.GetEnvironmentVariable(DotnetRootEnvironmentVariable);
+                if (string.IsNullOrEmpty(dotnetPath))
                 {
-                    dotnetPath = @"C:\Program Files\dotnet";
+                    // Determine OS specific dotnet installation path
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        dotnetPath = @"C:\Program Files\dotnet";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        dotnetPath = "/usr/share/dotnet";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        dotnetPath = "/usr/local/share/dotnet";
+                    }
+                    else
+                    {
+                        throw new NotSupportedException("Tests are currently not supported on " + RuntimeInformation.OSDescription);
+                    }
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    dotnetPath = "/usr/share/dotnet";
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    dotnetPath = "/usr/local/share/dotnet";
-                }
-                else
-                {
-                    throw new NotSupportedException("Tests are currently not supported on " + RuntimeInformation.OSDescription);
-                }
-            }
 
-            return Path.Combine(dotnetPath, dotnetExecutable);
+                return Path.Combine(dotnetPath, dotnetExecutable);
+            }
         }
+
+#if NETFRAMEWORK
+        /// <summary>
+        /// Returns the full path to the MSBuild executable based on Visual Studio installation.
+        /// </summary>
+        public static string MSBuildExePath
+        {
+            get
+            {
+                var vsInstance = Microsoft.Build.Locator.MSBuildLocator.QueryVisualStudioInstances().FirstOrDefault();
+                if (vsInstance == null)
+                {
+                    throw new InvalidOperationException("No Visual Studio instance found.");
+                }
+
+                return Path.Combine(vsInstance.MSBuildPath, "MSBuild.exe");
+            }
+        }
+#endif
 
         /// <summary>
         /// Copies all files and subdirectories from <paramref name="sourceDirectoryPath"/> to <paramref name="targetDirectoryPath"/>.

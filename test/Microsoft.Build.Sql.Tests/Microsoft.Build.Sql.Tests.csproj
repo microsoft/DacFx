@@ -3,10 +3,13 @@
   <PropertyGroup>
     <!-- Multi-targeting to test SDK on different .NET versions, requires all of the following SDKs to be installed. -->
     <!-- To build and test only one version, add -f to dotnet command. -->
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
     <!-- Disable EOL target framework check since we're explicitly testing against older .NET versions. -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    
+    <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" />
+    <PackageReference Include="Microsoft.Build.Locator" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" />
     <PackageReference Include="NuGet.Packaging" />
@@ -26,6 +30,12 @@
   <ItemGroup>
     <Content Include="TestData/**" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Template/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- .NET Core only tests -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Compile Remove="PublishTests.cs" />
+    <Compile Remove="TemplateTests.cs" />
   </ItemGroup>
 
 </Project>

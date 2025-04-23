@@ -20,6 +20,7 @@
 
     <!-- Test -->
     <PackageVersion Include="Microsoft.Build" Version="16.9.0" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.9.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageVersion Include="NuGet.Packaging" Version="6.12.1" />
     <PackageVersion Include="nunit" Version="3.13.2" />

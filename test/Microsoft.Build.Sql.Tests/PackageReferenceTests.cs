@@ -37,6 +37,20 @@ namespace Microsoft.Build.Sql.Tests
 
             // Delete the reference project folder now that we have a dacpac
             Directory.Delete(Path.Combine(this.WorkingDirectory, ReferenceProjectName), true);
+
+            // Add the reference package directory as a nuget source
+            AddLocalNugetSource(packagesFolder, $"ReferenceSource_{TestContext.CurrentContext.Test.Name}", out _, out stdError);
+            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
+        }
+
+        [TearDown]
+        public void RemoveReferencePackageSource()
+        {
+            RemoveLocalNugetSource($"ReferenceSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            if (!string.IsNullOrEmpty(stdError))
+            {
+                Assert.Warn("Failed to remove local nuget source: " + stdError);
+            }
         }
 
         [Test]

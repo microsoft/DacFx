@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- Do not use central package management to give tests finer cotrol -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+</Project>

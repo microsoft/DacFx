@@ -23,7 +23,7 @@ namespace Microsoft.Build.Sql.Tests
 
         protected string CommonTestDataDirectory
         {
-            get { return Path.GetFullPath("../../../TestData"); }
+            get { return Path.Combine(TestContext.CurrentContext.TestDirectory, "TestData"); }
         }
 
         protected string CurrentTestDataDirectory
@@ -31,9 +31,14 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(this.CommonTestDataDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
-        private string LocalNugetSource
+        private static string LocalNugetSource
         {
-            get { return Path.Combine(this.WorkingDirectory, "pkg"); }
+            // Path to <source_root>/artifacts/package/<debug|release> folder
+#if DEBUG
+            get{ return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "package", "debug")); }
+#else
+            get{ return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "package", "release")); }
+#endif
         }
 
         [SetUp]
@@ -42,7 +47,7 @@ namespace Microsoft.Build.Sql.Tests
             EnvironmentSetup();
 
             // Add pkg folder as a nuget source
-            RunGenericDotnetCommand($"nuget add source \"{LocalNugetSource}\" --name TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            AddLocalNugetSource(LocalNugetSource, $"TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
             Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
@@ -52,7 +57,7 @@ namespace Microsoft.Build.Sql.Tests
             try
             {
                 // Remove local nuget source
-                RunGenericDotnetCommand($"nuget remove source TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+                RemoveLocalNugetSource($"TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
                 if (!string.IsNullOrEmpty(stdError))
                 {
                     Assert.Warn("Failed to remove local nuget source: " + stdError);
@@ -73,9 +78,7 @@ namespace Microsoft.Build.Sql.Tests
         /// <summary>
         /// Sets up the working directory to test building the project in. The end result will look like:
         /// WorkingDirectory/
-        /// ├── pkg/
-        /// │   ├── cache/
-        /// │   └── Microsoft.Build.Sql.nupkg
+        /// ├── package_cache/
         /// ├── nuget.config
         /// ├── project.sqlproj
         /// └── SQL files...
@@ -88,11 +91,8 @@ namespace Microsoft.Build.Sql.Tests
                 Directory.Delete(this.WorkingDirectory, true);
             }
 
-            // Copy SDK nuget package to Workingdirectory/pkg/
-            TestUtils.CopyDirectoryRecursive("../../../pkg", LocalNugetSource);
-
             // Copy common project files from Template to WorkingDirectory
-            TestUtils.CopyDirectoryRecursive("../../../Template", this.WorkingDirectory);
+            TestUtils.CopyDirectoryRecursive(Path.Combine(TestContext.CurrentContext.TestDirectory, "Template"), this.WorkingDirectory);
 
             // Copy test specific files to WorkingDirectory
             if (Directory.Exists(this.CurrentTestDataDirectory))
@@ -102,7 +102,25 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
-        /// Calls a dotnet command with <paramref name="dotnetCommandWithArgs"/>
+        /// Adds a local folder <paramref name="path"/> as a nuget source with <paramref name="name"/>.
+        /// This allows subsequent dotnet commands to resolve packages from this folder.
+        /// </summary>
+        protected int AddLocalNugetSource(string path, string name, out string stdOutput, out string stdError)
+        {
+            return RunGenericDotnetCommand($"nuget add source \"{path}\" --name {name}", out stdOutput, out stdError);
+        }
+
+        /// <summary>
+        /// Removes a local nuget source with <paramref name="name"/>.
+        /// </summary>
+        protected int RemoveLocalNugetSource(string name, out string stdOutput, out string stdError)
+        {
+            return RunGenericDotnetCommand($"nuget remove source {name}", out stdOutput, out stdError);
+        }
+
+        /// <summary>
+        /// Calls a dotnet command with <paramref name="dotnetCommandWithArgs"/>.
+        /// Use this to run any dotnet command that is not specific to the database project.
         /// </summary>
         /// <returns>The Exit Code of the dotnet process</returns>
         protected int RunGenericDotnetCommand(string dotnetCommandWithArgs, out string stdOutput, out string stdError)

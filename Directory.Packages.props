@@ -20,6 +20,7 @@
 
     <!-- Test -->
     <PackageVersion Include="Microsoft.Build" Version="17.11.4" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.11.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageVersion Include="NuGet.Packaging" Version="6.12.1" />
     <PackageVersion Include="nunit" Version="3.13.2" />

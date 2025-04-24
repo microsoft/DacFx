@@ -17,13 +17,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" />
     <PackageReference Include="NuGet.Packaging" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter" />
-    <!-- Fixes a MSBuild runtime issue -->
+    <!-- References needed to run MSBuild at runtime -->
+    <PackageReference Condition="'$(TargetFramework)' == 'net472'" Include="Microsoft.Build.Tasks.Core" />
     <PackageReference Condition="'$(TargetFramework)' == 'net472'" Include="System.Text.Json" />
   </ItemGroup>
 

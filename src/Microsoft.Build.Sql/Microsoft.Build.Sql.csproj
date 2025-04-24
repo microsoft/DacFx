@@ -43,23 +43,6 @@
     <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
   </ItemGroup>
 
-  <Target Name="CopyNetFrameworkBinaries"
-          Condition="'$(IsCrossTargetingBuild)' != 'true' And '$(TargetFramework)' == 'net472'"
-          DependsOnTargets="ResolvePackageAssets"
-          BeforeTargets="Build">
-    <ItemGroup>
-      <PackageFilesNetFx Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\*.dll" />
-      <PackageFilesNetFx Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\*.targets" />
-      <PackageFilesNetFx Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\**\*.resources.dll" />
-      <PackageFilesNetFx Include="$(PkgMicrosoft_Data_SqlClient)\lib\net462\Microsoft.Data.SqlClient.dll" />
-      <PackageFilesNetFx Include="$(PkgMicrosoft_SqlServer_Server)\lib\net46\Microsoft.SqlServer.Server.dll" />
-      <PackageFilesNetFx Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net462\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
-      <PackageFilesNetFx Include="$(PkgSystem_ComponentModel_Composition)\lib\netstandard2.0\System.ComponentModel.Composition.dll" />
-      <PackageFilesNetFx Include="$(PkgSystem_IO_Packaging)\lib\net462\System.IO.Packaging.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PackageFilesNetFx)" DestinationFolder="$(BuildBinariesPath)\%(PackageFilesNetFx.RecursiveDir)" />
-  </Target>
-
   <Target Name="CopyNetCoreBinaries"
           Condition="'$(IsCrossTargetingBuild)' != 'true' And '$(TargetFramework)' != 'net472'"
           DependsOnTargets="ResolvePackageAssets"

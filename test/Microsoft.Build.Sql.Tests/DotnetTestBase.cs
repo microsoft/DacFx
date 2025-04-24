@@ -158,12 +158,12 @@ namespace Microsoft.Build.Sql.Tests
 
 #if NETFRAMEWORK
             // dotnet command will be run as a MSBuild target and we need to specify an explicit restore
-            dotnetCommand = "-target:Restore;" + dotnetCommand;
+            dotnetCommand = "-target:" + dotnetCommand;
+            arguments += " -restore -verbosity:normal";
             string executablePath = TestUtils.MSBuildExePath;
-            arguments += " -verbosity:normal";
 #else
+            arguments += " --verbosity normal";
             string executablePath = TestUtils.DotnetPath;
-            arguments += " -v n";
 #endif
 
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo

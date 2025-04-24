@@ -12,6 +12,7 @@ namespace Microsoft.Build.Sql.Tests
     {
         private const string DotnetToolPathEnvironmentVariable = "DOTNET_TOOL_PATH";
         private const string DotnetRootEnvironmentVariable = "DOTNET_ROOT";
+        private const string MSBuildPathEnvironmentVariable = "MSBUILD_EXE_PATH";
 
         /// <summary>
         /// Returns the full path to the dotnet executable based on the current operating system.
@@ -56,13 +57,24 @@ namespace Microsoft.Build.Sql.Tests
         {
             get
             {
-                var vsInstance = Microsoft.Build.Locator.MSBuildLocator.QueryVisualStudioInstances().FirstOrDefault();
-                if (vsInstance == null)
+                string? msbuildPath = Environment.GetEnvironmentVariable(MSBuildPathEnvironmentVariable);
+                if (!string.IsNullOrEmpty(msbuildPath))
                 {
-                    throw new InvalidOperationException("No Visual Studio instance found.");
+                    return msbuildPath;
                 }
 
-                return Path.Combine(vsInstance.MSBuildPath, "MSBuild.exe");
+                // MSBuild may be in PATH already
+                msbuildPath = Environment.GetEnvironmentVariable("PATH")
+                    ?.Split(Path.PathSeparator)
+                    .Select(path => Path.Combine(path, "MSBuild.exe"))
+                    .FirstOrDefault(File.Exists);
+                if (msbuildPath != null && !string.IsNullOrEmpty(msbuildPath))
+                {
+                    return msbuildPath;
+                }
+
+                // Fallback to default MSBuild path for Visual Studio 2022
+                return @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe";
             }
         }
 #endif

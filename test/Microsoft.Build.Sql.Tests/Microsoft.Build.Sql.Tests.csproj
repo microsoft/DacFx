@@ -8,8 +8,6 @@
     <LangVersion>latest</LangVersion>
     <!-- Disable EOL target framework check since we're explicitly testing against older .NET versions. -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    
-    <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,12 +17,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Build" />
-    <PackageReference Include="Microsoft.Build.Locator" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" />
     <PackageReference Include="NuGet.Packaging" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter" />
+    <!-- Fixes a MSBuild runtime issue -->
+    <PackageReference Condition="'$(TargetFramework)' == 'net472'" Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +33,7 @@
 
   <!-- .NET Core only tests -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Compile Remove="CodeAnalysisTests.cs" />
     <Compile Remove="PublishTests.cs" />
     <Compile Remove="TemplateTests.cs" />
   </ItemGroup>

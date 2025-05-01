@@ -58,6 +58,10 @@
                     "displayName": "SQL Server 2022/Azure SQL MI"
                 },
                 {
+                    "choice": "Sql170",
+                    "displayName": "SQL Server 2025"
+                },
+                {
                     "choice": "SqlAzureV12",
                     "displayName": "Azure SQL Database"
                 },

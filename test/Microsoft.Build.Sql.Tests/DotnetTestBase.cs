@@ -128,7 +128,7 @@ namespace Microsoft.Build.Sql.Tests
             // Set up the dotnet process
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
-                FileName = TestUtils.GetDotnetPath(),
+                FileName = TestUtils.DotnetPath,
                 Arguments = $"{dotnetCommandWithArgs}",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
@@ -144,16 +144,32 @@ namespace Microsoft.Build.Sql.Tests
 
         /// <summary>
         /// Calls dotnet command on the database project.
+        /// In .NET Framework tests this will run msbuild.exe from VS installation.
         /// </summary>
         /// <param name="dotnetCommand">The dotnet command to run (build, pack, etc.)</param>
         /// <param name="arguments">Any additional arguments to be passed to 'dotnet build'.</param>
         /// <returns>The Exit Code of the dotnet process.</returns>
-        protected int RunDotnetCommandOnProject(string dotnetCommand, out string stdOutput, out string stdError, string arguments = "")
+        protected int RunDotnetCommandOnProject(string dotnetCommand, out string stdOutput, out string stdError, string projectPath = "", string arguments = "")
         {
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                projectPath = this.GetProjectFilePath();
+            }
+
+#if NETFRAMEWORK
+            // dotnet command will be run as a MSBuild target and we need to specify an explicit restore
+            dotnetCommand = "-target:" + dotnetCommand;
+            arguments += " -restore -verbosity:normal";
+            string executablePath = TestUtils.MSBuildExePath;
+#else
+            arguments += " --verbosity normal";
+            string executablePath = TestUtils.DotnetPath;
+#endif
+
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
-                FileName = TestUtils.GetDotnetPath(),
-                Arguments = $"{dotnetCommand} {DatabaseProjectName}.sqlproj {arguments} -v n",
+                FileName = executablePath,
+                Arguments = $"{dotnetCommand} {projectPath} {arguments}",
                 WorkingDirectory = this.WorkingDirectory,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 RedirectStandardOutput = true,

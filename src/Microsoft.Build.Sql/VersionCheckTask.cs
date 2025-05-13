@@ -38,7 +38,8 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
 
         try
         {
-            NuGetVersion latestVersion = GetLatestSdkVersionFromNuGet().Result;
+            // Check for prerelease versions if current version is a prerelease version, otherwise check for stable versions only.
+            NuGetVersion latestVersion = GetLatestSdkVersionFromNuGet(currentVersion.IsPrerelease).Result;
             if (latestVersion > currentVersion)
             {
                 Log.LogWarning($"A newer version of {PackageName} is available: {latestVersion}. You are using {currentVersion}.");
@@ -59,7 +60,7 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
     /// <summary>
     /// Gets the latest version of Microsoft.Build.Sql from NuGet
     /// </summary>
-    private async Task<NuGetVersion> GetLatestSdkVersionFromNuGet()
+    private async Task<NuGetVersion> GetLatestSdkVersionFromNuGet(bool includePrerelease)
     {
         // Get the metadata resource for the NuGet repository
         var repository = Repository.Factory.GetCoreV3(NugetUrl);
@@ -68,7 +69,7 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
         // Search for the package metadata
         var metadata = await resource.GetMetadataAsync(
             PackageName,
-            includePrerelease: true,
+            includePrerelease: includePrerelease,
             includeUnlisted: false,
             sourceCacheContext: new SourceCacheContext(),
             log: NullLogger.Instance,

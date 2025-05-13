@@ -7,6 +7,7 @@
 
   <PropertyGroup>
     <UsingMicrosoftBuildSqlSdk>true</UsingMicrosoftBuildSqlSdk>
+    <MicrosoftBuildSqlVersion>###ASSEMBLY_VERSION###</MicrosoftBuildSqlVersion>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
     
     <!-- Output properties -->
@@ -45,6 +46,9 @@
     
     <!-- Disable Visual Studio's Fast Up-to-date Check and rely on MSBuild to determine -->
     <DisableFastUpToDateCheck Condition="'$(DisableFastUpToDateCheck)' == ''">true</DisableFastUpToDateCheck>
+
+    <!-- Property to control if the version update task should be run -->
+    <SkipCheckForNewSDKVersion Condition="'$(SkipCheckForNewSDKVersion)' == ''">false</SkipCheckForNewSDKVersion>
   </PropertyGroup>
 
   <ItemDefinitionGroup>

@@ -505,5 +505,16 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             StringAssert.Contains($"Target path from PrintTargetPath: {GetDacpacPath()}", stdOutput, "Target path not found in output.");
         }
+
+        [Test]
+        public void VersionCheckTest()
+        {
+            // Since our test version is 1.x, we should get a warning about a newer version being available
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("A newer version of Microsoft.Build.Sql is available", stdOutput, "Version check warning not found in output.");
+            this.VerifyDacPackage();
+        }
     }
 }

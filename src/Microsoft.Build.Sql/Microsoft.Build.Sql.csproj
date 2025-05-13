@@ -39,6 +39,7 @@
     <PackageReference Include="Microsoft.SqlServer.Server" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" GeneratePathProperty="true" />
+    <PackageReference Include="Nuget.Protocol" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
   </ItemGroup>
@@ -63,10 +64,11 @@
     </ItemGroup>
   </Target>
 
-  <!-- Sets the SDK version correctly in the README -->
+  <!-- Sets the SDK version correctly in the README and sdk.props -->
   <Target Name="SetSdkAssemblyVersion" BeforeTargets="GenerateNuspec;Build">
     <ItemGroup>
       <TemplateFiles Include="README.md" />
+      <TemplateFiles Include="sdk/Sdk.props" />
     </ItemGroup>
     <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(SdkIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
     <ReplaceFileText 
@@ -74,9 +76,16 @@
       OutputFilename="$(SdkIntermediateOutputPath)/README.md" 
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
+    <ReplaceFileText 
+      InputFilename="$(SdkIntermediateOutputPath)/Sdk.props"
+      OutputFilename="$(SdkIntermediateOutputPath)/Sdk.props" 
+      MatchExpression="###ASSEMBLY_VERSION###"
+      ReplacementText="$(PackageVersion)" />
     <ItemGroup>
       <Content Remove="$(SdkIntermediateOutputPath)\README.md" />
       <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
+      <Content Remove="$(SdkIntermediateOutputPath)\Sdk.props" />
+      <Content Include="$(SdkIntermediateOutputPath)\Sdk.props" Pack="true" PackagePath="Sdk\"/>
     </ItemGroup>
   </Target>
 
@@ -85,11 +94,13 @@
   </Target>
 
   <ItemGroup>
-    <Content Include="sdk\**" Pack="true" PackagePath="sdk\" />
+    <Content Include="sdk\Sdk.targets" Pack="true" PackagePath="sdk\" />
     <Content Include="tools\**" Pack="true" PackagePath="tools\" />
     <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
+    <Content Include="$(SdkIntermediateOutputPath)\Sdk.props" Pack="true" PackagePath="sdk\"/>
     <Content Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
     <Content Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
+    <Content Include="$(TargetPath)" Pack="true" PackagePath="tools\$(TargetFramework)\" />
   </ItemGroup>
 
 </Project>

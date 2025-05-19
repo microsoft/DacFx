@@ -367,7 +367,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             // Post-deployment script includes Table2.sql which creates Table2, it should not be part of the model
             this.AddPostDeployScripts("Script.PostDeployment1.sql");
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError, "-bl");
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
@@ -476,7 +476,7 @@ namespace Microsoft.Build.Sql.Tests
             DateTime lastModifiedTime = File.GetLastWriteTime(GetDacpacPath());
 
             // Run build again and verify it is incremental
-            exitCode = this.RunDotnetCommandOnProject("build", out _, out stdError, "-flp:v=diag");
+            exitCode = this.RunDotnetCommandOnProject("build", out _, out stdError, arguments: "-flp:v=diag");
             Assert.AreEqual(0, exitCode, "Second build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
 
@@ -500,7 +500,7 @@ namespace Microsoft.Build.Sql.Tests
             });
 
             // Build the project and verify the target path is printed
-            int exitCode = this.RunGenericDotnetCommand("build -v d", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             StringAssert.Contains($"Target path from PrintTargetPath: {GetDacpacPath()}", stdOutput, "Target path not found in output.");

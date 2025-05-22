@@ -184,6 +184,22 @@
     <Build Remove="@(BuildExtensionConfiguration)" />
     <Build Remove="@(DeploymentExtensionConfiguration)" />
   </ItemGroup>
+  
+  <!-- Enhance SqlReferencePath items with ProjectReference metadata to preserve database references in transitive dependencies (Fix for issue #608) -->
+  <Target Name="PreserveProjectReferenceDatabaseMetadata" AfterTargets="ResolveArtifactReferences">
+    <ItemGroup>
+      <!-- Update SqlReferencePath items with the database metadata -->
+      <SqlReferencePath Condition="'%(ProjectReferenceWithConfiguration.DatabaseSqlCmdVariable)' != ''">
+        <DatabaseSqlCmdVariable>%(ProjectReferenceWithConfiguration.DatabaseSqlCmdVariable)</DatabaseSqlCmdVariable>
+      </SqlReferencePath>
+      <SqlReferencePath Condition="'%(ProjectReferenceWithConfiguration.ServerSqlCmdVariable)' != ''">
+        <ServerSqlCmdVariable>%(ProjectReferenceWithConfiguration.ServerSqlCmdVariable)</ServerSqlCmdVariable>
+      </SqlReferencePath>
+      <SqlReferencePath Condition="'%(ProjectReferenceWithConfiguration.DatabaseVariableLiteralValue)' != ''">
+        <DatabaseVariableLiteralValue>%(ProjectReferenceWithConfiguration.DatabaseVariableLiteralValue)</DatabaseVariableLiteralValue>
+      </SqlReferencePath>
+    </ItemGroup>
+  </Target>
 
   <!-- Target to resolve package references into database references to the underlying DACPACs inside the packages -->
   <Target Name="ResolveDacpacPackageReferences" BeforeTargets="ResolveArtifactReferences">

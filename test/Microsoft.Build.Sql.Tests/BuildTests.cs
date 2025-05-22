@@ -505,5 +505,47 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             StringAssert.Contains($"Target path from PrintTargetPath: {GetDacpacPath()}", stdOutput, "Target path not found in output.");
         }
+
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/608
+        [Description("Verifies build with transitive project references with DatabaseSqlCmdVariable should not have name collisions.")]
+        public void VerifyBuildWithTransitiveProjectReferencesWithDatabaseVariables()
+        {
+            // Create 3 sqlproj projects like Sql1, Sql2, Sql3
+            string projectSql1 = Path.Combine(WorkingDirectory, "Sql1", "Sql1.sqlproj");
+            string projectSql2 = Path.Combine(WorkingDirectory, "Sql2", "Sql2.sqlproj");
+            string projectSql3 = Path.Combine(WorkingDirectory, "Sql3", "Sql3.sqlproj");
+
+            // Create identical Table1.sql in all three projects
+            string table1Sql = "CREATE TABLE Table1 (Id INT);\nGO\n";
+            Directory.CreateDirectory(Path.Combine(WorkingDirectory, "Sql1"));
+            Directory.CreateDirectory(Path.Combine(WorkingDirectory, "Sql2"));
+            Directory.CreateDirectory(Path.Combine(WorkingDirectory, "Sql3"));
+
+            File.WriteAllText(Path.Combine(WorkingDirectory, "Sql1", "Table1.sql"), table1Sql);
+            File.WriteAllText(Path.Combine(WorkingDirectory, "Sql2", "Table1.sql"), table1Sql);
+            File.WriteAllText(Path.Combine(WorkingDirectory, "Sql3", "Table1.sql"), table1Sql);
+
+            // Create the sqlproj files
+            TestUtils.CreateProjectFile(projectSql1);
+            TestUtils.CreateProjectFile(projectSql2);
+            TestUtils.CreateProjectFile(projectSql3);
+
+            // Add references with DatabaseSqlCmdVariable
+            // Sql2 references Sql1 with DatabaseSqlCmdVariable="Sql1"
+            ProjectUtils.AddItemGroup(projectSql2, "ProjectReference", new string[] { projectSql1 });
+            ProjectUtils.SetItemMetadata(projectSql2, "ProjectReference", projectSql1, "DatabaseSqlCmdVariable", "Sql1");
+
+            // Sql3 references Sql2 with DatabaseSqlCmdVariable="Sql2"
+            ProjectUtils.AddItemGroup(projectSql3, "ProjectReference", new string[] { projectSql2 });
+            ProjectUtils.SetItemMetadata(projectSql3, "ProjectReference", projectSql2, "DatabaseSqlCmdVariable", "Sql2");
+
+            // Build Sql3 project
+            int exitCode = this.RunGenericDotnetCommand($"build {projectSql3}", out string stdOutput, out string stdError);
+            
+            // Build should succeed - different databases should not have name collisions
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+        }
     }
 }

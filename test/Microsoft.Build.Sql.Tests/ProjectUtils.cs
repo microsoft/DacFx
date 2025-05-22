@@ -94,6 +94,34 @@ namespace Microsoft.Build.Sql.Tests
             }
         }
 
+        /// <summary>
+        /// Sets metadata on an item in a project.
+        /// </summary>
+        /// <param name="projectFilePath">Path to the project file.</param>
+        /// <param name="itemName">Name of the item type (e.g., "ProjectReference").</param>
+        /// <param name="itemInclude">Include path of the item to set metadata on.</param>
+        /// <param name="metadataName">Name of the metadata to set.</param>
+        /// <param name="metadataValue">Value of the metadata to set.</param>
+        public static void SetItemMetadata(string projectFilePath, string itemName, string itemInclude, string metadataName, string metadataValue)
+        {
+            using (ProjectCollection projectCollection = GetNewEngine())
+            {
+                Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+                
+                foreach (ProjectItemElement item in project.Xml.Items)
+                {
+                    if (item.ItemType == itemName && item.Include == itemInclude)
+                    {
+                        item.SetMetadataValue(metadataName, metadataValue);
+                        break;
+                    }
+                }
+
+                project.Save(project.FullPath);
+                projectCollection.UnloadAllProjects();
+            }
+        }
+
         public static void AddTarget(string projectFilePath, string targetName, Action<ProjectTargetElement> targetAction)
         {
             using (ProjectCollection projectCollection = GetNewEngine())

@@ -2,13 +2,8 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Build.Framework;
-using NuGet.Common;
-using NuGet.Protocol;
-using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
 namespace Microsoft.Build.Sql;
@@ -25,7 +20,6 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
     public string Version { get; set; } = string.Empty;
 
     private const string PackageName = "Microsoft.Build.Sql";
-    private const string NugetUrl = "https://api.nuget.org/v3/index.json";
     private CancellationTokenSource _cancellationTokenSource = new();
 
     public override bool Execute()
@@ -39,7 +33,11 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
         try
         {
             // Check for prerelease versions if current version is a prerelease version, otherwise check for stable versions only.
-            NuGetVersion latestVersion = GetLatestSdkVersionFromNuGet(currentVersion.IsPrerelease).Result;
+            NuGetVersion latestVersion = NugetClient.GetLatestPackageVersion(
+                PackageName,
+                currentVersion.IsPrerelease,
+                _cancellationTokenSource.Token).Result;
+
             if (latestVersion > currentVersion)
             {
                 Log.LogWarning($"A newer version of {PackageName} is available: {latestVersion}. You are using {currentVersion}.");
@@ -55,28 +53,6 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
         }
 
         return true;    // This task should not fail build even if the version check fails.
-    }
-    
-    /// <summary>
-    /// Gets the latest version of Microsoft.Build.Sql from NuGet
-    /// </summary>
-    private async Task<NuGetVersion> GetLatestSdkVersionFromNuGet(bool includePrerelease)
-    {
-        // Get the metadata resource for the NuGet repository
-        var repository = Repository.Factory.GetCoreV3(NugetUrl);
-        var resource = await repository.GetResourceAsync<PackageMetadataResource>();
-
-        // Search for the package metadata
-        var metadata = await resource.GetMetadataAsync(
-            PackageName,
-            includePrerelease: includePrerelease,
-            includeUnlisted: false,
-            sourceCacheContext: new SourceCacheContext(),
-            log: NullLogger.Instance,
-            token: _cancellationTokenSource.Token);
-
-        // Extract all versions
-        return metadata.Select(m => m.Identity.Version).OrderByDescending(v => v).First();
     }
 
     public void Cancel()

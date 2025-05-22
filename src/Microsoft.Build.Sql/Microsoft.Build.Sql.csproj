@@ -39,7 +39,7 @@
     <PackageReference Include="Microsoft.SqlServer.Server" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" GeneratePathProperty="true" />
-    <PackageReference Include="Nuget.Protocol" GeneratePathProperty="true" />
+    <PackageReference Include="Nuget.Versioning" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
   </ItemGroup>

@@ -36,7 +36,7 @@ jobs:
         dotnet-quality: ga
     - run: dotnet build DacFx.sln
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}
-    - use: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: artifacts-${{ matrix.targetFramework }}-${{ matrix.os }}

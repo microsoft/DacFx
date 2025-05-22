@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-22.04, macos-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
         targetFramework: [net8.0, net9.0, net10.0]
         include:
           - targetFramework: net8.0
@@ -36,8 +36,3 @@ jobs:
         dotnet-quality: ga
     - run: dotnet build DacFx.sln
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: artifacts-${{ matrix.targetFramework }}-${{ matrix.os }}
-        path: artifacts/

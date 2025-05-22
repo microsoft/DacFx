@@ -85,7 +85,7 @@
       <Content Remove="$(SdkIntermediateOutputPath)\README.md" />
       <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
       <Content Remove="$(SdkIntermediateOutputPath)\Sdk.props" />
-      <Content Include="$(SdkIntermediateOutputPath)\Sdk.props" Pack="true" PackagePath="Sdk\"/>
+      <Content Include="$(SdkIntermediateOutputPath)\Sdk.props" Pack="true" PackagePath="sdk\"/>
     </ItemGroup>
   </Target>
 

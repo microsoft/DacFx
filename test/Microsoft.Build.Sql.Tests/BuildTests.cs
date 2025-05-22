@@ -512,33 +512,42 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifyBuildWithTransitiveProjectReferencesWithDatabaseVariables()
         {
             // Create 3 sqlproj projects like Sql1, Sql2, Sql3
-            string projectSql1 = Path.Combine(WorkingDirectory, "Sql1", "Sql1.sqlproj");
-            string projectSql2 = Path.Combine(WorkingDirectory, "Sql2", "Sql2.sqlproj");
-            string projectSql3 = Path.Combine(WorkingDirectory, "Sql3", "Sql3.sqlproj");
+            string projectSql1Dir = Path.Combine(WorkingDirectory, "Sql1");
+            string projectSql2Dir = Path.Combine(WorkingDirectory, "Sql2");
+            string projectSql3Dir = Path.Combine(WorkingDirectory, "Sql3");
+            string projectSql1 = Path.Combine(projectSql1Dir, "Sql1.sqlproj");
+            string projectSql2 = Path.Combine(projectSql2Dir, "Sql2.sqlproj");
+            string projectSql3 = Path.Combine(projectSql3Dir, "Sql3.sqlproj");
 
             // Create identical Table1.sql in all three projects
             string table1Sql = "CREATE TABLE Table1 (Id INT);\nGO\n";
-            Directory.CreateDirectory(Path.Combine(WorkingDirectory, "Sql1"));
-            Directory.CreateDirectory(Path.Combine(WorkingDirectory, "Sql2"));
-            Directory.CreateDirectory(Path.Combine(WorkingDirectory, "Sql3"));
+            Directory.CreateDirectory(projectSql1Dir);
+            Directory.CreateDirectory(projectSql2Dir);
+            Directory.CreateDirectory(projectSql3Dir);
 
-            File.WriteAllText(Path.Combine(WorkingDirectory, "Sql1", "Table1.sql"), table1Sql);
-            File.WriteAllText(Path.Combine(WorkingDirectory, "Sql2", "Table1.sql"), table1Sql);
-            File.WriteAllText(Path.Combine(WorkingDirectory, "Sql3", "Table1.sql"), table1Sql);
+            File.WriteAllText(Path.Combine(projectSql1Dir, "Table1.sql"), table1Sql);
+            File.WriteAllText(Path.Combine(projectSql2Dir, "Table1.sql"), table1Sql);
+            File.WriteAllText(Path.Combine(projectSql3Dir, "Table1.sql"), table1Sql);
 
-            // Create the sqlproj files
-            TestUtils.CreateProjectFile(projectSql1);
-            TestUtils.CreateProjectFile(projectSql2);
-            TestUtils.CreateProjectFile(projectSql3);
+            // Copy from template to create project files
+            File.Copy(
+                Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", "project.sqlproj"),
+                projectSql1);
+            File.Copy(
+                Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", "project.sqlproj"),
+                projectSql2);
+            File.Copy(
+                Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", "project.sqlproj"),
+                projectSql3);
 
             // Add references with DatabaseSqlCmdVariable
             // Sql2 references Sql1 with DatabaseSqlCmdVariable="Sql1"
-            ProjectUtils.AddItemGroup(projectSql2, "ProjectReference", new string[] { projectSql1 });
-            ProjectUtils.SetItemMetadata(projectSql2, "ProjectReference", projectSql1, "DatabaseSqlCmdVariable", "Sql1");
+            ProjectUtils.AddItemGroup(projectSql2, "ProjectReference", new string[] { projectSql1 }, 
+                item => item.AddMetadata("DatabaseSqlCmdVariable", "Sql1"));
 
             // Sql3 references Sql2 with DatabaseSqlCmdVariable="Sql2"
-            ProjectUtils.AddItemGroup(projectSql3, "ProjectReference", new string[] { projectSql2 });
-            ProjectUtils.SetItemMetadata(projectSql3, "ProjectReference", projectSql2, "DatabaseSqlCmdVariable", "Sql2");
+            ProjectUtils.AddItemGroup(projectSql3, "ProjectReference", new string[] { projectSql2 },
+                item => item.AddMetadata("DatabaseSqlCmdVariable", "Sql2"));
 
             // Build Sql3 project
             int exitCode = this.RunGenericDotnetCommand($"build {projectSql3}", out string stdOutput, out string stdError);

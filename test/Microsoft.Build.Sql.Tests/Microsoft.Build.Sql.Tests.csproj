@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Build" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" />
+    <PackageReference Include="Moq" />
     <PackageReference Include="NuGet.Packaging" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter" />

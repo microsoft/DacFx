@@ -42,7 +42,13 @@ public static class NugetClient
             using HttpResponseMessage response = await client.GetAsync(url, cancellationToken);
             response.EnsureSuccessStatusCode();
 
+            // ReadAsStreamAsync does not support cancellation token in .NET Framework
+#if NETFRAMEWORK
+            var jsonStream = await response.Content.ReadAsStreamAsync();
+#else
             var jsonStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+#endif
+            
             versionsData = await JsonSerializer.DeserializeAsync<NuGetVersionsData>(jsonStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, cancellationToken);
 
             // Cache the result
@@ -72,7 +78,13 @@ public static class NugetClient
             DateTime lastWriteTime = File.GetLastWriteTimeUtc(cacheFilePath);
             if (DateTime.UtcNow - lastWriteTime < TimeSpan.FromDays(CacheFileExpirationInDays))
             {
+                // .NET Framework does not support async disposal of Streams
+#if NETFRAMEWORK
+                using FileStream fileStream = new FileStream(cacheFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+#else
                 await using FileStream fileStream = new FileStream(cacheFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+#endif
+
                 return await JsonSerializer.DeserializeAsync<NuGetVersionsData>(fileStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, cancellationToken);
             }
             else
@@ -87,7 +99,14 @@ public static class NugetClient
     private static async Task WriteCacheAsync(string packageName, NuGetVersionsData cacheData, CancellationToken cancellationToken)
     {
         string cacheFilePath = GetVersionCacheFilePath(packageName);
+
+        // .NET Framework does not support async disposal of Streams
+#if NETFRAMEWORK
+        using FileStream fileStream = new FileStream(cacheFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+#else
         await using FileStream fileStream = new FileStream(cacheFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+#endif
+
         await JsonSerializer.SerializeAsync(fileStream, cacheData, cancellationToken: cancellationToken);
         await fileStream.FlushAsync(cancellationToken);
     }
@@ -107,6 +126,6 @@ public static class NugetClient
     /// </summary>
     private class NuGetVersionsData
     {
-        public required string[] Versions { get; set; }
+        public string[] Versions { get; set; }
     }
 }

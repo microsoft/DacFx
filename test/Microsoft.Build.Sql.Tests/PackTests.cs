@@ -19,7 +19,7 @@ namespace Microsoft.Build.Sql.Tests
         public void VerifySimplePack()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand("pack -c Debug", out stdOutput, out stdError);
+            int exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError, arguments: "-p:Configuration=Debug");
 
             // Verify success
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
@@ -34,13 +34,17 @@ namespace Microsoft.Build.Sql.Tests
         {
             // Run build first
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand("build", out stdOutput, out stdError);
+            int exitCode = RunDotnetCommandOnProject("build", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
-            // Run pack with --no-build
-            exitCode = this.RunGenericDotnetCommand("pack -c Debug --no-build", out stdOutput, out stdError);
+            // Run pack with --no-build or -p:NoBuild=true
+#if NETFRAMEWORK
+            exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError, arguments: "-p:Configuration=Debug -p:NoBuild=true");
+#else
+            exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError, arguments: "-c Debug --no-build");
+#endif
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyNugetPackage();
@@ -71,7 +75,7 @@ namespace Microsoft.Build.Sql.Tests
 
             // Pack
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand("pack -c Debug", out stdOutput, out stdError);
+            int exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError, "-p:Configuration=Debug");
 
             // Verify
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
@@ -123,7 +127,7 @@ namespace Microsoft.Build.Sql.Tests
 
             // Run dotnet pack
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand("pack -c Debug", out stdOutput, out stdError);
+            int exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError, arguments: "-p:Configuration=Debug");
 
             // Verify
             Assert.AreEqual(0, exitCode, "Pack failed with error " + stdError);
@@ -133,7 +137,7 @@ namespace Microsoft.Build.Sql.Tests
                 var files = package.GetFiles();
                 Assert.IsTrue(files.Any(f => f.Equals("content/include_content.txt", StringComparison.OrdinalIgnoreCase)),
                     "Expected content/include_content.txt to be in the packaged file list.");
-                Assert.IsFalse(files.Any(f => f.Contains("exclude_content.txt", StringComparison.OrdinalIgnoreCase)),
+                Assert.IsFalse(files.Any(f => f.Contains("exclude_content.txt")),
                     "Expected exclude_content.txt to be excluded from the packaged file list.");
                 Assert.IsTrue(files.Any(f => f.Equals("tools/none.txt", StringComparison.OrdinalIgnoreCase)),
                     "Expected tools/none.txt to be in the packaged file list.");

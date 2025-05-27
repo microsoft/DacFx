@@ -135,7 +135,7 @@
   <!-- Override target to skip invalid .NET Framework check -->
   <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
 
-  <Target Name="CheckForDuplicateSqlItems" Condition="'$(NetCoreBuild)' == 'true'" BeforeTargets="_SetupSqlBuildInputs">
+  <Target Name="CheckForDuplicateSqlItems" BeforeTargets="_SetupSqlBuildInputs">
 
     <PropertyGroup>
       <DefaultItemsMoreInformationLink>https://aka.ms/upgrade-sqlproject#required-remove-build-items-included-by-default</DefaultItemsMoreInformationLink>

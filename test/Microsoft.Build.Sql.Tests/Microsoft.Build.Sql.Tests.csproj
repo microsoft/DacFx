@@ -3,50 +3,40 @@
   <PropertyGroup>
     <!-- Multi-targeting to test SDK on different .NET versions, requires all of the following SDKs to be installed. -->
     <!-- To build and test only one version, add -f to dotnet command. -->
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
     <!-- Disable EOL target framework check since we're explicitly testing against older .NET versions. -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    <!-- Location to save the SDK Nuget Package. This will also serve as the local Nuget source when testing the sqlproj build. -->
-    <SdkPackagePath>$(MSBuildThisFileDirectory)pkg\</SdkPackagePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.Build.Sql\Microsoft.Build.Sql.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.Build.Sql.Templates\Microsoft.Build.Sql.Templates.csproj" />
+    <ProjectReference Include="$(EnlistmentRoot)\src\Microsoft.Build.Sql\Microsoft.Build.Sql.csproj" />
+    <ProjectReference Include="$(EnlistmentRoot)\src\Microsoft.Build.Sql.Templates\Microsoft.Build.Sql.Templates.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="16.9.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" />
-    <PackageReference Include="NuGet.Packaging" Version="6.12.1" />
-    <PackageReference Include="nunit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Build" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" />
+    <PackageReference Include="NuGet.Packaging" />
+    <PackageReference Include="nunit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <!-- References needed to run MSBuild at runtime -->
+    <PackageReference Condition="'$(TargetFramework)' == 'net472'" Include="Microsoft.Build.Tasks.Core" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net472'" Include="System.Text.Json" />
   </ItemGroup>
 
-  <Target Name="CopySdkPackage" AfterTargets="Build">
-    <ItemGroup>
-      <SdkPackage Include="..\..\src\Microsoft.Build.Sql\bin\$(Configuration)\*.nupkg" />
-    </ItemGroup>
-    <Copy SourceFiles="@(SdkPackage)" DestinationFolder="$(SdkPackagePath)" />
-    <Message Text="Copied SDK package from '@(SdkPackage)' to '$(SdkPackagePath)'" Importance="high" />
-  </Target>
-
-  <Target Name="CopyTemplatePackage" AfterTargets="Build">
-    <ItemGroup>
-      <TemplatePackage Include="..\..\src\Microsoft.Build.Sql.Templates\bin\$(Configuration)\*.nupkg" />
-    </ItemGroup>
-    <Copy SourceFiles="@(TemplatePackage)" DestinationFolder="$(SdkPackagePath)" />
-    <Message Text="Copied template package from '@(TemplatePackage)' to '$(SdkPackagePath)'" Importance="high" />
-  </Target>
-
-  <Target Name="DeleteSdkPackage" BeforeTargets="Clean">
-    <RemoveDir Directories="$(SdkPackagePath)" />
-  </Target>
-
   <ItemGroup>
-    <None Remove="$(SdkPackagePath)\**" />
+    <Content Include="TestData/**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Template/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- .NET Core only tests -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Compile Remove="CodeAnalysisTests.cs" />
+    <Compile Remove="PublishTests.cs" />
+    <Compile Remove="TemplateTests.cs" />
   </ItemGroup>
 
 </Project>

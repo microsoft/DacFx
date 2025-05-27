@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net472;net8.0</TargetFrameworks>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <SdkIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)</SdkIntermediateOutputPath>
@@ -12,7 +12,7 @@
     <PackageVersion>1.0.0-test</PackageVersion>
 
     <!-- Path where all the DLLs build depends on will be copied to -->
-    <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\net8.0\</BuildBinariesPath>
+    <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\$(TargetFramework)\</BuildBinariesPath>
 
     <!-- NuGet Package Properties -->
     <Authors>Microsoft</Authors>
@@ -34,36 +34,43 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="$(SqlClientPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="$(ScriptDomPackageVersion)" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.SqlServer.Types" Version="160.1000.6" GeneratePathProperty="true" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="System.IO.Packaging" Version="8.0.1" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Data.SqlClient" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.Server" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.SqlServer.Types" GeneratePathProperty="true" />
+    <PackageReference Include="System.ComponentModel.Composition" GeneratePathProperty="true" />
+    <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
   </ItemGroup>
 
-  <Target Name="CopyBuildBinaries" BeforeTargets="Build">
+  <Target Name="CopyNetCoreBinaries"
+          Condition="'$(IsCrossTargetingBuild)' != 'true' And '$(TargetFramework)' != 'net472'"
+          DependsOnTargets="ResolvePackageAssets"
+          BeforeTargets="Build">
+    <ItemGroup>
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.targets" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\**\*.resources.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_Data_SqlClient)\lib\net6.0\Microsoft.Data.SqlClient.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net8.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
+      <PackageFilesNetCore Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
+      <PackageFilesNetCore Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PackageFilesNetCore)" DestinationFolder="$(BuildBinariesPath)\%(PackageFilesNetCore.RecursiveDir)" />
+  </Target>
+
+  <Target Name="IncludePackageFiles" Condition="'$(IsCrossTargetingBuild)' == 'true'" BeforeTargets="GenerateNuspec" AfterTargets="DispatchToInnerBuilds">
     <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
     <ItemGroup>
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.targets" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\**\*.resources.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_Data_SqlClient)\lib\net6.0\Microsoft.Data.SqlClient.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net8.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
-      <PackageFiles Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
-      <PackageFiles Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
-      <PackageFiles Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(BuildBinariesPath)\%(PackageFiles.RecursiveDir)" />
-    <ItemGroup>
+      <Content Remove="tools\**" />
       <Content Include="tools\**" Pack="true" PackagePath="tools\" />
     </ItemGroup>
   </Target>
 
   <!-- Sets the SDK version correctly in the README -->
-  <Target Name="SetSdkAssemblyVersion" BeforeTargets="GenerateNuspec;Build">
+  <Target Name="SetSdkAssemblyVersion" Condition="'$(IsCrossTargetingBuild)' == 'true'" BeforeTargets="GenerateNuspec">
     <ItemGroup>
       <TemplateFiles Include="README.md" />
     </ItemGroup>
@@ -85,6 +92,7 @@
 
   <ItemGroup>
     <Content Include="sdk\**" Pack="true" PackagePath="sdk\" />
+    <Content Include="tools\**" Pack="true" PackagePath="tools\" />
     <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
     <Content Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
     <Content Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />

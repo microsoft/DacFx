@@ -29,7 +29,9 @@ namespace Microsoft.Build.Sql.Tests
             // Build, pack, and verify output
             string stdOutput, stdError;
             string packagesFolder = Path.Combine(this.WorkingDirectory, "pkg");
-            int exitCode = this.RunGenericDotnetCommand($"pack {ReferenceProjectName}/{ReferenceProjectName}.sqlproj -p:Version={ReferencePackageVersion} -o \"{packagesFolder}\"", out stdOutput, out stdError);
+            int exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError,
+                projectPath: $"{ReferenceProjectName}/{ReferenceProjectName}.sqlproj",
+                arguments: $"-p:Version={ReferencePackageVersion} -p:OutputPath=\"{packagesFolder}\"");
 
             Assert.AreEqual(0, exitCode, "dotnet pack failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
@@ -37,6 +39,20 @@ namespace Microsoft.Build.Sql.Tests
 
             // Delete the reference project folder now that we have a dacpac
             Directory.Delete(Path.Combine(this.WorkingDirectory, ReferenceProjectName), true);
+
+            // Add the reference package directory as a nuget source
+            AddLocalNugetSource(packagesFolder, $"ReferenceSource_{TestContext.CurrentContext.Test.Name}", out _, out stdError);
+            Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
+        }
+
+        [TearDown]
+        public void RemoveReferencePackageSource()
+        {
+            RemoveLocalNugetSource($"ReferenceSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            if (!string.IsNullOrEmpty(stdError))
+            {
+                Assert.Warn("Failed to remove local nuget source: " + stdError);
+            }
         }
 
         [Test]

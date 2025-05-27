@@ -1,0 +1,5 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+# Syntax can be found here: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-syntax
+
+* @abhikum @chlafreniere @dzsquared @llali @ssreerama @zijchen

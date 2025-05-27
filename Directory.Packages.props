@@ -20,11 +20,13 @@
     <PackageVersion Include="System.IO.Packaging" Version="8.0.1" />
 
     <!-- Test -->
-    <PackageVersion Include="Microsoft.Build" Version="16.9.0" />
+    <PackageVersion Include="Microsoft.Build" Version="17.11.4" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.11.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="NuGet.Packaging" Version="6.13.2" />
     <PackageVersion Include="nunit" Version="3.13.2" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 </Project>

@@ -69,7 +69,7 @@ public static class NugetClient
         string cacheFilePath = GetVersionCacheFilePath(packageName);
         if (File.Exists(cacheFilePath))
         {
-            DateTime lastWriteTime = File.GetLastWriteTime(cacheFilePath);
+            DateTime lastWriteTime = File.GetLastWriteTimeUtc(cacheFilePath);
             if (DateTime.UtcNow - lastWriteTime < TimeSpan.FromDays(CacheFileExpirationInDays))
             {
                 await using FileStream fileStream = new FileStream(cacheFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);

@@ -67,11 +67,8 @@
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SdkStagingDirectory)tools\$(TargetFramework)\" />
   </Target>
 
-  <Target Name="ConstructSdkStagingDirectory"
-          Condition="'$(IsCrossTargetingBuild)' == 'true'"
-          BeforeTargets="_GetPackageFiles"
-          DependsOnTargets="CopyNetCoreBinaries;CopyTargetOutputPerFramework">
-    <!-- Set the SDK version in the README and sdk.props -->
+  <!-- Set the SDK version in the README and sdk.props -->
+  <Target Name="SetSdkAssemblyVersion" Condition="'$(IsCrossTargetingBuild)' == 'true'" BeforeTargets="GenerateNuspec">
     <ReplaceFileText 
       InputFilename="$(MSBuildThisFileDirectory)/README.md"
       OutputFilename="$(SdkStagingDirectory)/README.md" 
@@ -82,11 +79,6 @@
       OutputFilename="$(SdkStagingDirectory)/sdk/Sdk.props"
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
-
-    <!-- Copy remaining files to SdkStagingDirectory to create the structure of final NuGet package -->
-    <Copy SourceFiles="$(MSBuildThisFileDirectory)sdk\Sdk.targets" DestinationFiles="$(SdkStagingDirectory)sdk\Sdk.targets" />
-    <Copy SourceFiles="$(EnlistmentRoot)\LICENSE.txt" DestinationFiles="$(SdkStagingDirectory)LICENSE.txt" />
-    <Copy SourceFiles="$(EnlistmentRoot)\images\nuspecicon.png" DestinationFiles="$(SdkStagingDirectory)images\nuspecicon.png" />
   </Target>
 
   <Target Name="DeleteStagingDirectory" AfterTargets="Clean">
@@ -94,7 +86,10 @@
   </Target>
 
   <ItemGroup>
+    <Content Include="sdk\Sdk.targets" Pack="true" PackagePath="sdk\" />
     <Content Include="$(SdkStagingDirectory)**\*.*" Pack="true" PackagePath="\" />
+    <Content Include="$(EnlistmentRoot)\LICENSE.txt" Pack="true" PackagePath="\" />
+    <Content Include="$(EnlistmentRoot)\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
   </ItemGroup>
 
 </Project>

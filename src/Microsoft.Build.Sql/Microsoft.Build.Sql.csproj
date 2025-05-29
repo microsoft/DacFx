@@ -68,7 +68,10 @@
   </Target>
 
   <!-- Set the SDK version in the README and sdk.props -->
-  <Target Name="SetSdkAssemblyVersion" Condition="'$(IsCrossTargetingBuild)' == 'true'" BeforeTargets="GenerateNuspec">
+  <Target Name="SetSdkAssemblyVersion"
+          Condition="'$(IsCrossTargetingBuild)' == 'true'"
+          BeforeTargets="_GetPackageFiles"
+          DependsOnTargets="CopyNetCoreBinaries;CopyTargetOutputPerFramework">
     <ReplaceFileText 
       InputFilename="$(MSBuildThisFileDirectory)/README.md"
       OutputFilename="$(SdkStagingDirectory)/README.md" 
@@ -79,6 +82,12 @@
       OutputFilename="$(SdkStagingDirectory)/sdk/Sdk.props"
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
+
+    <!-- Force MSBuild to recalculate the files needed to be packed -->
+    <ItemGroup>
+      <Content Remove="$(SdkStagingDirectory)**\*.*" />
+      <Content Include="$(SdkStagingDirectory)**\*.*" Pack="true" PackagePath="\" />
+    </ItemGroup>
   </Target>
 
   <Target Name="DeleteStagingDirectory" AfterTargets="Clean">

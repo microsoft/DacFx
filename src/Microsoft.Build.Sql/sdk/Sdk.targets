@@ -220,7 +220,7 @@
     </ItemGroup>
   </Target>
 
-  <UsingTask TaskName="VersionCheckTask" AssemblyFile="$(NETCoreTargetsPath)\Microsoft.Build.Sql.dll" Condition="'$(SkipCheckForNewSDKVersion)' != 'true'" />
+  <UsingTask TaskName="VersionCheckTask" AssemblyFile="$(SdkBinariesPath)\Microsoft.Build.Sql.dll" Condition="'$(SkipCheckForNewSDKVersion)' != 'true'" />
   <Target Name="CheckForNewSDKVersion" BeforeTargets="Restore" Condition="'$(SkipCheckForNewSDKVersion)' != 'true'">
     <VersionCheckTask Version="$(MicrosoftBuildSqlVersion)" />
   </Target>

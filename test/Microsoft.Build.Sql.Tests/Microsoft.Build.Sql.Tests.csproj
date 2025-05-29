@@ -5,7 +5,6 @@
     <!-- To build and test only one version, add -f to dotnet command. -->
     <TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
     <!-- Disable EOL target framework check since we're explicitly testing against older .NET versions. -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>

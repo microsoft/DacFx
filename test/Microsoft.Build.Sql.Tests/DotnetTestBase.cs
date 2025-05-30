@@ -260,6 +260,9 @@ namespace Microsoft.Build.Sql.Tests
                 stdError = threadShared_ReceivedErrors.ToString();
             }
 
+            // Ensure the process has fully exited before accessing ExitCode to avoid race condition
+            dotnet.WaitForExit();
+
             return dotnet.ExitCode;
         }
 

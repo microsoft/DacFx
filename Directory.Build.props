@@ -9,6 +9,9 @@
     <!-- Use artifacts output. Packages will be in $(PackageOutputPath) or artifacts/package/$(Configuration) -->
     <UseArtifactsOutput>true</UseArtifactsOutput>
 
+    <!-- Use latest C# version -->
+    <LangVersion>latest</LangVersion>
+
     <!-- Common project properties -->
     <Authors>Microsoft</Authors>
     <Owners>Microsoft</Owners>

@@ -128,7 +128,6 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
 
-  
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
 
@@ -226,6 +225,11 @@
 
       <ArtifactReference Include="@(_ResolvedDacpacPackageReference->'%(HintPath)')" Condition="Exists(%(_ResolvedDacpacPackageReference.HintPath))" />
     </ItemGroup>
+  </Target>
+
+  <UsingTask TaskName="VersionCheckTask" AssemblyFile="$(SdkBinariesPath)\Microsoft.Build.Sql.dll" Condition="'$(SkipCheckForNewSDKVersion)' != 'true'" />
+  <Target Name="CheckForNewSDKVersion" BeforeTargets="Restore" Condition="'$(SkipCheckForNewSDKVersion)' != 'true'">
+    <VersionCheckTask Version="$(MicrosoftBuildSqlVersion)" />
   </Target>
 
   <!-- Default properties to be evaluated last -->

@@ -505,5 +505,23 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             StringAssert.Contains($"Target path from PrintTargetPath: {GetDacpacPath()}", stdOutput, "Target path not found in output.");
         }
+
+        [Test]
+        public void VersionCheckTest()
+        {
+            // Skip this test if running on Azure DevOps
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AGENT_JOBNAME")))
+            {
+                Assert.Ignore("Skipping version check test on Azure DevOps.");
+            }
+
+            // Since our test version is 1.x, we should get a warning about a newer version being available
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("A newer version of Microsoft.Build.Sql is available", stdOutput, "Version check warning not found in output.");
+            this.VerifyDacPackage();
+            FileAssert.Exists(NuGetClient.GetVersionCacheFilePath("Microsoft.Build.Sql"), "Version cache file should exist after fetching the version.");
+        }
     }
 }

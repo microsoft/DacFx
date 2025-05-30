@@ -13,6 +13,7 @@
       <Using Namespace="System.Text.RegularExpressions" />
       <Code Type="Fragment" Language="cs">
         <![CDATA[
+              Directory.CreateDirectory(Path.GetDirectoryName(OutputFilename));
               File.WriteAllText(
                   OutputFilename,
                   Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)

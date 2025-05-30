@@ -4,15 +4,15 @@
     <TargetFrameworks>net472;net8.0</TargetFrameworks>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <SdkIntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\$(MSBuildThisFileName)</SdkIntermediateOutputPath>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <NoWarn>$(NoWarn);NU5128</NoWarn>
 
     <!-- Default package version used for tests. Actual version set by pipeline. -->
     <PackageVersion>1.0.0-test</PackageVersion>
 
-    <!-- Path where all the DLLs build depends on will be copied to -->
-    <BuildBinariesPath>$(MSBuildThisFileDirectory)\tools\$(TargetFramework)\</BuildBinariesPath>
+    <!-- Staging folder for constructing final NuGet package, assemblies are copied to tools/$(TargetFramework)/ -->
+    <SdkStagingDirectory>$(ArtifactsPath)\bin\$(AssemblyName)\$(Configuration)\$(AssemblyName)\</SdkStagingDirectory>
+    <SdkBinariesPath>$(SdkStagingDirectory)tools\$(TargetFramework)\</SdkBinariesPath>
 
     <!-- NuGet Package Properties -->
     <Authors>Microsoft</Authors>
@@ -34,11 +34,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" />
     <PackageReference Include="Microsoft.SqlServer.DacFx" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.SqlClient" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Server" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" GeneratePathProperty="true" />
+    <PackageReference Include="NuGet.Versioning" />
     <PackageReference Include="System.ComponentModel.Composition" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
   </ItemGroup>
@@ -58,44 +60,45 @@
       <PackageFilesNetCore Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
       <PackageFilesNetCore Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(PackageFilesNetCore)" DestinationFolder="$(BuildBinariesPath)\%(PackageFilesNetCore.RecursiveDir)" />
+    <Copy SourceFiles="@(PackageFilesNetCore)" DestinationFolder="$(SdkBinariesPath)\%(PackageFilesNetCore.RecursiveDir)" />
   </Target>
 
-  <Target Name="IncludePackageFiles" Condition="'$(IsCrossTargetingBuild)' == 'true'" BeforeTargets="GenerateNuspec" AfterTargets="DispatchToInnerBuilds">
-    <Message Text="Using DacFx version '$(DacFxPackageVersion)'" Importance="high" />
-    <ItemGroup>
-      <Content Remove="tools\**" />
-      <Content Include="tools\**" Pack="true" PackagePath="tools\" />
-    </ItemGroup>
+  <Target Name="CopyTargetOutputPerFramework" Condition="'$(IsCrossTargetingBuild)' != 'true'" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SdkStagingDirectory)tools\$(TargetFramework)\" />
   </Target>
 
-  <!-- Sets the SDK version correctly in the README -->
-  <Target Name="SetSdkAssemblyVersion" Condition="'$(IsCrossTargetingBuild)' == 'true'" BeforeTargets="GenerateNuspec">
-    <ItemGroup>
-      <TemplateFiles Include="README.md" />
-    </ItemGroup>
-    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(SdkIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
+  <!-- Set the SDK version in the README and sdk.props -->
+  <Target Name="SetSdkAssemblyVersion"
+          Condition="'$(IsCrossTargetingBuild)' == 'true'"
+          BeforeTargets="_GetPackageFiles"
+          DependsOnTargets="CopyNetCoreBinaries;CopyTargetOutputPerFramework">
     <ReplaceFileText 
-      InputFilename="$(SdkIntermediateOutputPath)/README.md"
-      OutputFilename="$(SdkIntermediateOutputPath)/README.md" 
+      InputFilename="$(MSBuildThisFileDirectory)/README.md"
+      OutputFilename="$(SdkStagingDirectory)/README.md" 
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
+    <ReplaceFileText 
+      InputFilename="$(MSBuildThisFileDirectory)sdk/Sdk.props"
+      OutputFilename="$(SdkStagingDirectory)/sdk/Sdk.props"
+      MatchExpression="###ASSEMBLY_VERSION###"
+      ReplacementText="$(PackageVersion)" />
+
+    <!-- Force MSBuild to recalculate the files needed to be packed -->
     <ItemGroup>
-      <Content Remove="$(SdkIntermediateOutputPath)\README.md" />
-      <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
+      <Content Remove="$(SdkStagingDirectory)**\*.*" />
+      <Content Include="$(SdkStagingDirectory)**\*.*" Pack="true" PackagePath="\" />
     </ItemGroup>
   </Target>
 
-  <Target Name="DeleteToolsFolder" AfterTargets="Clean">
-    <RemoveDir Directories="$(MSBuildThisFileDirectory)\tools" />
+  <Target Name="DeleteStagingDirectory" AfterTargets="Clean">
+    <RemoveDir Directories="$(SdkStagingDirectory)" />
   </Target>
 
   <ItemGroup>
-    <Content Include="sdk\**" Pack="true" PackagePath="sdk\" />
-    <Content Include="tools\**" Pack="true" PackagePath="tools\" />
-    <Content Include="$(SdkIntermediateOutputPath)\README.md" Pack="true" PackagePath="\"/>
-    <Content Include="..\..\LICENSE.txt" Pack="true" PackagePath="\" />
-    <Content Include="..\..\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
+    <Content Include="sdk\Sdk.targets" Pack="true" PackagePath="sdk\" />
+    <Content Include="$(SdkStagingDirectory)**\*.*" Pack="true" PackagePath="\" />
+    <Content Include="$(EnlistmentRoot)\LICENSE.txt" Pack="true" PackagePath="\" />
+    <Content Include="$(EnlistmentRoot)\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />
   </ItemGroup>
 
 </Project>

@@ -10,11 +10,13 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Source -->
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.11.4" />
     <PackageVersion Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="$(SqlClientPackageVersion)" />
     <PackageVersion Include="Microsoft.SqlServer.Server" Version="1.0.0" />
     <PackageVersion Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="$(ScriptDomPackageVersion)" />
     <PackageVersion Include="Microsoft.SqlServer.Types" Version="160.1000.6" />
+    <PackageVersion Include="NuGet.Versioning" Version="6.13.2" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageVersion Include="System.IO.Packaging" Version="8.0.1" />
 
@@ -22,7 +24,8 @@
     <PackageVersion Include="Microsoft.Build" Version="17.11.4" />
     <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.11.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageVersion Include="NuGet.Packaging" Version="6.12.1" />
+    <PackageVersion Include="Moq" Version="4.20.70" />
+    <PackageVersion Include="NuGet.Packaging" Version="6.13.2" />
     <PackageVersion Include="nunit" Version="3.13.2" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />

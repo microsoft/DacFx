@@ -33,10 +33,10 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
         try
         {
             // Check for prerelease versions if current version is a prerelease version, otherwise check for stable versions only.
-            NuGetVersion latestVersion = NugetClient.GetLatestPackageVersion(
+            NuGetVersion latestVersion = NuGetClient.GetLatestPackageVersion(
                 PackageName,
                 currentVersion.IsPrerelease,
-                _cancellationTokenSource.Token).Result;
+                _cancellationTokenSource.Token).GetAwaiter().GetResult();
 
             if (latestVersion > currentVersion)
             {

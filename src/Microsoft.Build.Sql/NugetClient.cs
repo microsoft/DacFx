@@ -12,7 +12,7 @@ using NuGet.Versioning;
 
 namespace Microsoft.Build.Sql;
 
-public static class NugetClient
+public static class NuGetClient
 {
     private const string CacheFileName = "VersionCache.json";
     private const int CacheFileExpirationInDays = 7;

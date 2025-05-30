@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace Microsoft.Build.Sql.Tests;
 
-public class NugetClientTests
+public class NuGetClientTests
 {
     private const string PackageName = "Microsoft.Build.Sql";
 
@@ -34,14 +34,14 @@ public class NugetClientTests
             });
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
-        NugetClient.HttpClientFactory = () => httpClient;
+        NuGetClient.HttpClientFactory = () => httpClient;
 
         // Act
-        var sdkVersion = await NugetClient.GetLatestPackageVersion(PackageName, false);
+        var sdkVersion = await NuGetClient.GetLatestPackageVersion(PackageName, false);
 
         // Assert
         Assert.AreEqual("1.0.2", sdkVersion.ToString(), "Latest version should be 1.0.2");
-        FileAssert.Exists(NugetClient.GetVersionCacheFilePath(PackageName), "Cache file should exist after fetching the version.");
+        FileAssert.Exists(NuGetClient.GetVersionCacheFilePath(PackageName), "Cache file should exist after fetching the version.");
     }
 
     [Test]
@@ -61,10 +61,10 @@ public class NugetClientTests
             });
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
-        NugetClient.HttpClientFactory = () => httpClient;
+        NuGetClient.HttpClientFactory = () => httpClient;
 
         // Act
-        var sdkVersion = await NugetClient.GetLatestPackageVersion(PackageName, true);
+        var sdkVersion = await NuGetClient.GetLatestPackageVersion(PackageName, true);
 
         // Assert
         Assert.AreEqual("1.0.3-preview", sdkVersion.ToString(), "Latest version should be 1.0.3-preview");
@@ -86,10 +86,10 @@ public class NugetClientTests
             });
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
-        NugetClient.HttpClientFactory = () => httpClient;
+        NuGetClient.HttpClientFactory = () => httpClient;
 
         // Act & Assert
-        Assert.ThrowsAsync<HttpRequestException>(async () => await NugetClient.GetLatestPackageVersion(PackageName, false));
+        Assert.ThrowsAsync<HttpRequestException>(async () => await NuGetClient.GetLatestPackageVersion(PackageName, false));
     }
 
     [Test]
@@ -109,10 +109,10 @@ public class NugetClientTests
             });
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
-        NugetClient.HttpClientFactory = () => httpClient;
+        NuGetClient.HttpClientFactory = () => httpClient;
 
         // Act & Assert
-        Assert.ThrowsAsync<JsonException>(async () => await NugetClient.GetLatestPackageVersion(PackageName, false));
+        Assert.ThrowsAsync<JsonException>(async () => await NuGetClient.GetLatestPackageVersion(PackageName, false));
     }
 
     [Test]
@@ -132,16 +132,16 @@ public class NugetClientTests
             });
 
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
-        NugetClient.HttpClientFactory = () => httpClient;
+        NuGetClient.HttpClientFactory = () => httpClient;
 
         // Act
-        var sdkVersion = await NugetClient.GetLatestPackageVersion(PackageName, false);
+        var sdkVersion = await NuGetClient.GetLatestPackageVersion(PackageName, false);
 
         // Assert
         Assert.AreEqual("1.0.2", sdkVersion.ToString(), "Latest version should be 1.0.2");
 
         // Call again to make sure it uses the cache, this time with prerelease version
-        sdkVersion = await NugetClient.GetLatestPackageVersion(PackageName, true);
+        sdkVersion = await NuGetClient.GetLatestPackageVersion(PackageName, true);
         Assert.AreEqual("1.0.3-preview", sdkVersion.ToString(), "Latest version should be 1.0.3-preview");
 
         // Verify that the HTTP request was made only once
@@ -150,15 +150,24 @@ public class NugetClientTests
     }
 
     [SetUp]
+    public void TestSetUp()
+    {
+        DeleteCache();
+    }
+
     [TearDown]
-    public void DeleteCache()
+    public void TestTearDown()
+    {
+        DeleteCache();
+    }
+
+    private void DeleteCache()
     {
         // Delete the cached version file before and after each test run
-        string cacheFilePath = NugetClient.GetVersionCacheFilePath(PackageName);
+        string cacheFilePath = NuGetClient.GetVersionCacheFilePath(PackageName);
         if (File.Exists(cacheFilePath))
         {
             File.Delete(cacheFilePath);
         }
     }
-
 }

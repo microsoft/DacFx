@@ -16,7 +16,7 @@
     <PackageVersion Include="Microsoft.SqlServer.Server" Version="1.0.0" />
     <PackageVersion Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="$(ScriptDomPackageVersion)" />
     <PackageVersion Include="Microsoft.SqlServer.Types" Version="160.1000.6" />
-    <PackageVersion Include="Nuget.Versioning" Version="6.13.2" />
+    <PackageVersion Include="NuGet.Versioning" Version="6.13.2" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="8.0.0" />
     <PackageVersion Include="System.IO.Packaging" Version="8.0.1" />
 

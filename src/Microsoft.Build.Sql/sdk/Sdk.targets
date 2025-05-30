@@ -131,6 +131,13 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
 
+  <ItemGroup>
+    <!-- Capture SDK version in telemetry -->
+    <DacFxTelemetryItems Update="$(MSBuildProjectFullPath)">
+      <MicrosftBuildSqlVersion>$(MicrosoftBuildSqlVersion)</MicrosftBuildSqlVersion>
+    </DacFxTelemetryItems>
+  </ItemGroup>
+
   <!-- Override target to skip invalid .NET Framework check -->
   <Target Name="_CheckForUnsupportedTargetFrameworkAndFeatureCombination" />
 

@@ -509,6 +509,12 @@ namespace Microsoft.Build.Sql.Tests
         [Test]
         public void VersionCheckTest()
         {
+            // Skip this test if running on Azure DevOps
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AGENT_JOBNAME")))
+            {
+                Assert.Ignore("Skipping version check test on Azure DevOps.");
+            }
+
             // Since our test version is 1.x, we should get a warning about a newer version being available
             int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);

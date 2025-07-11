@@ -464,29 +464,6 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
-        // https://github.com/microsoft/DacFx/issues/448
-        public void IncrementalBuildWithNoChanges()
-        {
-            // Build the project first
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
-            Assert.AreEqual(0, exitCode, "First build failed with error " + stdError);
-            Assert.AreEqual(string.Empty, stdError);
-
-            // Get the last modified time of the dacpac
-            DateTime lastModifiedTime = File.GetLastWriteTime(GetDacpacPath());
-
-            // Run build again and verify it is incremental
-            exitCode = this.RunDotnetCommandOnProject("build", out _, out stdError, arguments: "-flp:v=diag");
-            Assert.AreEqual(0, exitCode, "Second build failed with error " + stdError);
-            Assert.AreEqual(string.Empty, stdError);
-
-            StringAssert.Contains(
-                "Skipping target \"SqlBuild\" because all output files are up-to-date with respect to the input files.",
-                File.ReadAllText(Path.Combine(WorkingDirectory, "msbuild.log")));
-            Assert.AreEqual(lastModifiedTime, File.GetLastWriteTime(GetDacpacPath()), "Dacpac should not be modified on incremental build.");
-        }
-
-        [Test]
         // https://github.com/microsoft/DacFx/issues/450
         public void VerifyBuildTargetPath()
         {

@@ -131,6 +131,10 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
 
+  <PropertyGroup>
+    <SqlBuildDependsOn>$(SqlBuildDependsOn);_GenerateSqlBuildDependencyCache</SqlBuildDependsOn>
+  </PropertyGroup>
+  
   <ItemGroup>
     <!-- Capture SDK version in telemetry -->
     <DacFxTelemetryItems Update="$(MSBuildProjectFullPath)">
@@ -160,6 +164,22 @@
 
     <!-- Currently do nothing with DeduplicatedItems. There are some design time logic in Microsoft.NET.Sdk.DefaultItems.Shared.targets that we can implement in the future. -->
 
+  </Target>
+
+  <!-- Similar to _GenerateCompileDependencyCache in .NET SDK, this target generates a file to track dependencies between incremental build executions.
+       This handles cases where items are added or removed from a glob and can't otherwise be detected with timestamp comparisons. -->
+  <Target Name="_GenerateSqlBuildDependencyCache" DependsOnTargets="_SetupSqlBuildInputs">
+    <ItemGroup>
+      <SqlBuildInputItem Include="$(IntermediateOutputPath)SqlBuildInputs.cache" />
+      <SqlBuildCache Include="@(__SqlBuildInputItem)" />
+      <SqlBuildCache Include="@(__SqlScriptDependentFiles)" />
+    </ItemGroup>
+
+    <Hash ItemsToHash="@(SqlBuildCache)">
+      <Output TaskParameter="HashResult" PropertyName="SqlBuildDependencyHash" />
+    </Hash>
+
+    <WriteLinesToFile Lines="$(SqlBuildDependencyHash)" File="$(IntermediateOutputPath)SqlBuildInputs.cache" Overwrite="True" WriteOnlyWhenDifferent="True" />
   </Target>
 
   <!-- Add dacpac file to _PackageFiles, so that it will get included in the NuGet package by the Pack target -->

@@ -60,5 +60,31 @@ namespace Microsoft.Build.Sql.Tests
             var updatedTables = updatedModel.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Table);
             Assert.AreEqual(1, updatedTables.Count(), "Expected 1 table after removing one table from the project.");
         }
+
+        [Test]
+        public void VerifyRebuildWithAddedOldFile()
+        {
+            // Build the project first
+            int exitCode = RunDotnetCommandOnProject("build", out _, out string stdError);
+            Assert.AreEqual(0, exitCode, "First build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Verify that the dacpac has 0 tables (it's empty)
+            using TSqlModel model = new TSqlModel(GetDacpacPath());
+            var tables = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Table);
+            Assert.AreEqual(0, tables.Count(), "Expected 0 tables in the initial build.");
+
+            // Add a file to the project, set its modified time to a past date, and rebuild
+            File.WriteAllText(Path.Combine(WorkingDirectory, "Table1.sql"), "CREATE TABLE Table1 (Id INT PRIMARY KEY);");
+            File.SetLastWriteTime(Path.Combine(WorkingDirectory, "Table1.sql"), DateTime.Now.AddDays(-1));
+            exitCode = RunDotnetCommandOnProject("build", out _, out stdError);
+            Assert.AreEqual(0, exitCode, "Second build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Verify that the dacpac now has 1 table
+            using TSqlModel updatedModel = new TSqlModel(GetDacpacPath());
+            var updatedTables = updatedModel.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Table);
+            Assert.AreEqual(1, updatedTables.Count(), "Expected 1 table after adding one table to the project.");
+        }
     }
 }

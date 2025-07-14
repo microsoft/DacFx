@@ -51,7 +51,7 @@ namespace Microsoft.Build.Sql.Tests
 
             // Delete Table2.sql from project, build again
             File.Delete(Path.Combine(WorkingDirectory, "Table2.sql"));
-            exitCode = RunDotnetCommandOnProject("build", out _, out stdError, arguments: "-bl");
+            exitCode = RunDotnetCommandOnProject("build", out _, out stdError);
             Assert.AreEqual(0, exitCode, "Second build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
 

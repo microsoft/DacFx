@@ -34,6 +34,23 @@ namespace Microsoft.Build.Sql.Tests
                 File.ReadAllText(Path.Combine(WorkingDirectory, "msbuild.log")));
             Assert.AreEqual(lastModifiedTime, File.GetLastWriteTime(GetDacpacPath()), "Dacpac should not be modified on incremental build.");
         }
+        
+        [Test]
+        // https://github.com/microsoft/DacFx/issues/657
+        public void VerifyRebuildWithCodeAnalysis()
+        {
+            // Build the project first, should have warnings due to code analysis
+            int exitCode = RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-p:RunSqlCodeAnalysis=true");
+            Assert.AreEqual(0, exitCode, "First build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("Potential misuse of system function @@IDENTITY.", stdOutput);
+
+            // Build again, should still have warnings
+            exitCode = RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-p:RunSqlCodeAnalysis=true -bl");
+            Assert.AreEqual(0, exitCode, "Second build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("Potential misuse of system function @@IDENTITY.", stdOutput);
+        }
 
         [Test]
         // https://github.com/microsoft/DacFx/issues/663

@@ -161,6 +161,12 @@ namespace Microsoft.Build.Sql.Tests
             dotnetCommand = "-target:" + dotnetCommand;
             arguments += " -restore -verbosity:normal";
             string executablePath = TestUtils.MSBuildExePath;
+
+            // Set BuildFromSSDT if we are testing SSDT build (environment variable BUILD_FROM_SSDT is set from pipeline)
+            if (TestUtils.BuildFromSSDT)
+            {
+                arguments += " -p:BuildFromSSDT=true";
+            }
 #else
             arguments += " --verbosity normal";
             string executablePath = TestUtils.DotnetPath;

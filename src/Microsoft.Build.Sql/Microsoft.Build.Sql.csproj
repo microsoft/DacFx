@@ -40,7 +40,7 @@
     <PackageReference Include="Microsoft.SqlServer.Server" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.SqlServer.Types" GeneratePathProperty="true" />
-    <PackageReference Include="NuGet.Versioning" />
+    <PackageReference Include="NuGet.Versioning" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
   </ItemGroup>
@@ -61,6 +61,24 @@
       <PackageFilesNetCore Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFilesNetCore)" DestinationFolder="$(SdkBinariesPath)\%(PackageFilesNetCore.RecursiveDir)" />
+  </Target>
+
+  <Target Name="CopyNetFrameworkBinaries"
+          Condition="'$(IsCrossTargetingBuild)' != 'true' And '$(TargetFramework)' == 'net472'"
+          DependsOnTargets="ResolvePackageAssets"
+          BeforeTargets="Build">
+    <ItemGroup>
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\*.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\*.targets" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\**\*.resources.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_Data_SqlClient)\lib\net462\Microsoft.Data.SqlClient.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Server)\lib\net46\Microsoft.SqlServer.Server.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net462\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Types)\lib\net462\Microsoft.SqlServer.Types.dll" />
+      <PackageFilesNetFramework Include="$(PkgNuGet_Versioning)\lib\net472\NuGet.Versioning.dll" />
+      <PackageFilesNetFramework Include="$(PkgSystem_IO_Packaging)\lib\net462\System.IO.Packaging.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PackageFilesNetFramework)" DestinationFolder="$(SdkBinariesPath)\%(PackageFilesNetFramework.RecursiveDir)" />
   </Target>
 
   <Target Name="CopyTargetOutputPerFramework" Condition="'$(IsCrossTargetingBuild)' != 'true'" AfterTargets="Build">

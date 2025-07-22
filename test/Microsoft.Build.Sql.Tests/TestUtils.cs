@@ -13,6 +13,7 @@ namespace Microsoft.Build.Sql.Tests
         private const string DotnetToolPathEnvironmentVariable = "DOTNET_TOOL_PATH";
         private const string DotnetRootEnvironmentVariable = "DOTNET_ROOT";
         private const string MSBuildPathEnvironmentVariable = "MSBUILD_EXE_PATH";
+        private const string BuildFromSSDTEnvironmentVariable = "BUILD_FROM_SSDT";
 
         /// <summary>
         /// Returns the full path to the dotnet executable based on the current operating system.
@@ -75,6 +76,19 @@ namespace Microsoft.Build.Sql.Tests
 
                 // Fallback to default MSBuild path for Visual Studio 2022
                 return @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe";
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the environment variable BUILD_FROM_SSDT is set to true.
+        /// This controls if we should test build with SSDT binaries or SDK binaries.
+        /// </summary>
+        public static bool BuildFromSSDT
+        {
+            get
+            {
+                string buildFromSSDT = Environment.GetEnvironmentVariable(BuildFromSSDTEnvironmentVariable);
+                return bool.TryParse(buildFromSSDT, out bool result) && result;
             }
         }
 #endif

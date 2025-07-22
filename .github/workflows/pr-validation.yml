@@ -6,7 +6,8 @@ env:
   LATEST_DOTNET_VERSION: 10.x
 
 jobs:
-  test:
+  # Test SDK builds with dotnet command, on multiple platforms and .NET versions.
+  dotnetTest:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -37,8 +38,17 @@ jobs:
     - run: dotnet build DacFx.sln
     - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}
   
+  # Test SDK builds with full framework MSBuild on Windows, with SDK itself and against SSDT installation.
   msbuildTest:
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        buildType: [SDK, SSDT]
+        include:
+          - buildType: SSDT
+            env:
+              BUILD_FROM_SSDT: true
     steps:
     - name: Checkout
       uses: actions/checkout@v4

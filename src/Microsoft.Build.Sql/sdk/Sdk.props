@@ -49,6 +49,9 @@
 
     <!-- Property to control if the version update task should be run -->
     <SkipCheckForNewSDKVersion Condition="'$(SkipCheckForNewSDKVersion)' == ''">false</SkipCheckForNewSDKVersion>
+
+    <!-- Only applicable when building with full framework MSBuild. If true, build binaries will be loaded from SSDT installation instead of SDK. -->
+    <BuildFromSSDT Condition="'$(BuildFromSSDT)' == ''">false</BuildFromSSDT>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -69,10 +72,11 @@
   <PropertyGroup>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Core'">true</NetCoreBuild>
     <NetCoreBuild Condition="'$(NetCoreBuild)' == '' And '$(MSBuildRuntimeType)' == 'Full'">false</NetCoreBuild>
-    <NETCoreTargetsPath Condition="$(NETCoreTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\net8.0</NETCoreTargetsPath>
-    <NETFrameworkTargetsPath Condition="$(NETFrameworkTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\net472</NETFrameworkTargetsPath>
-    <SdkBinariesPath Condition="'$(SdkBinariesPath)' == '' AND '$(NetCoreBuild)' == 'true'">$(NETCoreTargetsPath)</SdkBinariesPath>
-    <SdkBinariesPath Condition="'$(SdkBinariesPath)' == '' AND '$(NetCoreBuild)' != 'true'">$(NETFrameworkTargetsPath)</SdkBinariesPath>
+    <NETCoreSqlTargetsPath Condition="$(NETCoreSqlTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\net8.0</NETCoreSqlTargetsPath>
+    <NETFrameworkSqlTargetsPath Condition="$(NETFrameworkSqlTargetsPath) == ''">$(MSBuildThisFileDirectory)..\tools\net472</NETFrameworkSqlTargetsPath>
+    <SSDTPath Condition="'$(SSDTPath)' == '' And '$(BuildFromSSDT)' == 'false'">$(NETFrameworkSqlTargetsPath)</SSDTPath>
+    <SdkBinariesPath Condition="'$(SdkBinariesPath)' == '' AND '$(NetCoreBuild)' == 'true'">$(NETCoreSqlTargetsPath)</SdkBinariesPath>
+    <SdkBinariesPath Condition="'$(SdkBinariesPath)' == '' AND '$(NetCoreBuild)' != 'true'">$(NETFrameworkSqlTargetsPath)</SdkBinariesPath>
     <TargetFramework Condition="'$(TargetFramework)' == '' AND '$(NetCoreBuild)' == 'true'">netstandard2.1</TargetFramework>
     <ImplicitlyExpandNETStandardFacades Condition="'$(ImplicitlyExpandNETStandardFacades)' == ''">false</ImplicitlyExpandNETStandardFacades>
     <DebugSymbols>false</DebugSymbols>

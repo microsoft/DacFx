@@ -73,7 +73,7 @@
       <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net472\**\*.resources.dll" />
       <PackageFilesNetFramework Include="$(PkgMicrosoft_Data_SqlClient)\lib\net462\Microsoft.Data.SqlClient.dll" />
       <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Server)\lib\net46\Microsoft.SqlServer.Server.dll" />
-      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net462\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net472\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
       <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Types)\lib\net462\Microsoft.SqlServer.Types.dll" />
       <PackageFilesNetFramework Include="$(PkgNuGet_Versioning)\lib\net472\NuGet.Versioning.dll" />
       <PackageFilesNetFramework Include="$(PkgSystem_IO_Packaging)\lib\net462\System.IO.Packaging.dll" />

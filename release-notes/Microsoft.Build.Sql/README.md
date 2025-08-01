@@ -4,6 +4,7 @@ The following Microsoft.Build.Sql and Microsoft.Build.Sql.Templates releases hav
 
 | Release Date | Version | Notes |
 | :-- | :-- | :--: |
+| 2025-08-01 | 2.0.0-preview.3 | [release notes](2.0.0-preview.3.md) |
 | 2025-06-03 | 2.0.0-preview.2 | [release notes](2.0.0-preview.2.md) |
 | 2025-04-18 | 2.0.0-preview.1 | [release notes](2.0.0-preview.1.md) |
 | 2025-03-11 | 1.0.0 | [release notes](1.0.0.md) |

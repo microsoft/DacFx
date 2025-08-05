@@ -5,7 +5,7 @@
 
     <!-- Let CI pipelines to set these for testing dependencies -->
     <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.1.61</DacFxPackageVersion>
-    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">170.64.0</ScriptDomPackageVersion>
+    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">170.*</ScriptDomPackageVersion>
     <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">5.1.6</SqlClientPackageVersion>
   </PropertyGroup>
   <ItemGroup>

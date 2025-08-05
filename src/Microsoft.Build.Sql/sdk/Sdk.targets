@@ -242,6 +242,9 @@
         <DatabaseVariableLiteralValue Condition="'%(_ResolvedDacpacPackageReference.DatabaseVariableLiteralValue)' == '' And '%(_ResolvedDacpacPackageReference.IsMasterDacpac)' == 'true'">master</DatabaseVariableLiteralValue>
         <DatabaseVariableLiteralValue Condition="'%(_ResolvedDacpacPackageReference.DatabaseVariableLiteralValue)' == '' And '%(_ResolvedDacpacPackageReference.IsMsdbDacpac)' == 'true'">msdb</DatabaseVariableLiteralValue>
         <SuppressMissingDependenciesErrors>%(PackageReference.SuppressMissingDependenciesErrors)</SuppressMissingDependenciesErrors>
+
+        <HideAbsolutePath Condition="'%(PackageReference.HideAbsolutePath)' != ''">'%(PackageReference.HideAbsolutePath)</HideAbsolutePath>
+        <HideAbsolutePath Condition="'%(PackageReference.HideAbsolutePath)' == ''">true</HideAbsolutePath>
       </_ResolvedDacpacPackageReference>
 
       <ArtifactReference Include="@(_ResolvedDacpacPackageReference->'%(HintPath)')" Condition="Exists(%(_ResolvedDacpacPackageReference.HintPath))" />

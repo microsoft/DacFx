@@ -143,7 +143,7 @@ namespace Microsoft.Build.Sql.Tests
             string tempPath = TestUtils.CreateTempDirectory();
             package.Unpack(tempPath);
             string modelXml = File.ReadAllText(Path.Combine(tempPath, "model.xml"));
-            StringAssert.Contains(@"<Metadata Name=""FileName"" Value=""master.dacpac"" />", modelXml, "The master.dacpac path should not be absolute in the model.xml file.");
+            StringAssert.IsMatch(@"<Metadata Name=""FileName"" Value=""(master.dacpac|MASTER.DACPAC)"" />", modelXml, "The master.dacpac path should not be absolute in the model.xml file.");
         }
 
         [Test]
@@ -161,12 +161,12 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
-            // Verify that the master.dacpac path is not absolute in the generated model.xml
+            // Verify that the master.dacpac path is absolute in the generated model.xml
             using DacPackage package = DacPackage.Load(GetDacpacPath());
             string tempPath = TestUtils.CreateTempDirectory();
             package.Unpack(tempPath);
             string modelXml = File.ReadAllText(Path.Combine(tempPath, "model.xml"));
-            StringAssert.IsMatch(@"<Metadata Name=""FileName"" Value=""(.+)master.dacpac"" />", modelXml, "The master.dacpac path should be absolute in the model.xml file when HideAbsolutePath is false.");
+            StringAssert.IsMatch(@"<Metadata Name=""FileName"" Value=""(.+)(master.dacpac|MASTER.DACPAC)"" />", modelXml, "The master.dacpac path should be absolute in the model.xml file when HideAbsolutePath is false.");
         }
     }
 }

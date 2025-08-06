@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.SqlServer.Dac;
 using NUnit.Framework;
 
 namespace Microsoft.Build.Sql.Tests
@@ -25,7 +26,7 @@ namespace Microsoft.Build.Sql.Tests
         {
             // Copy the reference project folder to working directory
             TestUtils.CopyDirectoryRecursive(Path.Combine(CommonTestDataDirectory, ReferenceProjectName), Path.Combine(WorkingDirectory, ReferenceProjectName));
-            
+
             // Build, pack, and verify output
             string stdOutput, stdError;
             string packagesFolder = Path.Combine(this.WorkingDirectory, "pkg");
@@ -124,6 +125,48 @@ namespace Microsoft.Build.Sql.Tests
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
             FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), $"{DatabaseProjectName}_Create.sql"));
+        }
+
+        [Test]
+        [Description("Verifies HideAbsolutePath property is set to true by default for package references")]
+        public void VerifyHideAbsolutePathPropertyDefault()
+        {
+            // Add PackageReference to master.dacpac and build
+            this.AddPackageReference(packageName: "Microsoft.SqlServer.Dacpacs.Master", version: "160.*");
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify that the master.dacpac path is not absolute in the generated model.xml
+            using DacPackage package = DacPackage.Load(GetDacpacPath());
+            string tempPath = TestUtils.CreateTempDirectory();
+            package.Unpack(tempPath);
+            string modelXml = File.ReadAllText(Path.Combine(tempPath, "model.xml"));
+            StringAssert.IsMatch(@"<Metadata Name=""FileName"" Value=""(master.dacpac|MASTER.DACPAC)"" />", modelXml, "The master.dacpac path should not be absolute in the model.xml file.");
+        }
+
+        [Test]
+        [Description("Verifies that HideAbsolutePath property can be overridden to false for package references")]
+        public void VerifyHideAbsolutePathPropertyOverride()
+        {
+            // Add PackageReference to master.dacpac and build
+            ProjectUtils.AddItemGroup(GetProjectFilePath(), "PackageReference", ["Microsoft.SqlServer.Dacpacs.Master"], item =>
+            {
+                item.AddMetadata("Version", "160.*");
+                item.AddMetadata("HideAbsolutePath", "false");
+            });
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify that the master.dacpac path is absolute in the generated model.xml
+            using DacPackage package = DacPackage.Load(GetDacpacPath());
+            string tempPath = TestUtils.CreateTempDirectory();
+            package.Unpack(tempPath);
+            string modelXml = File.ReadAllText(Path.Combine(tempPath, "model.xml"));
+            StringAssert.IsMatch(@"<Metadata Name=""FileName"" Value=""(.+)(master.dacpac|MASTER.DACPAC)"" />", modelXml, "The master.dacpac path should be absolute in the model.xml file when HideAbsolutePath is false.");
         }
     }
 }

@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Source -->
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.11.4" />
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.11.31" />
     <PackageVersion Include="Microsoft.SqlServer.DacFx" Version="$(DacFxPackageVersion)" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="$(SqlClientPackageVersion)" />
     <PackageVersion Include="Microsoft.SqlServer.Server" Version="1.0.0" />
@@ -21,8 +21,8 @@
     <PackageVersion Include="System.IO.Packaging" Version="8.0.1" />
 
     <!-- Test -->
-    <PackageVersion Include="Microsoft.Build" Version="17.11.4" />
-    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.11.4" />
+    <PackageVersion Include="Microsoft.Build" Version="17.11.31" />
+    <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="17.11.31" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="NuGet.Packaging" Version="6.13.2" />

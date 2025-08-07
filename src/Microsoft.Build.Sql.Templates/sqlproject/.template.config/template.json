@@ -7,7 +7,7 @@
     ],
     "identity": "Microsoft.Build.Sql.Project",
     "name": "SQL Server Database Project",
-    "description": "A project that creates a SQL Server Data-Tier Application package (.dacpac)",
+    "description": "A Microsoft.Build.Sql project that creates a SQL Server Data-Tier Application package (.dacpac)",
     "shortName": "sqlproj",
     "tags": {
         "language": "SQL",

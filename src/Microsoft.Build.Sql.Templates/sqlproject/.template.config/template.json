@@ -38,7 +38,7 @@
             "type": "parameter",
             "displayName": "Target SQL platform",
             "datatype": "choice",
-            "defaultValue": "Sql160",
+            "defaultValue": "Sql170",
             "replaces": "{TargetPlatform}",
             "choices": [
                 {

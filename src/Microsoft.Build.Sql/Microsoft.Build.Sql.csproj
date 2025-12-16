@@ -53,10 +53,10 @@
       <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.dll" />
       <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\*.targets" />
       <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_DacFx)\lib\net8.0\**\*.resources.dll" />
-      <PackageFilesNetCore Include="$(PkgMicrosoft_Data_SqlClient)\lib\net6.0\Microsoft.Data.SqlClient.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_Data_SqlClient)\lib\net8.0\Microsoft.Data.SqlClient.dll" />
       <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_Server)\lib\netstandard2.0\Microsoft.SqlServer.Server.dll" />
       <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net8.0\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
-      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.1\Microsoft.SqlServer.Types.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.0\Microsoft.SqlServer.Types.dll" />
       <PackageFilesNetCore Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
       <PackageFilesNetCore Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
     </ItemGroup>
@@ -74,7 +74,7 @@
       <PackageFilesNetFramework Include="$(PkgMicrosoft_Data_SqlClient)\lib\net462\Microsoft.Data.SqlClient.dll" />
       <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Server)\lib\net46\Microsoft.SqlServer.Server.dll" />
       <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_TransactSql_ScriptDom)\lib\net472\Microsoft.SqlServer.TransactSql.ScriptDom.dll" />
-      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Types)\lib\net462\Microsoft.SqlServer.Types.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Types)\lib\net472\Microsoft.SqlServer.Types.dll" />
       <PackageFilesNetFramework Include="$(PkgNuGet_Versioning)\lib\net472\NuGet.Versioning.dll" />
       <PackageFilesNetFramework Include="$(PkgSystem_IO_Packaging)\lib\net462\System.IO.Packaging.dll" />
     </ItemGroup>

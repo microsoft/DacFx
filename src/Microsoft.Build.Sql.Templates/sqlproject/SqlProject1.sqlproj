@@ -1,9 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build">
-  <Sdk Name="Microsoft.Build.Sql" Version="###ASSEMBLY_VERSION###" />
-  <PropertyGroup>
-    <Name>SqlProject1</Name>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.{TargetPlatform}DatabaseSchemaProvider</DSP>
-    <ModelCollation>1033, CI</ModelCollation>
-  </PropertyGroup>
+<Project Sdk="Microsoft.Build.Sql/###ASSEMBLY_VERSION###" DefaultTargets="Build">
+
+    <PropertyGroup>
+        <SqlTargetName>SqlProject1</SqlTargetName>
+        <DacVersion>1.0.0.0<DacVersion>
+        <DSP>Microsoft.Data.Tools.Schema.Sql.{TargetPlatform}DatabaseSchemaProvider</DSP>
+        <ModelCollation>1033, CI</ModelCollation>
+    </PropertyGroup>
+
+    <!-- Correct the build in Visual Studio so it doesn't trigger a NuGet Framework Reference error.
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(MSBuildRuntimeType)' != 'Core'">
+        <Message Importance="high" Text="Ensuring the $(MSBuildThisFileDirectory)\obj\project.assets.json file is removed, if necessary, so that the database project can be built through VisualStudio SSDT without errors" />
+        <Delete Files="$(MSBuildThisFileDirectory)\obj\project.assets.json" />
+    </Target>
+
 </Project>

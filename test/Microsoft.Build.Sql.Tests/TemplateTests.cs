@@ -2,7 +2,10 @@
 // Licensed under the MIT License.
 
 using NUnit.Framework;
+using System;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -86,6 +89,34 @@ namespace Microsoft.Build.Sql.Tests
 
             this.DatabaseProjectName = "VerifySqlprojTemplateWithTargetPlatform";
             this.VerifyTargetPlatform("SqlAzureV12");
+        }
+
+        [Test]
+        [Description("Verifies the database project template includes a valid project GUID")]
+        public void VerifySqlprojTemplateIncludesProjectGuid()
+        {
+            string stdOutput, stdError;
+            int exitCode = this.RunGenericDotnetCommand("new sqlproj", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "dotnet new sqlproj failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Verify the project GUID is present and valid in the generated .sqlproj file
+            string projectFilePath = Path.Combine(this.WorkingDirectory, "VerifySqlprojTemplateIncludesProjectGuid.sqlproj");
+            FileAssert.Exists(projectFilePath);
+
+            // Parse as XML to properly extract the ProjectGuid element
+            var doc = XDocument.Load(projectFilePath);
+            var projectGuidElement = doc.Descendants("ProjectGuid").FirstOrDefault();
+
+            Assert.IsNotNull(projectGuidElement, "ProjectGuid element should exist in the .sqlproj file");
+            Assert.IsNotEmpty(projectGuidElement!.Value, "ProjectGuid should not be empty");
+
+            // Verify the value is a valid GUID format
+            Assert.IsTrue(
+                Guid.TryParse(projectGuidElement!.Value, out Guid parsedGuid),
+                $"ProjectGuid value '{projectGuidElement!.Value}' is not a valid GUID format");
+
+            Assert.AreNotEqual(Guid.Empty, parsedGuid, "ProjectGuid should not be an empty GUID");
         }
     }
 }

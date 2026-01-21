@@ -5,5 +5,6 @@
     <Name>SqlProject1</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.{TargetPlatform}DatabaseSchemaProvider</DSP>
     <ModelCollation>1033, CI</ModelCollation>
+    <ProjectGuid>{ProjectGuid}</ProjectGuid>
   </PropertyGroup>
 </Project>

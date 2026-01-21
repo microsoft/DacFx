@@ -31,7 +31,7 @@ namespace Microsoft.Build.Sql.Tests
             get { return Path.Combine(this.CommonTestDataDirectory, TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)); }
         }
 
-        private static string LocalNugetSource
+        protected static string LocalNugetSource
         {
             // Path to <source_root>/artifacts/package/<debug|release> folder
 #if DEBUG

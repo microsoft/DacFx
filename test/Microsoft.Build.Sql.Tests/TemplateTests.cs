@@ -15,15 +15,32 @@ namespace Microsoft.Build.Sql.Tests
         private const string TemplatesPackageId = "Microsoft.Build.Sql.Templates";
 
         /// <summary>
-        /// Installs the template package locally for use by tests
+        /// Gets the path to the locally built Microsoft.Build.Sql.Templates nupkg file.
+        /// </summary>
+        private static string GetLocalTemplatePackagePath()
+        {
+            var packageFiles = Directory.GetFiles(LocalNugetSource, $"{TemplatesPackageId}.*.nupkg");
+            if (packageFiles.Length == 0)
+            {
+                throw new FileNotFoundException($"Could not find {TemplatesPackageId} package in {LocalNugetSource}. Make sure to build the Microsoft.Build.Sql.Templates project first.");
+            }
+            // Return the first matching package (there should typically be only one)
+            return packageFiles[0];
+        }
+
+        /// <summary>
+        /// Installs the template package from locally built nupkg for use by tests
         /// </summary>
         [OneTimeSetUp]
         public void ClassSetup()
         {
             base.EnvironmentSetup();
 
+            string templatePackagePath = GetLocalTemplatePackagePath();
+            TestContext.WriteLine($"Installing template from: {templatePackagePath}");
+
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand($"new --install {TemplatesPackageId}", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand($"new install \"{templatePackagePath}\"", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Template install failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
         }
@@ -35,7 +52,7 @@ namespace Microsoft.Build.Sql.Tests
         public void ClassCleanup()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand($"new --uninstall {TemplatesPackageId}", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand($"new uninstall {TemplatesPackageId}", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Template uninstall failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
         }

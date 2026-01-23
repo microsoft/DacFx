@@ -34,6 +34,11 @@
             "description": "Adds a gitignore file to the project",
             "datatype": "bool"
         },
+        "projectguid": {
+            "type": "generated",
+            "generator": "guid",
+            "replaces": "{ProjectGuid}"
+        },
         "target-platform": {
             "type": "parameter",
             "displayName": "Target SQL platform",

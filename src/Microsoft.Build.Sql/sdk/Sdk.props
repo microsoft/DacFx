@@ -100,6 +100,9 @@
     <PlatformName Condition="'$(PlatformName)' == ''">$(Platform)</PlatformName>
     <OutputType>Database</OutputType>
     
+    <!-- Project type GUID for dotnet sln add support -->
+    <DefaultProjectTypeGuid>{42EA0DBD-9CF1-443E-919E-BE9C484E4577}</DefaultProjectTypeGuid>
+    
     <!-- Optional -->
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     

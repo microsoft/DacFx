@@ -2,7 +2,10 @@
 // Licensed under the MIT License.
 
 using NUnit.Framework;
+using System;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Microsoft.Build.Sql.Tests
 {
@@ -12,15 +15,32 @@ namespace Microsoft.Build.Sql.Tests
         private const string TemplatesPackageId = "Microsoft.Build.Sql.Templates";
 
         /// <summary>
-        /// Installs the template package locally for use by tests
+        /// Gets the path to the locally built Microsoft.Build.Sql.Templates nupkg file.
+        /// </summary>
+        private static string GetLocalTemplatePackagePath()
+        {
+            var packageFiles = Directory.GetFiles(LocalNugetSource, $"{TemplatesPackageId}.*.nupkg");
+            if (packageFiles.Length == 0)
+            {
+                throw new FileNotFoundException($"Could not find {TemplatesPackageId} package in {LocalNugetSource}. Make sure to build the Microsoft.Build.Sql.Templates project first.");
+            }
+            // Return the first matching package (there should typically be only one)
+            return packageFiles[0];
+        }
+
+        /// <summary>
+        /// Installs the template package from locally built nupkg for use by tests
         /// </summary>
         [OneTimeSetUp]
         public void ClassSetup()
         {
             base.EnvironmentSetup();
 
+            string templatePackagePath = GetLocalTemplatePackagePath();
+            TestContext.WriteLine($"Installing template from: {templatePackagePath}");
+
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand($"new --install {TemplatesPackageId}", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand($"new install \"{templatePackagePath}\"", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Template install failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
         }
@@ -32,7 +52,7 @@ namespace Microsoft.Build.Sql.Tests
         public void ClassCleanup()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand($"new --uninstall {TemplatesPackageId}", out stdOutput, out stdError);
+            int exitCode = this.RunGenericDotnetCommand($"new uninstall {TemplatesPackageId}", out stdOutput, out stdError);
             Assert.AreEqual(0, exitCode, "Template uninstall failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
         }
@@ -86,6 +106,34 @@ namespace Microsoft.Build.Sql.Tests
 
             this.DatabaseProjectName = "VerifySqlprojTemplateWithTargetPlatform";
             this.VerifyTargetPlatform("SqlAzureV12");
+        }
+
+        [Test]
+        [Description("Verifies the database project template includes a valid project GUID")]
+        public void VerifySqlprojTemplateIncludesProjectGuid()
+        {
+            string stdOutput, stdError;
+            int exitCode = this.RunGenericDotnetCommand("new sqlproj", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "dotnet new sqlproj failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Verify the project GUID is present and valid in the generated .sqlproj file
+            string projectFilePath = Path.Combine(this.WorkingDirectory, "VerifySqlprojTemplateIncludesProjectGuid.sqlproj");
+            FileAssert.Exists(projectFilePath);
+
+            // Parse as XML to properly extract the ProjectGuid element
+            var doc = XDocument.Load(projectFilePath);
+            var projectGuidElement = doc.Descendants("ProjectGuid").FirstOrDefault();
+
+            Assert.IsNotNull(projectGuidElement, "ProjectGuid element should exist in the .sqlproj file");
+            Assert.IsNotEmpty(projectGuidElement!.Value, "ProjectGuid should not be empty");
+
+            // Verify the value is a valid GUID format
+            Assert.IsTrue(
+                Guid.TryParse(projectGuidElement!.Value, out Guid parsedGuid),
+                $"ProjectGuid value '{projectGuidElement!.Value}' is not a valid GUID format");
+
+            Assert.AreNotEqual(Guid.Empty, parsedGuid, "ProjectGuid should not be an empty GUID");
         }
     }
 }

@@ -500,5 +500,65 @@ namespace Microsoft.Build.Sql.Tests
             this.VerifyDacPackage();
             FileAssert.Exists(NuGetClient.GetVersionCacheFilePath("Microsoft.Build.Sql"), "Version cache file should exist after fetching the version.");
         }
+
+#if !NETFRAMEWORK
+        [Test]
+        [Description("Verifies that a SQL project can be added to a .sln solution and built via dotnet sln add.")]
+        public void VerifySolutionAddAndBuild()
+        {
+            // Create a new solution
+            int exitCode = this.RunGenericDotnetCommand("new sln -n SDKTestSolution --format sln", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Solution creation failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Add the existing test project to the solution
+            string projectPath = Path.GetFileName(this.GetProjectFilePath());
+            exitCode = this.RunGenericDotnetCommand($"sln SDKTestSolution.sln add {projectPath}", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "Adding project to solution failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("added to the solution", stdOutput, "Expected success message not found.");
+
+            // Verify the solution file contains our project
+            string slnContent = File.ReadAllText(Path.Combine(this.WorkingDirectory, "SDKTestSolution.sln"));
+            StringAssert.Contains(".sqlproj", slnContent, "Project not found in solution file.");
+
+            // Build the solution
+            exitCode = this.RunGenericDotnetCommand("build SDKTestSolution.sln --verbosity normal", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "Solution build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Verify dacpac was created
+            this.VerifyDacPackage();
+        }
+
+        [Test]
+        [Description("Verifies that a SQL project can be added to a .slnx solution and built via dotnet sln add.")]
+        public void VerifySolutionAddAndBuildSlnx()
+        {
+            // Create a new solution using slnx format
+            int exitCode = this.RunGenericDotnetCommand("new sln -n SDKTestSolution --format slnx", out string stdOutput, out string stdError);
+            Assert.AreEqual(0, exitCode, "Solution creation failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Add the existing test project to the solution
+            string projectPath = Path.GetFileName(this.GetProjectFilePath());
+            exitCode = this.RunGenericDotnetCommand($"sln SDKTestSolution.slnx add {projectPath}", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "Adding project to solution failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("added to the solution", stdOutput, "Expected success message not found.");
+
+            // Verify the solution file contains our project
+            string slnxContent = File.ReadAllText(Path.Combine(this.WorkingDirectory, "SDKTestSolution.slnx"));
+            StringAssert.Contains(".sqlproj", slnxContent, "Project not found in solution file.");
+
+            // Build the solution
+            exitCode = this.RunGenericDotnetCommand("build SDKTestSolution.slnx --verbosity normal", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, "Solution build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+
+            // Verify dacpac was created
+            this.VerifyDacPackage();
+        }
+#endif
     }
 }

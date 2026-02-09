@@ -129,8 +129,8 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == '' AND '$(BuildFromSSDT)' == 'false'" Project="$(MSBuildThisFileDirectory)../tools/net472/Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' == '' AND '$(BuildFromSSDT)' != 'false'" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
 
-  <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
-          Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
+  <Import Condition="'$(NetCoreBuild)' != 'true' AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\SQLProjectsSystem.targets')"
+          Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\SQLProjectsSystem.targets" />
 
   <PropertyGroup>
     <SqlBuildDependsOn>$(SqlBuildDependsOn);_GenerateSqlBuildDependencyCache</SqlBuildDependsOn>

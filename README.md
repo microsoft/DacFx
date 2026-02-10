@@ -5,14 +5,15 @@
 |SqlPackage|[📦&nbsp;Tool](https://www.nuget.org/packages/Microsoft.SqlPackage)<br/>[📗&nbsp;Docs](https://aka.ms/sqlpackage-ref)|Microsoft.SqlPackage is a cross-platform command-line utility for creating and deploying .dacpac and .bacpac packages. SqlPackage can be installed as a *dotnet tool*.|
 |DacFx|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.DacFx)<br/>[📘&nbsp;API Docs](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.dac)|The Microsoft SQL Server Data-Tier Application Framework (Microsoft.SqlServer.DacFx) is a .NET library which provides application lifecycle services for database development and management for Microsoft SQL Server and Microsoft Azure SQL Databases. Preview versions of DacFx are frequently released to NuGet.|
 |DacpacVerify|[📦&nbsp;Tool](https://www.nuget.org/packages/Microsoft.DacpacVerify)|Microsoft.DacpacVerify is a cross-platform command-line utility for checking that two .dacpac packages match, including pre/post-deployment scripts and SQLCMD variables.|
-|Dacpacs.(Master,Msdb)|[📦&nbsp;Master](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Master)<br/>[📦&nbsp;Msdb](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Msdb)|Microsoft.SqlServer.Dacpacs.Master and Microsoft.SqlServer.Dacpacs.Msdb is a set of NuGet packages containing .dacpac files for Microsoft SQL Server system databases (master, msdb) with versions across SQL Server 2008 (100) through SQL Server 2022 (160).|
+|Dacpacs.(Master,Msdb)|[📦&nbsp;Master](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Master)<br/>[📦&nbsp;Msdb](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Msdb)|Microsoft.SqlServer.Dacpacs.Master and Microsoft.SqlServer.Dacpacs.Msdb is a set of NuGet packages containing .dacpac files for Microsoft SQL Server system databases (master, msdb) with versions across SQL Server 2008 (100) through SQL Server 2025 (170).|
 |Dacpacs.Azure.Master|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Azure.Master)|Microsoft.SqlServer.Dacpacs.Azure.Master is a NuGet package containing a .dacpac file for the Azure SQL Database master database.|
 |Dacpacs.DbFabric|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.DbFabric)|Microsoft.SqlServer.Dacpacs.DbFabric is a NuGet package containing a .dacpac file for the SQL database in Fabric system objects.|
+|Dacpacs.FabricDw|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.FabricDw)|Microsoft.SqlServer.Dacpacs.FabricDw is a NuGet package containing a .dacpac file for the Warehouse in Fabric master database objects.|
 |Dacpacs.Synapse.Master|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.Synapse.Master)|Microsoft.SqlServer.Dacpacs.Synapse.Master is a NuGet package containing a .dacpac file for the Azure Synapse Analytics master database.|
 |Dacpacs.SynapseServerless.Master|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.Dacpacs.SynapseServerless.Master)|Microsoft.SqlServer.Dacpacs.SynapseServerless.Master is a NuGet package containing a .dacpac file for the Azure Synapse Analytics serverless SQL pools master database.|
 |ScriptDom|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.SqlServer.TransactSql.ScriptDom)<br/>[🛠️&nbsp;Code](https://github.com/microsoft/SqlScriptDOM)<br/>[📘&nbsp;API Docs](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsql.scriptdom)|Microsoft.SqlServer.TransactSql.ScriptDom is a NuGet package containing the Transact-SQL parser [ScriptDOM](https://learn.microsoft.com/dotnet/api/microsoft.sqlserver.transactsql.scriptdom). The [source code](https://github.com/microsoft/SqlScriptDOM) is licensed MIT.|
-|Microsoft.Build.Sql|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql/)|Microsoft.Build.Sql (preview) is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac). In preview, [source code](/src/Microsoft.Build.Sql/) in this repository.|
-|Project Templates|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql.Templates/)|Microsoft.Build.Sql.Templates (preview) is a set of [.NET project templates](https://learn.microsoft.com/dotnet/core/tools/custom-templates) for SQL projects. In preview, [source code](/src/Microsoft.Build.Sql.Templates/) in this repository.|
+|Microsoft.Build.Sql|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql/)|Microsoft.Build.Sql is a [.NET project SDK](https://docs.microsoft.com/dotnet/core/project-sdk/overview) for SQL projects, compiling T-SQL code to a data-tier application package (dacpac). [Source code](/src/Microsoft.Build.Sql/) in this repository.|
+|Project Templates|[📦&nbsp;NuGet](https://www.nuget.org/packages/Microsoft.Build.Sql.Templates)<br/>[🛠️&nbsp;Code](/src/Microsoft.Build.Sql.Templates/)|Microsoft.Build.Sql.Templates is a set of [.NET project templates](https://learn.microsoft.com/dotnet/core/tools/custom-templates) for SQL projects. [Source code](/src/Microsoft.Build.Sql.Templates/) in this repository.|
 
 ## Microsoft.Build.Sql SDK-style projects documentation
 
@@ -27,7 +28,7 @@
 
 - [GitHub sql-action](https://github.com/azure/sql-action): deploy SQL projects and T-SQL scripts using GitHub Actions
 - [Azure DevOps SQL deployments](https://learn.microsoft.com/azure/devops/pipelines/targets/azure-sqldb): deploy SQL projects and run other SqlPackage commands using Azure DevOps
-- [Azure Data Studio and VS Code extension for SQL projects](https://aka.ms/azuredatastudio-sqlprojects): create and edit SQL projects in Azure Data Studio and Visual Studio Code on Windows, macOS, and Linux
+- [VS Code extension for SQL projects](https://aka.ms/vscode-sqlprojects): create and edit SQL projects in Visual Studio Code on Windows, macOS, and Linux
 - [SQL Server Data Tools in Visual Studio](https://learn.microsoft.com/sql/ssdt/): create and edit SQL projects in Visual Studio on Windows
 
 ## Quickstart
@@ -87,7 +88,19 @@ sqlpackage /Action:Publish /SourceFile:"bin/Debug/ProductsTutorial.dacpac" \
 
 ### Feedback
 
-This repository is available for transparently triaging and addressing feedback on DacFx, including the NuGet package and the cross-platform CLI SqlPackage. We welcome community interaction and suggestions! For more information on contributing feedback through interacting with issues see [Contributing](CONTRIBUTING.md).
+This repository is available for transparently triaging and addressing feedback on DacFx, including the NuGet package and the cross-platform CLI SqlPackage.
+
+We love hearing from you! We encourage you to upvote existing feedback and add new feedback so we can prioritize the work that will have the biggest impact for our users. Feedback locations:
+
+- DacFx APIs, SqlPackage, Microsoft.Build.Sql SDK: [DacFx GitHub repository](https://github.com/microsoft/dacfx/issues)
+- ScriptDOM parser: [ScriptDOM GitHub repository](https://github.com/microsoft/sqlscriptdom)
+- SQL Database Projects in VS Code: [VS Code repository](https://github.com/microsoft/vscode-mssql/issues)
+- SSMS + Visual Studio: [Developer Community](https://developercommunity.visualstudio.com/)
+- Fabric integration: [Fabric Ideas](https://community.fabric.microsoft.com/t5/Fabric-Ideas/idb-p/fbc_ideas)
+
+### Roadmap
+
+The roadmap for DacFx, related components, and the SQL projects ecosystem is available on the [repo wiki](https://github.com/microsoft/DacFx/wiki).
 
 ### Related Open Source Projects
 

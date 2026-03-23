@@ -501,6 +501,33 @@ namespace Microsoft.Build.Sql.Tests
             FileAssert.Exists(NuGetClient.GetVersionCacheFilePath("Microsoft.Build.Sql"), "Version cache file should exist after fetching the version.");
         }
 
+        [Test]
+        [Description("Verifies that Build items default to AnsiNulls ON and QuotedIdentifier ON.")]
+        // https://github.com/microsoft/DacFx/issues/172
+        public void VerifyBuildItemDefaultAnsiNullsOn()
+        {
+            // Add a target that prints the AnsiNulls and QuotedIdentifier metadata for Build items
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintBuildItemMetadata", target =>
+            {
+                target.AfterTargets = "AfterBuild";
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "BuildItemMetadata: AnsiNulls=%(Build.AnsiNulls), QuotedIdentifier=%(Build.QuotedIdentifier)");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify the build output shows AnsiNulls=On and QuotedIdentifier=On
+            StringAssert.Contains("AnsiNulls=On", stdOutput, "Expected AnsiNulls=On in build output for Build items.");
+            StringAssert.Contains("QuotedIdentifier=On", stdOutput, "Expected QuotedIdentifier=On in build output for Build items.");
+            Assert.IsFalse(stdOutput.Contains("AnsiNulls=Off"), "Build items should not have AnsiNulls=Off.");
+        }
+
 #if !NETFRAMEWORK
         [Test]
         [Description("Verifies that a SQL project can be added to a .sln solution and built via dotnet sln add.")]

@@ -55,6 +55,12 @@
   </PropertyGroup>
 
   <ItemDefinitionGroup>
+    <Build>
+      <!-- Default AnsiNulls and QuotedIdentifier to On for SQL files to match the expected behavior.
+           Without these defaults, schema compare generates unwanted SET ANSI_NULLS OFF commands. -->
+      <AnsiNulls>On</AnsiNulls>
+      <QuotedIdentifier>On</QuotedIdentifier>
+    </Build>
     <ProjectReference>
       <!--
         Setting ReferenceOutputAssembly skips target framework cross-project validation in NuGet.  Since database projects don't define runtime

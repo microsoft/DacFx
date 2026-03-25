@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Microsoft.Build.Sql.Templates/Microsoft.Build.Sql.Templates.csproj" />
+  <Project Path="src/Microsoft.Build.Sql/Microsoft.Build.Sql.csproj" />
+  <Project Path="test/Microsoft.Build.Sql.Tests/Microsoft.Build.Sql.Tests.csproj" />
+</Solution>

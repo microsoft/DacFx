@@ -35,8 +35,8 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnetVersion }}
         dotnet-quality: ga
-    - run: dotnet build DacFx.sln
-    - run: dotnet test DacFx.sln --no-build -f ${{ matrix.targetFramework }}
+    - run: dotnet build DacFx.slnx
+    - run: dotnet test DacFx.slnx --no-build -f ${{ matrix.targetFramework }}
   
   # Test SDK builds with full framework MSBuild on Windows, with SDK itself and against SSDT installation.
   msbuildTest:
@@ -57,5 +57,5 @@ jobs:
       with:
         dotnet-version: ${{ env.LATEST_DOTNET_VERSION }}
         dotnet-quality: preview
-    - run: dotnet build DacFx.sln
-    - run: dotnet test DacFx.sln --no-build -f net472
+    - run: dotnet build DacFx.slnx
+    - run: dotnet test DacFx.slnx --no-build -f net472

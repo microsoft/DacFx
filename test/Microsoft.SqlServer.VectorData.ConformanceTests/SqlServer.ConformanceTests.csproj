@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net472</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Microsoft.SqlServer.VectorData.ConformanceTests</AssemblyName>
+    <RootNamespace>SqlServer.ConformanceTests</RootNamespace>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+
+    <NoWarn>$(NoWarn);MEVD9000,MEVD9001</NoWarn> <!-- Experimental MEVD connector-facing APIs -->
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    <UserSecretsId>b7762d10-e29b-4bb1-8b74-b6d69a667dd4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" VersionOverride="18.4.0" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+    <PackageReference Include="Microsoft.Extensions.VectorData.ConformanceTests" />
+    <PackageReference Include="System.Text.Json" VersionOverride="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.SqlServer.VectorData\SqlServer.csproj" />
+  </ItemGroup>
+
+</Project>

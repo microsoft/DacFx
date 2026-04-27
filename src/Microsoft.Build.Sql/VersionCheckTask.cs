@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Net.Http;
 using System.Threading;
 using Microsoft.Build.Framework;
 using NuGet.Versioning;
@@ -47,7 +48,11 @@ public class VersionCheckTask : Microsoft.Build.Utilities.Task, ICancelableTask
                 Log.LogMessage(MessageImportance.Low, $"Already using the latest version of {PackageName}: {currentVersion}.");
             }
         }
-        catch (Exception ex)
+        catch (OperationCanceledException)
+        {
+            // Build was canceled or version check timed out
+        }
+        catch (Exception ex) when (ex is HttpRequestException or InvalidOperationException)
         {
             Log.LogMessage(MessageImportance.Low, $"Failed to check for the latest version of {PackageName} on NuGet: {ex.Message}");
         }

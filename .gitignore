@@ -354,3 +354,5 @@ src/Microsoft.Build.Sql/[Tt]ools/
 
 ## Ignore packages generated for testing
 test/Microsoft.Build.Sql.Tests/pkg/
+
+*.lscache

@@ -36,7 +36,12 @@ jobs:
         dotnet-version: ${{ matrix.dotnetVersion }}
         dotnet-quality: ga
     - run: dotnet build DacFx.slnx
-    - run: dotnet test DacFx.slnx --no-build -f ${{ matrix.targetFramework }}
+
+    # The tests for Microsoft.SqlServer.VectorData currently require an Azure SQL instance, since on-premise
+    # SQL Server 2025 doesn't have the latest vector support. Once it does, we can turn on the tests here
+    # (they use testcontainers).
+    # - run: dotnet test DacFx.slnx --no-build -f ${{ matrix.targetFramework }}
+    - run: dotnet test test/Microsoft.Build.Sql.Tests --no-build -f ${{ matrix.targetFramework }}
   
   # Test SDK builds with full framework MSBuild on Windows, with SDK itself and against SSDT installation.
   msbuildTest:
@@ -58,4 +63,9 @@ jobs:
         dotnet-version: ${{ env.LATEST_DOTNET_VERSION }}
         dotnet-quality: preview
     - run: dotnet build DacFx.slnx
-    - run: dotnet test DacFx.slnx --no-build -f net472
+
+    # The tests for Microsoft.SqlServer.VectorData currently require an Azure SQL instance, since on-premise
+    # SQL Server 2025 doesn't have the latest vector support. Once it does, we can turn on the tests here
+    # (they use testcontainers).
+    # - run: dotnet test DacFx.slnx --no-build -f net472
+    - run: dotnet test test/Microsoft.Build.Sql.Tests --no-build -f net472

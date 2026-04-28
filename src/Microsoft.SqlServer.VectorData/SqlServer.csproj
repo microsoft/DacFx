@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>1.0.0-preview.1</Version>
+    <AssemblyName>Microsoft.SqlServer.VectorData</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+    <TargetFrameworks>netstandard2.0;net8.0;net462</TargetFrameworks>
+    <VersionSuffix>preview</VersionSuffix>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>$(NoWarn);MEVD9000,MEVD9001</NoWarn> <!-- Experimental MEVD connector-facing APIs -->
+
+    <Title>SQL Server provider for Microsoft.Extensions.VectorData</Title>
+    <Description>SQL Server provider for Microsoft.Extensions.VectorData</Description>
+
+    <!-- TODO: Remove after next version of MEVD.Abstractions-->
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.Extensions.VectorData.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
+    <PackageReference Include="System.Text.Json" VersionOverride="10.0.7" />
+  </ItemGroup>
+
+  <!-- Legacy support polyfills for netstandard2.0 and net462 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'netstandard2.0'">
+    <Compile Include="..\LegacySupport\CallerArgumentExpressionAttribute.cs" LinkBase="LegacySupport" />
+    <Compile Include="..\LegacySupport\NullableAttributes.cs" LinkBase="LegacySupport" />
+    <Compile Include="..\LegacySupport\IsExternalInit.cs" LinkBase="LegacySupport" />
+    <Compile Include="..\LegacySupport\Index.cs" LinkBase="LegacySupport" />
+    <Compile Include="..\LegacySupport\RequiresUnreferencedCodeAttribute.cs" LinkBase="LegacySupport" />
+    <Compile Include="..\LegacySupport\RequiresDynamicCodeAttribute.cs" LinkBase="LegacySupport" />
+    <Compile Include="..\LegacySupport\UnreachableException.cs" LinkBase="LegacySupport" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Microsoft.SqlServer.VectorData.ConformanceTests" />
+  </ItemGroup>
+
+</Project>

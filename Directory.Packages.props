@@ -4,9 +4,9 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Let CI pipelines to set these for testing dependencies -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.4.34-preview</DacFxPackageVersion>
-    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">170.191.0</ScriptDomPackageVersion>
-    <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">6.1.3</SqlClientPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.4.71-preview</DacFxPackageVersion>
+    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">180.18.1</ScriptDomPackageVersion>
+    <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">6.1.4</SqlClientPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- Source -->

@@ -14,12 +14,11 @@
     <CustomBeforeMicrosoftCommonTargets Condition="'$(ManagedLanguageTargetsGotImported)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')">$(CustomBeforeMicrosoftCommonTargets);$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
 
-  <!-- When user opts into .NET Framework for SQLCLR assemblies, override the TFV/TFM that was
-       defaulted to .NETStandard in Sdk.props. At this point the project body has been evaluated,
-       so $(TargetFramework) reflects any user customization. -->
-  <PropertyGroup Condition="'$(NetCoreBuild)'=='false' AND '$(TargetFramework)' == 'net472'">
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
+  <!-- If the user overrode TargetFramework from the netstandard2.1 default (e.g. net472, net48),
+       clear the TFV/TFM that Sdk.props pre-set so Microsoft.NET.Sdk can infer the correct values. -->
+  <PropertyGroup Condition="'$(NetCoreBuild)'=='false' AND '$(TargetFramework)' != 'netstandard2.1'">
+    <TargetFrameworkVersion />
+    <TargetFrameworkMoniker />
   </PropertyGroup>
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition=" '$(CommonTargetsPath)' == '' " />

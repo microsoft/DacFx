@@ -14,8 +14,10 @@
     <CustomBeforeMicrosoftCommonTargets Condition="'$(ManagedLanguageTargetsGotImported)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')">$(CustomBeforeMicrosoftCommonTargets);$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
 
-  <!-- If the user overrode TargetFramework from the netstandard2.1 default (e.g. net472, net48),
-       clear the TFV/TFM that Sdk.props pre-set so Microsoft.NET.Sdk can infer the correct values. -->
+  <!-- Sdk.props pre-sets TargetFrameworkVersion and TargetFrameworkMoniker for VS design-time support.
+       When TargetFramework differs from the default (netstandard2.1), these pre-set values are stale.
+       Clear them so Microsoft.NET.Sdk's TargetFrameworkInference.targets (imported below) can
+       derive the correct values from the actual TargetFramework. -->
   <PropertyGroup Condition="'$(NetCoreBuild)'=='false' AND '$(TargetFramework)' != 'netstandard2.1'">
     <TargetFrameworkVersion />
     <TargetFrameworkMoniker />

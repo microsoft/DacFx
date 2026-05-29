@@ -9,7 +9,7 @@
     <UsingMicrosoftBuildSqlSdk>true</UsingMicrosoftBuildSqlSdk>
     <MicrosoftBuildSqlVersion>###ASSEMBLY_VERSION###</MicrosoftBuildSqlVersion>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
-    
+
     <!-- Output properties -->
     <TargetExt>.dacpac</TargetExt>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -35,7 +35,7 @@
 
     <!-- Don't generate editor config file -->
     <GenerateMSBuildEditorConfigFile Condition="'$(GenerateMSBuildEditorConfigFile)' == ''">false</GenerateMSBuildEditorConfigFile>
-    
+
     <!-- Don't log the high priority message mentioning this project's name (or copy the product we didn't build). -->
     <SkipCopyBuildProduct Condition="'$(SkipCopyBuildProduct)' == ''">true</SkipCopyBuildProduct>
 
@@ -43,7 +43,7 @@
     <AutomaticallyUseReferenceAssemblyPackages Condition="'$(AutomaticallyUseReferenceAssemblyPackages)' == ''">false</AutomaticallyUseReferenceAssemblyPackages>
     <NoCompilerStandardLib Condition="'$(NoCompilerStandardLib)' == ''">false</NoCompilerStandardLib>
     <NoStdLib Condition="'$(NoStdLib)' == ''">true</NoStdLib>
-    
+
     <!-- Disable Visual Studio's Fast Up-to-date Check and rely on MSBuild to determine -->
     <DisableFastUpToDateCheck Condition="'$(DisableFastUpToDateCheck)' == ''">true</DisableFastUpToDateCheck>
 
@@ -85,11 +85,11 @@
 
   <!-- building in Visual Studio requires some sort of TargetFrameworkVersion. So we condition to NetCoreBuild as false to avoid failures -->
   <PropertyGroup Condition="'$(NetCoreBuild)'=='false'">
-    <TargetFramework>net472</TargetFramework>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">netstandard2.1</TargetFramework>
+    <TargetFrameworkVersion Condition="'$(TargetFrameworkVersion)' == ''">v2.1</TargetFrameworkVersion>
+    <TargetFrameworkMoniker Condition="'$(TargetFrameworkMoniker)' == ''">.NETStandard,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
   </PropertyGroup>
-  
+
   <!-- Defaults from SSDT -->
   <PropertyGroup>
     <!-- Required -->
@@ -99,13 +99,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformName Condition="'$(PlatformName)' == ''">$(Platform)</PlatformName>
     <OutputType>Database</OutputType>
-    
+
     <!-- Project type GUID for dotnet sln add support -->
     <DefaultProjectTypeGuid>{42EA0DBD-9CF1-443E-919E-BE9C484E4577}</DefaultProjectTypeGuid>
-    
+
     <!-- Optional -->
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    
+
   </PropertyGroup>
 
   <PropertyGroup>

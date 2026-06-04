@@ -43,6 +43,7 @@
     <PackageReference Include="NuGet.Versioning" GeneratePathProperty="true" />
     <PackageReference Include="System.ComponentModel.Composition" GeneratePathProperty="true" />
     <PackageReference Include="System.IO.Packaging" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.ApplicationInsights" GeneratePathProperty="true" />
   </ItemGroup>
 
   <Target Name="CopyNetCoreBinaries"
@@ -59,6 +60,7 @@
       <PackageFilesNetCore Include="$(PkgMicrosoft_SqlServer_Types)\lib\netstandard2.0\Microsoft.SqlServer.Types.dll" />
       <PackageFilesNetCore Include="$(PkgSystem_ComponentModel_Composition)\lib\net8.0\System.ComponentModel.Composition.dll" />
       <PackageFilesNetCore Include="$(PkgSystem_IO_Packaging)\lib\net8.0\System.IO.Packaging.dll" />
+      <PackageFilesNetCore Include="$(PkgMicrosoft_ApplicationInsights)\lib\netstandard2.0\Microsoft.ApplicationInsights.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFilesNetCore)" DestinationFolder="$(SdkBinariesPath)\%(PackageFilesNetCore.RecursiveDir)" />
   </Target>
@@ -77,6 +79,7 @@
       <PackageFilesNetFramework Include="$(PkgMicrosoft_SqlServer_Types)\lib\net472\Microsoft.SqlServer.Types.dll" />
       <PackageFilesNetFramework Include="$(PkgNuGet_Versioning)\lib\net472\NuGet.Versioning.dll" />
       <PackageFilesNetFramework Include="$(PkgSystem_IO_Packaging)\lib\net462\System.IO.Packaging.dll" />
+      <PackageFilesNetFramework Include="$(PkgMicrosoft_ApplicationInsights)\lib\net46\Microsoft.ApplicationInsights.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(PackageFilesNetFramework)" DestinationFolder="$(SdkBinariesPath)\%(PackageFilesNetFramework.RecursiveDir)" />
   </Target>

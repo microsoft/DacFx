@@ -113,7 +113,13 @@
   </Target>
 
   <ItemGroup>
+    <!-- SqlClrShim.cs ships in the SDK as a content file for consumer SQLCLR projects to compile; do not compile it into Microsoft.Build.Sql.dll. -->
+    <Compile Remove="sdk\SqlClrShim.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="sdk\Sdk.targets" Pack="true" PackagePath="sdk\" />
+    <Content Include="sdk\SqlClrShim.cs" Pack="true" PackagePath="sdk\" />
     <Content Include="$(SdkStagingDirectory)**\*.*" Pack="true" PackagePath="\" />
     <Content Include="$(EnlistmentRoot)\LICENSE.txt" Pack="true" PackagePath="\" />
     <Content Include="$(EnlistmentRoot)\images\nuspecicon.png" Pack="true" PackagePath="images\nuspecicon.png" />

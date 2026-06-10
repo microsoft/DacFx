@@ -23,6 +23,18 @@
     <TargetFrameworkMoniker />
   </PropertyGroup>
 
+  <!-- For SDK-style SQLCLR projects on .NET Core, the C# compiler needs the BCL reference pack
+       (System.Object, System.Attribute, etc.). Sdk.props turns these off because non-CLR sqlproj
+       builds don't need them; flip them back on for the netcore SDK path. Must run before the
+       Microsoft.NET.Sdk import so the SDK adds Microsoft.NETCore.App.Ref.
+       See https://github.com/microsoft/DacFx/issues/785 -->
+  <PropertyGroup Condition="'$(NetCoreBuild)' == 'true'">
+    <DisableImplicitFrameworkReferences>false</DisableImplicitFrameworkReferences>
+    <AutomaticallyUseReferenceAssemblyPackages>true</AutomaticallyUseReferenceAssemblyPackages>
+    <NoStdLib>false</NoStdLib>
+  </PropertyGroup>
+
+  <!-- Let the .NET SDK import supply the real compile targets for DacFx SQL tasks. -->
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition=" '$(CommonTargetsPath)' == '' " />
 
   <PropertyGroup>
@@ -46,20 +58,57 @@
     <!-- Don't emit a reference assembly -->
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 
-    <!-- Mark language targets as imported -->
-    <LanguageTargetsImported>true</LanguageTargetsImported>
+    <!--
+      Allow SqlTasks.targets to import the real C# compiler targets on the .NET SDK path so the
+      DacFx build flow can resolve CoreCompile for SQLCLR compilation. See https://github.com/microsoft/DacFx/issues/785
+    -->
+    <LanguageTargetsImported Condition="'$(NetCoreBuild)' == 'true'">false</LanguageTargetsImported>
 
     <!-- Default language to C# mainly for code analyzer packages -->
     <Language>C#</Language>
   </PropertyGroup>
 
+  <!-- Expose the SDK tool assemblies (including the netstandard Microsoft.SqlServer.Server) as
+       compiler references for SQLCLR compilation on the .NET Core SDK path. -->
+  <Target Name="AddSqlClrReferencePath" BeforeTargets="_BeforeVBCSCoreCompile" Condition="'$(NetCoreBuild)' == 'true'">
+    <ItemGroup>
+      <ReferencePath Include="$(MSBuildThisFileDirectory)..\tools\net8.0\*.dll" />
+      <ReferencePathWithRefAssemblies Include="$(MSBuildThisFileDirectory)..\tools\net8.0\*.dll" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Inject build-time stubs for SQLCLR types missing from the netstandard build of
+    Microsoft.SqlServer.Server (SqlProcedureAttribute, SqlContext, SqlPipe, etc.) so SDK-style
+    SQL projects can compile user CLR sources on .NET 8.0. On full-framework net472 the same
+    shim works because user code typically only references Microsoft.SqlServer.Server.* (not
+    System.Data directly), so there is no type collision with System.Data.dll. Only applied
+    when the user has supplied C# Compile items, so non-SQLCLR projects are unaffected.
+  -->
+  <ItemGroup Condition="'@(Compile)' != ''">
+    <Compile Include="$(MSBuildThisFileDirectory)SqlClrShim.cs" Visible="false" />
+  </ItemGroup>
+
+  <!--
+    The SDK-style build sets TargetExt=.dll for Roslyn while the SQL targets set TargetFileName=*.dacpac,
+    which makes IntermediateTargetFullFileName point to a non-existent dacpac. Repoint it to the actual
+    compiled CLR assembly so SqlBuildTask can register the SqlClrAssembly in the model.
+  -->
+  <Target Name="RewireImplicitDllForSqlClr"
+          Condition="'$(NetCoreBuild)' == 'true' AND '@(Compile)' != ''"
+          AfterTargets="CoreCompile"
+          BeforeTargets="_SetupSqlBuildInputs">
+    <PropertyGroup>
+      <IntermediateTargetFullFileName>$(GeneratedFilesIntermediatePath)$(TargetName)$(TargetExt)</IntermediateTargetFullFileName>
+    </PropertyGroup>
+  </Target>
+
   <!-- Clear output group items which are read by the IDE and NuGet. -->
   <ItemGroup>
     <BuiltProjectOutputGroupKeyOutput Remove="@(BuiltProjectOutputGroupKeyOutput)" />
     <DebugSymbolsProjectOutputGroupOutput Remove="@(DebugSymbolsProjectOutputGroupOutput)" />
-    <IntermediateAssembly Remove="@(IntermediateAssembly)" />
+    <!-- Preserve the compiled CLR assembly output for SQLCLR packaging. -->
     <IntermediateRefAssembly Remove="@(IntermediateRefAssembly)" />
-    <Reference Remove="mscorlib" />
   </ItemGroup>
 
   <!--
@@ -69,10 +118,11 @@
   <Target Name="ComputeIntermediateSatelliteAssemblies" />
 
   <!--
-    The GetReferenceAssemblyPaths does not need to run since reference assemblies aren't needed.
+    For SDK-style SQLCLR projects (Compile items present) we need GetFrameworkPaths and
+    GetReferenceAssemblyPaths to run normally so RAR can resolve mscorlib / System.* from the
+    targeting pack or ref-assemblies package. For non-SQLCLR sqlproj projects the cost of letting
+    them run is minor and the assembly references are simply unused.
   -->
-  <Target Name="GetFrameworkPaths" DependsOnTargets="$(GetFrameworkPathsDependsOn)" />
-  <Target Name="GetReferenceAssemblyPaths" DependsOnTargets="$(GetReferenceAssemblyPathsDependsOn)" />
 
   <!--
     Microsoft.Managed.Targets is imported by the managed language target files in MSBuild 16.0 and above, but most of the msbuild tasks are actually in Microsoft.Common.Currentversion.targets.
@@ -127,11 +177,6 @@
   </PropertyGroup>
 
   <Target Name="CreateManifestResourceNames" />
-  <!-- CoreCompile is a target inside target Build on Microsoft.Common.targets that is not implemented there but allows us to personalize our compile/build flow, while
-    executing all the other targets inside Build regularly. We implement it before importing Common.targets because it's not implemented there, so it will not be
-    overriden when importing the targets.
-    -->
-  <Target Name="CoreCompile" />
 
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/net8.0/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />

@@ -172,6 +172,10 @@ namespace Microsoft.Build.Sql.Tests
             string executablePath = TestUtils.DotnetPath;
 #endif
 
+            if (!File.Exists(executablePath))
+            {
+                throw new FileNotFoundException("Executable not found: " + executablePath);
+            }
             ProcessStartInfo dotnetStartInfo = new ProcessStartInfo
             {
                 FileName = executablePath,

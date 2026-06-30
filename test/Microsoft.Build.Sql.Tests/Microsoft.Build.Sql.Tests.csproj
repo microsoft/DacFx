@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="TestData/**/*.cs" />
     <Content Include="TestData/**" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Template/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

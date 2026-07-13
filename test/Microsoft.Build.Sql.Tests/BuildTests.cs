@@ -627,11 +627,8 @@ namespace Microsoft.Build.Sql.Tests
         }
 
 #if NETFRAMEWORK
-        // Requires the upcoming public DacFx release containing the SqlClrAssembly registration fix.
-        // Tracked by https://github.com/microsoft/DacFx/issues/785 (DacFx PR 2143342).
         [Test]
-        [Ignore("Pending public DacFx release that ships the SqlClrAssembly registration fix (issue #785).")]
-        [Description("Verifies that a SQLCLR project (C# source compiled into a CLR assembly) builds under full-framework MSBuild and the assembly is included in the dacpac. See https://github.com/microsoft/DacFx/issues/785")]
+        [Description("Verifies that a SQLCLR project (C# source compiled into a Framework CLR assembly loadable by SQL Server's in-server CLR host) builds under full-framework MSBuild and the assembly is included in the dacpac. See https://github.com/microsoft/DacFx/issues/785")]
         public void SuccessfulSqlClrBuild()
         {
             int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
@@ -647,24 +644,6 @@ namespace Microsoft.Build.Sql.Tests
 #endif
 
 #if !NETFRAMEWORK
-        // Requires the upcoming public DacFx release containing the SqlClrAssembly registration fix.
-        // Tracked by https://github.com/microsoft/DacFx/issues/785 (DacFx PR 2143342).
-        [Test]
-        [Ignore("Pending public DacFx release that ships the SqlClrAssembly registration fix (issue #785).")]
-        [Description("Verifies that an SDK-style SQLCLR project compiles C# sources and includes the SQLCLR assembly in the dacpac on .NET Core builds. See https://github.com/microsoft/DacFx/issues/785")]
-        public void SuccessfulSqlClrBuildOnNetCore()
-        {
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
-
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
-            Assert.AreEqual(string.Empty, stdError);
-            this.VerifyDacPackage();
-
-            using TSqlModel model = new TSqlModel(this.GetDacpacPath());
-            var assemblies = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Assembly).ToList();
-            Assert.IsTrue(assemblies.Any(), "Expected at least one SQL CLR assembly in the dacpac, but none was found.");
-        }
-
         [Test]
         [Description("Verifies that a SQL project can be added to a .sln solution and built via dotnet sln add.")]
         public void VerifySolutionAddAndBuild()

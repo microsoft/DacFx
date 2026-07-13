@@ -93,6 +93,23 @@
   </Target>
 
   <!--
+    Filter .dacpac artifacts out of the Roslyn compile reference set. A sqlproj can
+    <ProjectReference> another sqlproj; the referenced project's TargetPath is a .dacpac and
+    the SDK's default project-reference resolution flows it into @(ReferencePath). The C#
+    compiler cannot read a .dacpac and errors with CS0009. DacFx SqlBuildTask consumes dacpacs
+    via the separate @(ArtifactReference) collection, so removing them from ReferencePath
+    only affects Roslyn, not the SQL model build. Runs unconditionally because CoreCompile
+    now runs for every sqlproj (the old empty CoreCompile override was removed so real SQLCLR
+    projects can compile). See https://github.com/microsoft/DacFx/issues/785
+  -->
+  <Target Name="_RemoveDacpacFromCompileReferences" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <ReferencePath Remove="@(ReferencePath)" Condition="'%(Extension)' == '.dacpac'" />
+      <ReferencePathWithRefAssemblies Remove="@(ReferencePathWithRefAssemblies)" Condition="'%(Extension)' == '.dacpac'" />
+    </ItemGroup>
+  </Target>
+
+  <!--
     The SDK-style build pipeline (both drivers) sets TargetExt=.dll for Roslyn while the SQL
     targets set TargetFileName=*.dacpac, which makes IntermediateTargetFullFileName point to a
     non-existent dacpac. Repoint it to the actual compiled CLR assembly so SqlBuildTask can

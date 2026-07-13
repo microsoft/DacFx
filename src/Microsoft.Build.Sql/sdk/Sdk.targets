@@ -77,18 +77,38 @@
   </PropertyGroup>
 
   <!--
+    SQLCLR project detection and runtime-compatibility guard.
+
     SQL Server's in-server CLR host is .NET Framework 4.x. SQLCLR assemblies loaded via
-    CREATE ASSEMBLY therefore have to be Framework-loadable (net4x IL) or netstandard 2.x
-    (which resolves against Framework 4.7.2+ at load time). A netcore-targeting compile
-    would produce IL with System.Runtime / System.Private.CoreLib refs that SQL Server
-    cannot resolve, so we block that combination up front with a clear error rather than
-    let it silently ship a dacpac that fails at deployment.
+    CREATE ASSEMBLY have to be Framework-loadable (net4x IL) or netstandard 2.x (which
+    resolves against Framework 4.7.2+ at load time). A netcore-targeting compile would
+    produce IL with System.Runtime / System.Private.CoreLib refs that SQL Server cannot
+    resolve, so we block that combination up front with a clear error rather than let it
+    silently ship a dacpac that fails at deployment.
+
+    Detection has to distinguish "user has C# sources" from noise that MSBuild / SqlTasks
+    inject into @(Compile) for every build (SDK-generated .AssemblyAttributes.cs /
+    .AssemblyInfo.cs, plus SqlTasks' own %TEMP%\<TFM>.SqlClrAttributes.cs). Filter by
+    filename suffix so only real user files count, then expose $(_IsSqlClrProject) for
+    downstream targets (validator + CLR-DLL rewire) to consume.
     See https://github.com/microsoft/DacFx/issues/785
   -->
+  <Target Name="_DetectSqlClrProject"
+          BeforeTargets="_ValidateSqlClrTargetFramework;_BeforeVBCSCoreCompile;CoreCompile;RewireImplicitDllForSqlClr">
+    <ItemGroup>
+      <_SqlClrUserCompile Include="@(Compile)"
+                          Condition="!$([System.String]::new('%(Compile.FullPath)').EndsWith('.SqlClrAttributes.cs')) AND !$([System.String]::new('%(Compile.FullPath)').EndsWith('.AssemblyAttributes.cs')) AND !$([System.String]::new('%(Compile.FullPath)').EndsWith('.AssemblyInfo.cs'))" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_IsSqlClrProject>false</_IsSqlClrProject>
+      <_IsSqlClrProject Condition="'@(_SqlClrUserCompile)' != ''">true</_IsSqlClrProject>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="_ValidateSqlClrTargetFramework"
           BeforeTargets="_BeforeVBCSCoreCompile;CoreCompile"
-          Condition="'@(Compile)' != ''">
-    <Error Condition="!$(TargetFramework.StartsWith('net4')) AND !$(TargetFramework.StartsWith('netstandard'))"
+          DependsOnTargets="_DetectSqlClrProject">
+    <Error Condition="'$(_IsSqlClrProject)' == 'true' AND !$(TargetFramework.StartsWith('net4')) AND !$(TargetFramework.StartsWith('netstandard'))"
            Text="Microsoft.Build.Sql SDK: SQLCLR projects (sqlproj with C# &lt;Compile&gt; items) must set &lt;TargetFramework&gt; to a Framework-loadable value (net4x or netstandard2.x). '$(TargetFramework)' would produce a CLR assembly that SQL Server's in-server .NET Framework CLR cannot load via CREATE ASSEMBLY. See https://github.com/microsoft/DacFx/issues/785" />
   </Target>
 
@@ -116,7 +136,8 @@
     register the SqlClrAssembly in the model.
   -->
   <Target Name="RewireImplicitDllForSqlClr"
-          Condition="'@(Compile)' != ''"
+          DependsOnTargets="_DetectSqlClrProject"
+          Condition="'$(_IsSqlClrProject)' == 'true'"
           AfterTargets="CoreCompile"
           BeforeTargets="_SetupSqlBuildInputs">
     <PropertyGroup>

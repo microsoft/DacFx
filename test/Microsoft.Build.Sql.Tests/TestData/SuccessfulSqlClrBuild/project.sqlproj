@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Test project for SQLCLR assembly compilation under full-framework MSBuild. See https://github.com/microsoft/DacFx/issues/785 -->
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0-test" />
+  <PropertyGroup>
+    <Name>Project</Name>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql150DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+    <ProjectGuid>{00000000-0000-0000-0000-000000000000}</ProjectGuid>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Pull in the net472 reference assemblies so the C# compiler can resolve System.Object,
+         System.Data (which contains Microsoft.SqlServer.Server.SqlProcedureAttribute etc.)
+         when this project is built via the .NET CLI rather than full MSBuild. -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" PrivateAssets="all" />
+    <Compile Include="StoredProcedures.cs" />
+  </ItemGroup>
+</Project>

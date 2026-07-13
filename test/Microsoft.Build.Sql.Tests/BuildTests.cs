@@ -626,6 +626,23 @@ namespace Microsoft.Build.Sql.Tests
             FileAssert.Exists(NuGetClient.GetVersionCacheFilePath("Microsoft.Build.Sql"), "Version cache file should exist after fetching the version.");
         }
 
+#if NETFRAMEWORK
+        [Test]
+        [Description("Verifies that a SQLCLR project (C# source compiled into a Framework CLR assembly loadable by SQL Server's in-server CLR host) builds under full-framework MSBuild and the assembly is included in the dacpac. See https://github.com/microsoft/DacFx/issues/785")]
+        public void SuccessfulSqlClrBuild()
+        {
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            using TSqlModel model = new TSqlModel(this.GetDacpacPath());
+            var assemblies = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Assembly).ToList();
+            Assert.IsTrue(assemblies.Any(), "Expected at least one SQL CLR assembly in the dacpac, but none was found.");
+        }
+#endif
+
 #if !NETFRAMEWORK
         [Test]
         [Description("Verifies that a SQL project can be added to a .sln solution and built via dotnet sln add.")]

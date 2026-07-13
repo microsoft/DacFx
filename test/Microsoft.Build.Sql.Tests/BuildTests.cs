@@ -535,6 +535,43 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
+        [Description("Verifies that a sqlproj referencing a prebuilt .dacpac directly via an ArtifactReference (database reference) builds and resolves the reference. This exercises the ArtifactReference code path (as opposed to ProjectReference or PackageReference) and confirms _RemoveDacpacFromCompileReferences does not strip it from the SQL model. See https://github.com/microsoft/DacFx/issues/785")]
+        public void BuildWithDacpacArtifactReference()
+        {
+            // Build a ReferenceProj to produce a .dacpac that we can reference directly.
+            string tempFolder = TestUtils.CreateTempDirectory();
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
+
+            // The temp folder lives under the repo tree, so copy the isolation files from the test Template
+            // to stop it inheriting the repo's Directory.Build.props (artifacts output layout / central package
+            // management). This keeps the dacpac at the standard bin/Debug path.
+            foreach (string isolationFile in new[] { "Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props" })
+            {
+                File.Copy(Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", isolationFile), Path.Combine(tempFolder, isolationFile), overwrite: true);
+            }
+
+            string referenceProjectPath = Path.Combine(tempFolder, "ReferenceProj.sqlproj");
+            int referenceExitCode = this.RunDotnetCommandOnProject("build", out _, out string referenceStdError, projectPath: referenceProjectPath);
+            Assert.AreEqual(0, referenceExitCode, "Reference project build failed with error " + referenceStdError);
+
+            string dacpacPath = Path.Combine(tempFolder, "bin", "Debug", "ReferenceProj.dacpac");
+            FileAssert.Exists(dacpacPath, "Reference project dacpac was not produced.");
+
+            // Reference the prebuilt dacpac directly as an ArtifactReference and consume it via a synonym + view
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ArtifactReference", new string[] { dacpacPath }, item =>
+            {
+                item.AddMetadata("DatabaseSqlCmdVariable", "ReferenceDb");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            Directory.Delete(tempFolder, true);
+        }
+
+        [Test]
         // https://github.com/microsoft/DacFx/issues/561
         public void FailBuildOnDuplicatedItems()
         {

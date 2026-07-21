@@ -47,7 +47,9 @@ namespace Microsoft.Build.Sql.Tests
             EnvironmentSetup();
 
             // Add pkg folder as a nuget source
-            AddLocalNugetSource(LocalNugetSource, $"TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+            // Use EscapeTestName to sanitize the source name (e.g., removes double-quotes from parameterized test names
+            // like "net46" that cause argument parsing issues on macOS when passed to dotnet nuget commands)
+            AddLocalNugetSource(LocalNugetSource, $"TestSource_{TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)}", out _, out string stdError);
             Assert.AreEqual("", stdError, "Failed to add local nuget source: " + stdError);
         }
 
@@ -57,7 +59,7 @@ namespace Microsoft.Build.Sql.Tests
             try
             {
                 // Remove local nuget source
-                RemoveLocalNugetSource($"TestSource_{TestContext.CurrentContext.Test.Name}", out _, out string stdError);
+                RemoveLocalNugetSource($"TestSource_{TestUtils.EscapeTestName(TestContext.CurrentContext.Test.Name)}", out _, out string stdError);
                 if (!string.IsNullOrEmpty(stdError))
                 {
                     Assert.Warn("Failed to remove local nuget source: " + stdError);

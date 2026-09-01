@@ -5,8 +5,8 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Let CI pipelines to set these for testing dependencies -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.4.77-preview</DacFxPackageVersion>
-    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">180.18.1</ScriptDomPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.5.80-preview</DacFxPackageVersion>
+    <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">180.102.0</ScriptDomPackageVersion>
     <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">6.1.5</SqlClientPackageVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -19,6 +19,7 @@
     <PackageVersion Include="Microsoft.SqlServer.Types" Version="170.1000.7" />
     <PackageVersion Include="NuGet.Versioning" Version="6.13.2" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
     <PackageVersion Include="System.IO.Packaging" Version="8.0.1" />
 
     <!-- Test -->

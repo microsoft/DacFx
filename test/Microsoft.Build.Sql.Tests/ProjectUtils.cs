@@ -18,15 +18,15 @@ namespace Microsoft.Build.Sql.Tests
         {
             using (ProjectCollection projectCollection = GetNewEngine())
             {
-                Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+                ProjectRootElement project = ProjectRootElement.Open(projectFilePath, projectCollection)!;
 
-                ProjectPropertyGroupElement propertyGroup = project.Xml.AddPropertyGroup();
+                ProjectPropertyGroupElement propertyGroup = project.AddPropertyGroup();
                 foreach (KeyValuePair<string, string> property in properties)
                 {
                     propertyGroup.AddProperty(property.Key, property.Value);
                 }
 
-                project.Save(project.FullPath);
+                project.Save(projectFilePath);
                 projectCollection.UnloadAllProjects();
             }
         }
@@ -47,17 +47,17 @@ namespace Microsoft.Build.Sql.Tests
             {
                 using (ProjectCollection projectCollection = GetNewEngine())
                 {
-                    Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+                    ProjectRootElement project = ProjectRootElement.Open(projectFilePath, projectCollection)!;
 
-                    ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
+                    ProjectItemGroupElement itemGroup = project.AddItemGroup();
                     foreach (string filePath in filePaths)
                     {
-                        ProjectItemElement item = project.Xml.CreateItemElement(itemName, filePath);
+                        ProjectItemElement item = project.CreateItemElement(itemName, filePath);
                         itemGroup.AppendChild(item);
                         addMetadata?.Invoke(item);
                     }
 
-                    project.Save(project.FullPath);
+                    project.Save(projectFilePath);
                     projectCollection.UnloadAllProjects();
                 }
             }
@@ -78,17 +78,17 @@ namespace Microsoft.Build.Sql.Tests
             {
                 using (ProjectCollection projectCollection = GetNewEngine())
                 {
-                    Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+                    ProjectRootElement project = ProjectRootElement.Open(projectFilePath, projectCollection)!;
 
-                    ProjectItemGroupElement itemGroup = project.Xml.AddItemGroup();
+                    ProjectItemGroupElement itemGroup = project.AddItemGroup();
                     foreach (string filePath in filePaths)
                     {
-                        var removeItem = project.Xml.CreateItemElement(itemName);
+                        var removeItem = project.CreateItemElement(itemName);
                         removeItem.Remove = filePath;
                         itemGroup.AppendChild(removeItem);
                     }
 
-                    project.Save(project.FullPath);
+                    project.Save(projectFilePath);
                     projectCollection.UnloadAllProjects();
                 }
             }
@@ -98,12 +98,12 @@ namespace Microsoft.Build.Sql.Tests
         {
             using (ProjectCollection projectCollection = GetNewEngine())
             {
-                Project project = new Project(projectFilePath, null, "Current", projectCollection, ProjectLoadSettings.IgnoreMissingImports);
+                ProjectRootElement project = ProjectRootElement.Open(projectFilePath, projectCollection)!;
 
-                ProjectTargetElement target = project.Xml.AddTarget(targetName);
+                ProjectTargetElement target = project.AddTarget(targetName);
                 targetAction(target);
 
-                project.Save(project.FullPath);
+                project.Save(projectFilePath);
                 projectCollection.UnloadAllProjects();
             }
         }

@@ -345,6 +345,131 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
+        [Description("Verifies that default TargetFramework is netstandard2.1 when no TargetFramework is specified.")]
+        public void VerifyDefaultTargetFrameworkIsNetStandard21()
+        {
+            // Add a target to print the resolved TargetFramework property
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintTargetFrameworkInfo", target =>
+            {
+                target.AfterTargets = "Build";
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "ResolvedTargetFramework=$(TargetFramework)");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            // Build without explicitly setting TargetFramework - should use default netstandard2.1
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify default TargetFramework is netstandard2.1
+            StringAssert.Contains("ResolvedTargetFramework=netstandard2.1", stdOutput,
+                "Default TargetFramework should be netstandard2.1 when not explicitly set.");
+        }
+
+        [Test]
+        [Description("Verifies that TargetFrameworkVersion and TargetFrameworkMoniker are correctly derived when TargetFramework is overridden to net472.")]
+        public void VerifyTargetFrameworkVersionCorrectWhenOverriddenToNet472()
+        {
+            // Override TargetFramework to net472
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "TargetFramework", "net472" }
+            });
+
+            // Add a target to print the resolved TF/TFV/TFM properties
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintTargetFrameworkInfo", target =>
+            {
+                target.AfterTargets = "Build";
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "ResolvedTF=$(TargetFramework)|ResolvedTFV=$(TargetFrameworkVersion)|ResolvedTFM=$(TargetFrameworkMoniker)");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify TFV and TFM are correctly derived for net472 (not stale netstandard2.1 values)
+            StringAssert.Contains("ResolvedTF=net472", stdOutput,
+                "TargetFramework should be net472.");
+            StringAssert.Contains("ResolvedTFV=v4.7.2", stdOutput,
+                "TargetFrameworkVersion should be v4.7.2, not the stale v2.1 from Sdk.props default.");
+            StringAssert.Contains("ResolvedTFM=.NETFramework,Version=v4.7.2", stdOutput,
+                "TargetFrameworkMoniker should be .NETFramework,Version=v4.7.2, not the stale .NETStandard value.");
+        }
+
+        [Test]
+        [Description("Verifies that TargetFrameworkVersion and TargetFrameworkMoniker match when TargetFramework stays at the default netstandard2.1.")]
+        public void VerifyTargetFrameworkVersionCorrectWithDefaultNetStandard21()
+        {
+            // Add a target to print the resolved TF/TFV/TFM properties (no explicit TargetFramework set)
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintTargetFrameworkInfo", target =>
+            {
+                target.AfterTargets = "Build";
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "ResolvedTF=$(TargetFramework)|ResolvedTFV=$(TargetFrameworkVersion)|ResolvedTFM=$(TargetFrameworkMoniker)");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify TFV and TFM are consistent with netstandard2.1
+            StringAssert.Contains("ResolvedTF=netstandard2.1", stdOutput,
+                "TargetFramework should be netstandard2.1.");
+            StringAssert.Contains("ResolvedTFV=v2.1", stdOutput,
+                "TargetFrameworkVersion should be v2.1 for netstandard2.1.");
+            StringAssert.Contains("ResolvedTFM=.NETStandard,Version=v2.1", stdOutput,
+                "TargetFrameworkMoniker should be .NETStandard,Version=v2.1.");
+        }
+
+        [Test]
+        [Description("Verifies that TargetFrameworkVersion is correctly derived when TargetFramework is overridden to net8.0.")]
+        public void VerifyTargetFrameworkVersionCorrectWhenOverriddenToNet80()
+        {
+            // Override TargetFramework to net8.0
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "TargetFramework", "net8.0" }
+            });
+
+            // Add a target to print the resolved TF/TFV/TFM properties
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintTargetFrameworkInfo", target =>
+            {
+                target.AfterTargets = "Build";
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "ResolvedTF=$(TargetFramework)|ResolvedTFV=$(TargetFrameworkVersion)|ResolvedTFM=$(TargetFrameworkMoniker)");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            // Verify TFV and TFM are correctly derived for net8.0 (not stale netstandard2.1 values)
+            StringAssert.Contains("ResolvedTF=net8.0", stdOutput,
+                "TargetFramework should be net8.0.");
+            StringAssert.Contains("ResolvedTFV=v8.0", stdOutput,
+                "TargetFrameworkVersion should be v8.0, not the stale v2.1 from Sdk.props default.");
+            StringAssert.Contains("ResolvedTFM=.NETCoreApp,Version=v8.0", stdOutput,
+                "TargetFrameworkMoniker should be .NETCoreApp,Version=v8.0, not the stale .NETStandard value.");
+        }
+
+        [Test]
         // https://github.com/microsoft/DacFx/issues/117
         public void VerifyBuildWithReleaseConfiguration()
         {
@@ -402,6 +527,43 @@ namespace Microsoft.Build.Sql.Tests
             int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
 
             // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+
+            Directory.Delete(tempFolder, true);
+        }
+
+        [Test]
+        [Description("Verifies that a sqlproj referencing a prebuilt .dacpac directly via an ArtifactReference (database reference) builds and resolves the reference. This exercises the ArtifactReference code path (as opposed to ProjectReference or PackageReference) and confirms _RemoveDacpacFromCompileReferences does not strip it from the SQL model. See https://github.com/microsoft/DacFx/issues/785")]
+        public void BuildWithDacpacArtifactReference()
+        {
+            // Build a ReferenceProj to produce a .dacpac that we can reference directly.
+            string tempFolder = TestUtils.CreateTempDirectory();
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
+
+            // The temp folder lives under the repo tree, so copy the isolation files from the test Template
+            // to stop it inheriting the repo's Directory.Build.props (artifacts output layout / central package
+            // management). This keeps the dacpac at the standard bin/Debug path.
+            foreach (string isolationFile in new[] { "Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props" })
+            {
+                File.Copy(Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", isolationFile), Path.Combine(tempFolder, isolationFile), overwrite: true);
+            }
+
+            string referenceProjectPath = Path.Combine(tempFolder, "ReferenceProj.sqlproj");
+            int referenceExitCode = this.RunDotnetCommandOnProject("build", out _, out string referenceStdError, projectPath: referenceProjectPath);
+            Assert.AreEqual(0, referenceExitCode, "Reference project build failed with error " + referenceStdError);
+
+            string dacpacPath = Path.Combine(tempFolder, "bin", "Debug", "ReferenceProj.dacpac");
+            FileAssert.Exists(dacpacPath, "Reference project dacpac was not produced.");
+
+            // Reference the prebuilt dacpac directly as an ArtifactReference and consume it via a synonym + view
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "ArtifactReference", new string[] { dacpacPath }, item =>
+            {
+                item.AddMetadata("DatabaseSqlCmdVariable", "ReferenceDb");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();

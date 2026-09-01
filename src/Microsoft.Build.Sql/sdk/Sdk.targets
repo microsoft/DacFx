@@ -13,7 +13,16 @@
     <!-- For CPS/VS support. See https://github.com/dotnet/project-system/blob/master/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/DesignTimeTargets/Microsoft.Managed.DesignTime.targets#L60 -->
     <CustomBeforeMicrosoftCommonTargets Condition="'$(ManagedLanguageTargetsGotImported)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')">$(CustomBeforeMicrosoftCommonTargets);$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</CustomBeforeMicrosoftCommonTargets>
   </PropertyGroup>
-  
+
+  <!-- Sdk.props pre-sets TargetFrameworkVersion and TargetFrameworkMoniker for VS design-time support.
+       When TargetFramework differs from the default (netstandard2.1), these pre-set values are stale.
+       Clear them so Microsoft.NET.Sdk's TargetFrameworkInference.targets (imported below) can
+       derive the correct values from the actual TargetFramework. -->
+  <PropertyGroup Condition="'$(NetCoreBuild)'=='false' AND '$(TargetFramework)' != 'netstandard2.1'">
+    <TargetFrameworkVersion />
+    <TargetFrameworkMoniker />
+  </PropertyGroup>
+
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition=" '$(CommonTargetsPath)' == '' " />
 
   <PropertyGroup>
@@ -29,11 +38,11 @@
       IncrementalClean;
       PostBuildEvent
     </CoreBuildDependsOn>
-    
+
     <!-- Disable symbol generation -->
     <DebugType>None</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    
+
     <!-- Don't emit a reference assembly -->
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 
@@ -43,7 +52,7 @@
     <!-- Default language to C# mainly for code analyzer packages -->
     <Language>C#</Language>
   </PropertyGroup>
-  
+
   <!-- Clear output group items which are read by the IDE and NuGet. -->
   <ItemGroup>
     <BuiltProjectOutputGroupKeyOutput Remove="@(BuiltProjectOutputGroupKeyOutput)" />
@@ -52,7 +61,7 @@
     <IntermediateRefAssembly Remove="@(IntermediateRefAssembly)" />
     <Reference Remove="mscorlib" />
   </ItemGroup>
-  
+
   <!--
     The CopyFilesToOutputDirectory target is hard coded to depend on ComputeIntermediateSatelliteAssemblies.  Database projects do no generate resource assemblies
     so the target is replaced with a no-op
@@ -64,8 +73,8 @@
   -->
   <Target Name="GetFrameworkPaths" DependsOnTargets="$(GetFrameworkPathsDependsOn)" />
   <Target Name="GetReferenceAssemblyPaths" DependsOnTargets="$(GetReferenceAssemblyPathsDependsOn)" />
-  
-  <!-- 
+
+  <!--
     Microsoft.Managed.Targets is imported by the managed language target files in MSBuild 16.0 and above, but most of the msbuild tasks are actually in Microsoft.Common.Currentversion.targets.
     So import it when the managed targets do not get imported.
   -->
@@ -133,7 +142,7 @@
   <Import Condition="'$(NetCoreBuild)' != 'true' AND !Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\SQLProjectsSystem.targets') AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets" />
 
-  <!-- Use generic SQLProjectsSystem.targets for builds using SSMS/Other IDEs which supports SDK Style Projects. 
+  <!-- Use generic SQLProjectsSystem.targets for builds using SSMS/Other IDEs which supports SDK Style Projects.
   It is impossible for both of these targets file to exist simultaneously on their own. -->
   <Import Condition="'$(NetCoreBuild)' != 'true' AND !Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\ssdtprojectsystem.targets') AND Exists('$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\SQLProjectsSystem.targets')"
           Project="$(MSBuildExtensionsPath)\Sdks\Microsoft.SqlProject.Sdk\SQLProjectsSystem.targets" />
@@ -141,7 +150,7 @@
   <PropertyGroup>
     <SqlBuildDependsOn>$(SqlBuildDependsOn);_GenerateSqlBuildDependencyCache</SqlBuildDependsOn>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <!-- Capture SDK version in telemetry -->
     <DacFxTelemetryItems Update="$(MSBuildProjectFullPath)">
@@ -265,6 +274,6 @@
   <!-- Default properties to be evaluated last -->
   <PropertyGroup>
     <EnableDefaultSqlItems Condition=" '$(EnableDefaultSqlItems)' == '' ">true</EnableDefaultSqlItems>
-    <DefaultSqlItemExcludes>$(DefaultSqlItemExcludes);$(BaseOutputPath)/**;$(BaseIntermediateOutputPath)/**</DefaultSqlItemExcludes> 
+    <DefaultSqlItemExcludes>$(DefaultSqlItemExcludes);$(BaseOutputPath)/**;$(BaseIntermediateOutputPath)/**</DefaultSqlItemExcludes>
   </PropertyGroup>
 </Project>

@@ -74,8 +74,8 @@ namespace Microsoft.Build.Sql.Tests
                     return msbuildPath;
                 }
 
-                // Fallback to default MSBuild path for Visual Studio 2022
-                return @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe";
+                // Fallback to default MSBuild path for Visual Studio 2026
+                return @"C:\Program Files\Microsoft Visual Studio\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe";
             }
         }
 

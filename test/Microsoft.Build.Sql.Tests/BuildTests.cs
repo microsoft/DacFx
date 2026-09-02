@@ -42,6 +42,21 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         [Test]
+        [Description("Verifies build with pre-plan script.")]
+        public void SuccessfulBuildWithPrePlanScript()
+        {
+            this.AddPrePlanScripts("Script.PrePlan.sql");
+
+            string stdOutput, stdError;
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+
+            // Verify success
+            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            this.VerifyDacPackage();
+        }
+
+        [Test]
         [Description("Verifies build with post-deployment script.")]
         public void SuccessfulBuildWithPostDeployScript()
         {

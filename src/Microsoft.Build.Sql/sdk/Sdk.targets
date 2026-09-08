@@ -219,10 +219,11 @@
   </Target>
 
   <ItemGroup>
-    <!-- Remove files specified as PreDeploy, PostDeploy, and None scripts from build -->
+    <!-- Remove files specified as PreDeploy, PostDeploy, PrePlan, and None scripts from build -->
     <Build Remove="@(PreDeploy)" />
     <Build Remove="@(PostDeploy)" />
     <Build Remove="@(None)" />
+    <Build Remove="@(PrePlan)" />
     <Build Remove="@(BuildExtensionConfiguration)" />
     <Build Remove="@(DeploymentExtensionConfiguration)" />
   </ItemGroup>

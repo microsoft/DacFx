@@ -303,6 +303,14 @@ namespace Microsoft.Build.Sql.Tests
         }
 
         /// <summary>
+        /// Add pre-plan scripts to the project. <paramref name="files"/> paths are relative.
+        /// </summary>
+        protected void AddPrePlanScripts(params string[] files)
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "PrePlan", files);
+        }
+
+        /// <summary>
         /// Add post-deploy scripts to the project. <paramref name="files"/> paths are relative.
         /// </summary>
         protected void AddPostDeployScripts(params string[] files)

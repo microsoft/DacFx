@@ -191,7 +191,10 @@ namespace Microsoft.Build.Sql.Tests
                 // This also requires the full path of the dotnet process be passed to FileName.
             };
 
-            return RunProcessWithOutputRedirect(dotnetStartInfo, out stdOutput, out stdError);
+            int exitCode = RunProcessWithOutputRedirect(dotnetStartInfo, out stdOutput, out stdError);
+            StringAssert.DoesNotContain("MSB4011", stdOutput + stdError,
+                "Duplicate MSBuild imports must fail the test even when the build succeeds.");
+            return exitCode;
         }
 
         /// <summary>

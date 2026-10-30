@@ -18,12 +18,18 @@ namespace Microsoft.Build.Sql.Tests
         public void SuccessfulSimpleBuild()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
+
+            using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
+            {
+                Assert.IsEmpty(model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Assembly),
+                    "A SQL-only build must not introduce a CLR assembly.");
+            }
         }
 
 #if NETFRAMEWORK
@@ -36,10 +42,9 @@ namespace Microsoft.Build.Sql.Tests
             this.AddProjectReference(Path.Combine(referenceDirectory, "ReferenceProj.sqlproj"));
             this.RemoveBuildFiles("ReferenceProj/**/*.sql");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
             Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
-            StringAssert.DoesNotContain("MSB4011", stdOutput);
             this.VerifyDacPackage();
 
             using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
@@ -301,10 +306,10 @@ namespace Microsoft.Build.Sql.Tests
             this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"));
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
@@ -321,10 +326,10 @@ namespace Microsoft.Build.Sql.Tests
             this.RemoveBuildFiles("ReferenceProj/**/*.*");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
@@ -391,8 +396,8 @@ namespace Microsoft.Build.Sql.Tests
             this.AddProjectReference(projectB);
 
             // Build and verify a.dacpac is copied to the output directory
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
             FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), "A.dacpac"));
@@ -481,10 +486,10 @@ namespace Microsoft.Build.Sql.Tests
                 messageTask.SetParameter("Importance", "high");
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
@@ -643,8 +648,9 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             string referenceProjectPath = Path.Combine(tempFolder, "ReferenceProj.sqlproj");
-            int referenceExitCode = this.RunDotnetCommandOnProject("build", out _, out string referenceStdError, projectPath: referenceProjectPath);
-            Assert.AreEqual(0, referenceExitCode, "Reference project build failed with error " + referenceStdError);
+            int referenceExitCode = this.RunDotnetCommandOnProject("build", out string referenceStdOutput, out string referenceStdError,
+                projectPath: referenceProjectPath, arguments: "-warnaserror");
+            Assert.AreEqual(0, referenceExitCode, "Reference project build failed: " + referenceStdOutput + referenceStdError);
 
             string dacpacPath = Path.Combine(tempFolder, "bin", "Debug", "ReferenceProj.dacpac");
             FileAssert.Exists(dacpacPath, "Reference project dacpac was not produced.");
@@ -655,8 +661,8 @@ namespace Microsoft.Build.Sql.Tests
                 item.AddMetadata("DatabaseSqlCmdVariable", "ReferenceDb");
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 

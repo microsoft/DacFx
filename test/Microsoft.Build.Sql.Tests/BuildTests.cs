@@ -34,6 +34,28 @@ namespace Microsoft.Build.Sql.Tests
 
 #if NETFRAMEWORK
         [Test]
+        [Description("Verifies build output is fully captured when the process runs longer than one minute.")]
+        public void VerifyBuildOutputCapturedAfterOneMinute()
+        {
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintDelayedBuildOutput", target =>
+            {
+                target.AfterTargets = "Build";
+                var execTask = target.AddTask("Exec");
+                execTask.SetParameter("Command", "powershell -NoProfile -NonInteractive -Command \"Start-Sleep -Seconds 61\"");
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "DelayedBuildOutput");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("DelayedBuildOutput", stdOutput);
+            this.VerifyDacPackage();
+        }
+
+        [Test]
         [Description("Verifies inline SQLCLR compilation and embedding with full-framework MSBuild.")]
         public void SuccessfulSqlClrBuild()
         {

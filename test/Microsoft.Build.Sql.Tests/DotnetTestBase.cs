@@ -212,9 +212,6 @@ namespace Microsoft.Build.Sql.Tests
             StringBuilder threadShared_ReceivedOutput = new StringBuilder();
             StringBuilder threadShared_ReceivedErrors = new StringBuilder();
 
-            int interlocked_outputCompleted = 0;
-            int interlocked_errorsCompleted = 0;
-
             using Process dotnet = new Process();
             dotnet.StartInfo = startInfo;
 
@@ -230,10 +227,6 @@ namespace Microsoft.Build.Sql.Tests
                         threadShared_ReceivedOutput.AppendLine(e.Data);
                     }
                 }
-                else
-                {
-                    System.Threading.Interlocked.Increment(ref interlocked_outputCompleted);
-                }
             };
 
             // the ErrorDataReceived delegateis called on a separate thread as output data arrives from the process
@@ -247,10 +240,6 @@ namespace Microsoft.Build.Sql.Tests
                         threadShared_ReceivedErrors.AppendLine(e.Data);
                     }
                 }
-                else
-                {
-                    System.Threading.Interlocked.Increment(ref interlocked_errorsCompleted);
-                }
             };
 
             // Start the build and begin reading the outputs
@@ -259,27 +248,14 @@ namespace Microsoft.Build.Sql.Tests
             dotnet.BeginOutputReadLine();
             dotnet.BeginErrorReadLine();
 
-            // Wait for dotnet build to finish with a timeout
-            TimeSpan timeout = TimeSpan.FromSeconds(60);
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-            dotnet.WaitForExit((int)timeout.TotalMilliseconds);
-
-            do
-            {
-                System.Threading.Thread.MemoryBarrier();
-                System.Threading.Thread.Sleep(0);
-            }
-            while ((interlocked_outputCompleted < 1 || interlocked_errorsCompleted < 1) && timer.Elapsed < timeout);
+            // Parameterless WaitForExit also waits for asynchronous output handlers to finish.
+            dotnet.WaitForExit();
 
             lock (threadSharedLock)
             {
                 stdOutput = threadShared_ReceivedOutput.ToString();
                 stdError = threadShared_ReceivedErrors.ToString();
             }
-
-            // Ensure the process has fully exited before accessing ExitCode to avoid race condition
-            dotnet.WaitForExit();
 
             return dotnet.ExitCode;
         }

@@ -6,12 +6,26 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
+    <!-- TODO: Remove the NetCoreBuild restriction and the matching host error in _ValidateSqlClrCompilation
+         after updating DacFx to a version that supports SQLCLR metadata inspection on modern .NET. -->
+    <_SqlClrCompile Condition="'$(EnableSqlClr)' == 'true' AND '$(NetCoreBuild)' != 'true'">true</_SqlClrCompile>
     <LanguageTargets Condition=" '$(LanguageTargets)' == ''">$(MSBuildToolsPath)\Microsoft.Common.targets</LanguageTargets>
     <MSBuildAllProjects Condition="'$(MSBuildToolsVersion)' != 'Current'">$(MSBuildAllProjects);$(MsBuildThisFileFullPath)</MSBuildAllProjects>
     <IncludeBuildOutput Condition="'$(IncludeBuildOutput)' == ''">false</IncludeBuildOutput>
 
     <!-- For CPS/VS support. See https://github.com/dotnet/project-system/blob/master/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/DesignTimeTargets/Microsoft.Managed.DesignTime.targets#L60 -->
-    <CustomBeforeMicrosoftCommonTargets Condition="'$(ManagedLanguageTargetsGotImported)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')">$(CustomBeforeMicrosoftCommonTargets);$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</CustomBeforeMicrosoftCommonTargets>
+    <CustomBeforeMicrosoftCommonTargets Condition="'$(_SqlClrCompile)' != 'true' And '$(ManagedLanguageTargetsGotImported)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')">$(CustomBeforeMicrosoftCommonTargets);$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</CustomBeforeMicrosoftCommonTargets>
+  </PropertyGroup>
+
+  <!-- Select the language targets before Microsoft.NET.Sdk imports them, so they are imported only once. -->
+  <PropertyGroup Condition="'$(_SqlClrCompile)' == 'true'">
+    <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
+    <DisableImplicitFrameworkReferences>false</DisableImplicitFrameworkReferences>
+    <AutomaticallyUseReferenceAssemblyPackages>true</AutomaticallyUseReferenceAssemblyPackages>
+    <NoCompilerStandardLib>true</NoCompilerStandardLib>
+    <NoStdLib>false</NoStdLib>
+    <OutputType>Library</OutputType>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
 
   <!-- Sdk.props pre-sets TargetFrameworkVersion and TargetFrameworkMoniker for VS design-time support.
@@ -57,9 +71,16 @@
   <ItemGroup>
     <BuiltProjectOutputGroupKeyOutput Remove="@(BuiltProjectOutputGroupKeyOutput)" />
     <DebugSymbolsProjectOutputGroupOutput Remove="@(DebugSymbolsProjectOutputGroupOutput)" />
-    <IntermediateAssembly Remove="@(IntermediateAssembly)" />
-    <IntermediateRefAssembly Remove="@(IntermediateRefAssembly)" />
-    <Reference Remove="mscorlib" />
+    <IntermediateAssembly Remove="@(IntermediateAssembly)" Condition="'$(_SqlClrCompile)' != 'true'" />
+    <IntermediateRefAssembly Remove="@(IntermediateRefAssembly)" Condition="'$(_SqlClrCompile)' != 'true'" />
+    <Reference Remove="mscorlib" Condition="'$(_SqlClrCompile)' != 'true'" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(_SqlClrCompile)' == 'true'">
+    <!-- SQL project references are resolved by ResolveArtifactReferences, not by the C# compiler or NuGet framework compatibility checks. -->
+    <ProjectReference Update="@(ProjectReference->WithMetadataValue('Extension', '.sqlproj'))">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
 
   <!--
@@ -69,19 +90,10 @@
   <Target Name="ComputeIntermediateSatelliteAssemblies" />
 
   <!--
-    The GetReferenceAssemblyPaths does not need to run since reference assemblies aren't needed.
-  -->
-  <Target Name="GetFrameworkPaths" DependsOnTargets="$(GetFrameworkPathsDependsOn)" />
-  <Target Name="GetReferenceAssemblyPaths" DependsOnTargets="$(GetReferenceAssemblyPathsDependsOn)" />
-
-  <!--
     Microsoft.Managed.Targets is imported by the managed language target files in MSBuild 16.0 and above, but most of the msbuild tasks are actually in Microsoft.Common.Currentversion.targets.
     So import it when the managed targets do not get imported.
   -->
-  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.targets" Condition="'$(MSBuildAssemblyVersion)' >= '16.0' And '$(ManagedLanguageTargetsGotImported)' != 'true'" />
-
-  <Target Name="_GenerateCompileInputs" />
-  <Target Name="_GenerateCompileDependencyCache" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Managed.targets" Condition="'$(_SqlClrCompile)' != 'true' And '$(MSBuildAssemblyVersion)' >= '16.0' And '$(ManagedLanguageTargetsGotImported)' != 'true'" />
 
   <!-- Disables the _CopyFilesMarkedCopyLocal target to not copy references when SkipCopyFilesMarkedCopyLocal is set to true. -->
   <Import Project="DisableCopyFilesMarkedCopyLocal.targets" Condition="'$(SkipCopyFilesMarkedCopyLocal)' == 'true'" />
@@ -127,11 +139,7 @@
   </PropertyGroup>
 
   <Target Name="CreateManifestResourceNames" />
-  <!-- CoreCompile is a target inside target Build on Microsoft.Common.targets that is not implemented there but allows us to personalize our compile/build flow, while
-    executing all the other targets inside Build regularly. We implement it before importing Common.targets because it's not implemented there, so it will not be
-    overriden when importing the targets.
-    -->
-  <Target Name="CoreCompile" />
+  <Import Project="DisableClrCompilation.targets" Condition="'$(_SqlClrCompile)' != 'true'" />
 
   <Import Condition="'$(NetCoreBuild)' == 'true'" Project="$(MSBuildThisFileDirectory)../tools/net8.0/Microsoft.Data.Tools.Schema.SqlTasks.targets"/>
   <Import Condition="'$(NetCoreBuild)' != 'true' AND '$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
@@ -150,6 +158,22 @@
   <PropertyGroup>
     <SqlBuildDependsOn>$(SqlBuildDependsOn);_GenerateSqlBuildDependencyCache</SqlBuildDependsOn>
   </PropertyGroup>
+
+  <Target Name="_ValidateSqlClrCompilation" BeforeTargets="PrepareForBuild" Condition="'@(Compile)' != '' OR '$(EnableSqlClr)' == 'true'">
+    <Error Condition="'$(EnableSqlClr)' != 'true'"
+           Text="SQLCLR source files require EnableSqlClr=true. Set EnableSqlClr in the project and build with .NET Framework MSBuild (MSBuild.exe)." />
+    <!-- TODO: Remove this host error after updating DacFx to support SQLCLR metadata inspection on modern .NET,
+         together with the NetCoreBuild restriction on _SqlClrCompile. Keep the .NET Framework target validation. -->
+    <Error Condition="'$(NetCoreBuild)' == 'true'"
+           Text="SQLCLR compilation requires .NET Framework MSBuild (MSBuild.exe). Use MSBuild.exe instead of dotnet build and target .NET Framework, such as net472 or net48." />
+    <Error Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'"
+           Text="SQLCLR compilation requires a .NET Framework target, such as net472 or net48. TargetFramework is '$(TargetFramework)'." />
+  </Target>
+
+  <Target Name="_VerifySqlClrAssembly" BeforeTargets="_SetupSqlBuildInputs" Condition="'$(_SqlClrCompile)' == 'true'">
+    <Error Condition="!Exists('$(IntermediateTargetFullFileName)')"
+           Text="SQLCLR compilation did not produce the expected assembly '$(IntermediateTargetFullFileName)'. The DACPAC cannot be built without its CLR assembly." />
+  </Target>
 
   <ItemGroup>
     <!-- Capture SDK version in telemetry -->

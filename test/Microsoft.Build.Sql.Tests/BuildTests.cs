@@ -26,6 +26,83 @@ namespace Microsoft.Build.Sql.Tests
             this.VerifyDacPackage();
         }
 
+#if NETFRAMEWORK
+        [Test]
+        [Description("Verifies inline SQLCLR compilation and embedding with full-framework MSBuild.")]
+        public void SuccessfulSqlClrBuild()
+        {
+            string referenceDirectory = Path.Combine(this.WorkingDirectory, "ReferenceProj");
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), referenceDirectory);
+            this.AddProjectReference(Path.Combine(referenceDirectory, "ReferenceProj.sqlproj"));
+            this.RemoveBuildFiles("ReferenceProj/**/*.sql");
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
+            StringAssert.DoesNotContain("MSB4011", stdOutput);
+            this.VerifyDacPackage();
+
+            using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
+            {
+                TSqlObject assembly = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Assembly).Single();
+                Assert.AreEqual("[project]", assembly.Name.ToString());
+                Assert.IsTrue(model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.ScalarFunction)
+                    .Any(function => function.Name.ToString() == "[dbo].[AddIntegers]"));
+
+                string assemblyPath = Directory.GetFiles(Path.Combine(this.WorkingDirectory, "obj"), "project.dll", SearchOption.AllDirectories).Single();
+                string assemblyHex = BitConverter.ToString(File.ReadAllBytes(assemblyPath)).Replace("-", "");
+                StringAssert.Contains("0X" + assemblyHex, assembly.GetScript().ToUpperInvariant(),
+                    "The DACPAC must embed the DLL produced by the C# compiler.");
+            }
+        }
+
+        [Test]
+        [Description("Verifies SQLCLR compilation rejects non-framework targets.")]
+        public void SqlClrCompilationRequiresFrameworkTarget()
+        {
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "EnableSqlClr", "true" }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreNotEqual(0, exitCode);
+            StringAssert.Contains("SQLCLR compilation requires a .NET Framework target", stdOutput + stdError);
+        }
+#else
+        [Test]
+        [Description("Verifies dotnet build reports unsupported SQLCLR compilation instead of omitting the assembly.")]
+        public void SqlClrCompilationRequiresFrameworkMSBuild()
+        {
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "EnableSqlClr", "true" },
+                { "TargetFramework", "net472" }
+            });
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Compile",
+                new[] { Path.Combine(this.CommonTestDataDirectory, "SuccessfulSqlClrBuild", "Functions.cs") });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreNotEqual(0, exitCode, "SQLCLR compilation must not silently succeed under dotnet build.");
+            StringAssert.Contains("SQLCLR compilation requires .NET Framework MSBuild", stdOutput + stdError);
+        }
+#endif
+
+        [Test]
+        [Description("Verifies C# sources are not silently omitted when SQLCLR compilation is disabled.")]
+        public void SqlClrCompilationRequiresOptIn()
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Compile",
+                new[] { Path.Combine(this.CommonTestDataDirectory, "SuccessfulSqlClrBuild", "Functions.cs") });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreNotEqual(0, exitCode, "The build must not silently omit CLR source files.");
+            StringAssert.Contains("SQLCLR source files require EnableSqlClr=true", stdOutput + stdError);
+        }
+
         [Test]
         [Description("Verifies build with pre-deployment script.")]
         public void SuccessfulBuildWithPreDeployScript()

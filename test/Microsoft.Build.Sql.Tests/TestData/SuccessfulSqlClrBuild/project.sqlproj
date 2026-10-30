@@ -1,0 +1,12 @@
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0-test" />
+  <PropertyGroup>
+    <EnableSqlClr>true</EnableSqlClr>
+    <TargetFramework>net472</TargetFramework>
+    <TargetLanguage>CS</TargetLanguage>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql150DatabaseSchemaProvider</DSP>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Functions.cs" />
+  </ItemGroup>
+</Project>

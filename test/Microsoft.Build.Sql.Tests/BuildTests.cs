@@ -636,16 +636,10 @@ namespace Microsoft.Build.Sql.Tests
         public void BuildWithDacpacArtifactReference()
         {
             // Build a ReferenceProj to produce a .dacpac that we can reference directly.
-            string tempFolder = TestUtils.CreateTempDirectory();
+            // Keep it inside the fixture's isolated NuGet and MSBuild configuration.
+            string tempFolder = Path.Combine(this.WorkingDirectory, "ReferenceProj");
             TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
-
-            // The temp folder lives under the repo tree, so copy the isolation files from the test Template
-            // to stop it inheriting the repo's Directory.Build.props (artifacts output layout / central package
-            // management). This keeps the dacpac at the standard bin/Debug path.
-            foreach (string isolationFile in new[] { "Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props" })
-            {
-                File.Copy(Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", isolationFile), Path.Combine(tempFolder, isolationFile), overwrite: true);
-            }
+            this.RemoveBuildFiles("ReferenceProj/**/*.sql");
 
             string referenceProjectPath = Path.Combine(tempFolder, "ReferenceProj.sqlproj");
             int referenceExitCode = this.RunDotnetCommandOnProject("build", out string referenceStdOutput, out string referenceStdError,
@@ -753,7 +747,8 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Since our test version is 1.x, we should get a warning about a newer version being available
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError,
+                arguments: "-p:SkipCheckForNewSDKVersion=false");
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             StringAssert.Contains("A newer version of Microsoft.Build.Sql is available", stdOutput, "Version check warning not found in output.");

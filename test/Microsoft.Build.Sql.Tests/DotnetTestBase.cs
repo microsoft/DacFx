@@ -158,6 +158,9 @@ namespace Microsoft.Build.Sql.Tests
                 projectPath = this.GetProjectFilePath();
             }
 
+            // Version notifications are tested separately and must not affect warning-as-error builds.
+            arguments = "-p:SkipCheckForNewSDKVersion=true " + arguments;
+
 #if NETFRAMEWORK
             // dotnet command will be run as a MSBuild target and we need to specify an explicit restore
             dotnetCommand = "-target:" + dotnetCommand;

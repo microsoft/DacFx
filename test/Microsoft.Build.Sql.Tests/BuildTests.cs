@@ -18,12 +18,116 @@ namespace Microsoft.Build.Sql.Tests
         public void SuccessfulSimpleBuild()
         {
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
+
+            using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
+            {
+                Assert.IsEmpty(model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Assembly),
+                    "A SQL-only build must not introduce a CLR assembly.");
+            }
+        }
+
+#if NETFRAMEWORK
+        [Test]
+        [Description("Verifies build output is fully captured when the process runs longer than one minute.")]
+        public void VerifyBuildOutputCapturedAfterOneMinute()
+        {
+            ProjectUtils.AddTarget(GetProjectFilePath(), "PrintDelayedBuildOutput", target =>
+            {
+                target.AfterTargets = "Build";
+                var execTask = target.AddTask("Exec");
+                execTask.SetParameter("Command", "powershell -NoProfile -NonInteractive -Command \"Start-Sleep -Seconds 61\"");
+                var messageTask = target.AddTask("Message");
+                messageTask.SetParameter("Text", "DelayedBuildOutput");
+                messageTask.SetParameter("Importance", "high");
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
+            Assert.AreEqual(string.Empty, stdError);
+            StringAssert.Contains("DelayedBuildOutput", stdOutput);
+            this.VerifyDacPackage();
+        }
+
+        [Test]
+        [Description("Verifies inline SQLCLR compilation and embedding with full-framework MSBuild.")]
+        public void SuccessfulSqlClrBuild()
+        {
+            string referenceDirectory = Path.Combine(this.WorkingDirectory, "ReferenceProj");
+            TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), referenceDirectory);
+            this.AddProjectReference(Path.Combine(referenceDirectory, "ReferenceProj.sqlproj"));
+            this.RemoveBuildFiles("ReferenceProj/**/*.sql");
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
+            this.VerifyDacPackage();
+
+            using (TSqlModel model = new TSqlModel(this.GetDacpacPath()))
+            {
+                TSqlObject assembly = model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.Assembly).Single();
+                Assert.AreEqual("[project]", assembly.Name.ToString());
+                Assert.IsTrue(model.GetObjects(DacQueryScopes.UserDefined, ModelSchema.ScalarFunction)
+                    .Any(function => function.Name.ToString() == "[dbo].[AddIntegers]"));
+
+                string assemblyPath = Directory.GetFiles(Path.Combine(this.WorkingDirectory, "obj"), "project.dll", SearchOption.AllDirectories).Single();
+                string assemblyHex = BitConverter.ToString(File.ReadAllBytes(assemblyPath)).Replace("-", "");
+                StringAssert.Contains("0X" + assemblyHex, assembly.GetScript().ToUpperInvariant(),
+                    "The DACPAC must embed the DLL produced by the C# compiler.");
+            }
+        }
+
+        [Test]
+        [Description("Verifies SQLCLR compilation rejects non-framework targets.")]
+        public void SqlClrCompilationRequiresFrameworkTarget()
+        {
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "EnableSqlClr", "true" }
+            });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreNotEqual(0, exitCode);
+            StringAssert.Contains("SQLCLR compilation requires a .NET Framework target", stdOutput + stdError);
+        }
+#else
+        [Test]
+        [Description("Verifies dotnet build reports unsupported SQLCLR compilation instead of omitting the assembly.")]
+        public void SqlClrCompilationRequiresFrameworkMSBuild()
+        {
+            ProjectUtils.AddProperties(this.GetProjectFilePath(), new Dictionary<string, string>()
+            {
+                { "EnableSqlClr", "true" },
+                { "TargetFramework", "net472" }
+            });
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Compile",
+                new[] { Path.Combine(this.CommonTestDataDirectory, "SuccessfulSqlClrBuild", "Functions.cs") });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreNotEqual(0, exitCode, "SQLCLR compilation must not silently succeed under dotnet build.");
+            StringAssert.Contains("SQLCLR compilation requires .NET Framework MSBuild", stdOutput + stdError);
+        }
+#endif
+
+        [Test]
+        [Description("Verifies C# sources are not silently omitted when SQLCLR compilation is disabled.")]
+        public void SqlClrCompilationRequiresOptIn()
+        {
+            ProjectUtils.AddItemGroup(this.GetProjectFilePath(), "Compile",
+                new[] { Path.Combine(this.CommonTestDataDirectory, "SuccessfulSqlClrBuild", "Functions.cs") });
+
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+
+            Assert.AreNotEqual(0, exitCode, "The build must not silently omit CLR source files.");
+            StringAssert.Contains("SQLCLR source files require EnableSqlClr=true", stdOutput + stdError);
         }
 
         [Test]
@@ -224,10 +328,10 @@ namespace Microsoft.Build.Sql.Tests
             this.AddProjectReference(Path.Combine(tempFolder, "ReferenceProj.sqlproj"));
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
@@ -244,10 +348,10 @@ namespace Microsoft.Build.Sql.Tests
             this.RemoveBuildFiles("ReferenceProj/**/*.*");
 
             string stdOutput, stdError;
-            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out stdOutput, out stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
@@ -314,8 +418,8 @@ namespace Microsoft.Build.Sql.Tests
             this.AddProjectReference(projectB);
 
             // Build and verify a.dacpac is copied to the output directory
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
             FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), "A.dacpac"));
@@ -404,10 +508,10 @@ namespace Microsoft.Build.Sql.Tests
                 messageTask.SetParameter("Importance", "high");
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
             // Verify success
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
@@ -554,20 +658,15 @@ namespace Microsoft.Build.Sql.Tests
         public void BuildWithDacpacArtifactReference()
         {
             // Build a ReferenceProj to produce a .dacpac that we can reference directly.
-            string tempFolder = TestUtils.CreateTempDirectory();
+            // Keep it inside the fixture's isolated NuGet and MSBuild configuration.
+            string tempFolder = Path.Combine(this.WorkingDirectory, "ReferenceProj");
             TestUtils.CopyDirectoryRecursive(Path.Combine(this.CommonTestDataDirectory, "ReferenceProj"), tempFolder);
-
-            // The temp folder lives under the repo tree, so copy the isolation files from the test Template
-            // to stop it inheriting the repo's Directory.Build.props (artifacts output layout / central package
-            // management). This keeps the dacpac at the standard bin/Debug path.
-            foreach (string isolationFile in new[] { "Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props" })
-            {
-                File.Copy(Path.Combine(TestContext.CurrentContext.TestDirectory, "Template", isolationFile), Path.Combine(tempFolder, isolationFile), overwrite: true);
-            }
+            this.RemoveBuildFiles("ReferenceProj/**/*.sql");
 
             string referenceProjectPath = Path.Combine(tempFolder, "ReferenceProj.sqlproj");
-            int referenceExitCode = this.RunDotnetCommandOnProject("build", out _, out string referenceStdError, projectPath: referenceProjectPath);
-            Assert.AreEqual(0, referenceExitCode, "Reference project build failed with error " + referenceStdError);
+            int referenceExitCode = this.RunDotnetCommandOnProject("build", out string referenceStdOutput, out string referenceStdError,
+                projectPath: referenceProjectPath, arguments: "-warnaserror");
+            Assert.AreEqual(0, referenceExitCode, "Reference project build failed: " + referenceStdOutput + referenceStdError);
 
             string dacpacPath = Path.Combine(tempFolder, "bin", "Debug", "ReferenceProj.dacpac");
             FileAssert.Exists(dacpacPath, "Reference project dacpac was not produced.");
@@ -578,8 +677,8 @@ namespace Microsoft.Build.Sql.Tests
                 item.AddMetadata("DatabaseSqlCmdVariable", "ReferenceDb");
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
@@ -670,7 +769,8 @@ namespace Microsoft.Build.Sql.Tests
             }
 
             // Since our test version is 1.x, we should get a warning about a newer version being available
-            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError,
+                arguments: "-p:SkipCheckForNewSDKVersion=false");
             Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
             StringAssert.Contains("A newer version of Microsoft.Build.Sql is available", stdOutput, "Version check warning not found in output.");

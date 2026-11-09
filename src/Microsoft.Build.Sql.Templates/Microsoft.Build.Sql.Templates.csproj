@@ -41,8 +41,8 @@
     </ItemGroup>
     <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="$(SqlProjTemplateIntermediateOutputPath)/%(RecursiveDir)%(Filename)%(Extension)" />
     <ReplaceFileText 
-      InputFilename="$(SqlProjTemplateIntermediateOutputPath)/SqlProject1.sqlproj"
-      OutputFilename="$(SqlProjTemplateIntermediateOutputPath)/SqlProject1.sqlproj" 
+      InputFilename="$(SqlProjTemplateIntermediateOutputPath)/global.json"
+      OutputFilename="$(SqlProjTemplateIntermediateOutputPath)/global.json"
       MatchExpression="###ASSEMBLY_VERSION###"
       ReplacementText="$(PackageVersion)" />
     <ItemGroup>

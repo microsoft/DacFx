@@ -12,36 +12,41 @@ The templates are available on [NuGet](https://www.nuget.org/packages/Microsoft.
 dotnet new install Microsoft.Build.Sql.Templates
 ```
 
-Microsoft.Build.Sql projects and code analysis rules can be created using the `sqlproj` and `sqlcodeanalysis` templates, respectively. Both projects require .NET SDK 8 or higher.
+Microsoft.Build.Sql projects and code analysis rules can be created using the `mssqlproj` and `sqlcodeanalysis` templates, respectively. Both projects require .NET SDK 8 or higher.
+
+The SQL project template also supports the existing `sqlproj` short name. Prefer `mssqlproj` to avoid ambiguity when other installed template packages also use `sqlproj`.
 
 ## Using the templates
 
 ### SQL project
 
+The template creates a `.sqlproj` using `<Project Sdk="Microsoft.Build.Sql">` and a sibling `global.json` that specifies the Microsoft.Build.Sql version under `msbuild-sdks`.
+
+If your repository already has a `global.json`, merge the generated `msbuild-sdks` entry into it and remove the project-level `global.json` to preserve existing .NET SDK settings and share the build SDK version across projects.
 
 Creating a new project "AdventureWorks" (`-n` or `--name`):
 
 ```bash
-dotnet new sqlproj -n "AdventureWorks"
+dotnet new mssqlproj -n "AdventureWorks"
 ```
 
 Displaying help information for the SQL project template (`-h`):
 
 ```bash
-dotnet new sqlproj -h
+dotnet new mssqlproj -h
 ```
 
 
 Creating a new project "AdventureWorksLT" for Azure SQL Database (`-tp` or `--target-platform`):
 
 ```bash
-dotnet new sqlproj -n "AdventureWorksLT" -tp "SqlAzureV12"
+dotnet new mssqlproj -n "AdventureWorksLT" -tp "SqlAzureV12"
 ```
 
 Creating a new project "AdventureWorks" with a `.gitignore` file (-g):
 
 ```bash
-dotnet new sqlproj -n "AdventureWorks" -g
+dotnet new mssqlproj -n "AdventureWorks" -g
 ```
 
 ### New sample code analysis rule

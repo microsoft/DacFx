@@ -8,7 +8,7 @@
     "identity": "Microsoft.Build.Sql.Project",
     "name": "SQL Server Database Project",
     "description": "A Microsoft.Build.Sql project that creates a SQL Server Data-Tier Application package (.dacpac)",
-    "shortName": "sqlproj",
+    "shortName": ["sqlproj", "mssqlproj"],
     "tags": {
         "language": "SQL",
         "type": "project"
@@ -19,7 +19,7 @@
         {
             "source": "./",
             "target": "./",
-            "include": ["SqlProject1.sqlproj", "README.md"]
+            "include": ["SqlProject1.sqlproj", "global.json", "README.md"]
         },
         {
             "source": "./",

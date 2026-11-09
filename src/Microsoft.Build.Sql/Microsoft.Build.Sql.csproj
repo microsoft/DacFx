@@ -116,6 +116,7 @@
   </Target>
 
   <ItemGroup>
+    <Content Include="sdk\DisableClrCompilation.targets" Pack="true" PackagePath="sdk\" />
     <Content Include="sdk\Sdk.targets" Pack="true" PackagePath="sdk\" />
     <Content Include="$(SdkStagingDirectory)**\*.*" Pack="true" PackagePath="\" />
     <Content Include="$(EnlistmentRoot)\LICENSE.txt" Pack="true" PackagePath="\" />

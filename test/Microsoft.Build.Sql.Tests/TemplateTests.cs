@@ -2,9 +2,11 @@
 // Licensed under the MIT License.
 
 using NUnit.Framework;
+using NuGet.Packaging;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Xml.Linq;
 
 namespace Microsoft.Build.Sql.Tests
@@ -83,16 +85,30 @@ namespace Microsoft.Build.Sql.Tests
             FileAssert.Exists(Path.Combine(this.WorkingDirectory, "VerifySqlprojTemplate.sqlproj"));
         }
 
-        [Test]
+        [TestCase("sqlproj")]
+        [TestCase("mssqlproj")]
         [Description("Verifies database project template with custom name")]
-        public void VerifySqlprojTemplateWithCustomName()
+        public void VerifySqlprojTemplateWithCustomName(string shortName)
         {
             string stdOutput, stdError;
-            int exitCode = this.RunGenericDotnetCommand("new sqlproj --name ThisTestProject", out stdOutput, out stdError);
-            Assert.AreEqual(0, exitCode, "dotnet new sqlproj failed with error " + stdError);
+            int exitCode = this.RunGenericDotnetCommand($"new {shortName} --name ThisTestProject", out stdOutput, out stdError);
+            Assert.AreEqual(0, exitCode, $"dotnet new {shortName} failed with error " + stdError);
             Assert.AreEqual(string.Empty, stdError);
 
-            FileAssert.Exists(Path.Combine(this.WorkingDirectory, "ThisTestProject", "ThisTestProject.sqlproj"));
+            string projectFilePath = Path.Combine(this.WorkingDirectory, "ThisTestProject", "ThisTestProject.sqlproj");
+            FileAssert.Exists(projectFilePath);
+            var doc = XDocument.Load(projectFilePath);
+            Assert.AreEqual("Microsoft.Build.Sql", doc.Root!.Attribute("Sdk")?.Value,
+                "Both short names must create a Microsoft.Build.Sql project.");
+            Assert.IsNull(doc.Root.Element("Sdk"), "The SDK must be specified on the Project element.");
+
+            string globalJsonPath = Path.Combine(Path.GetDirectoryName(projectFilePath)!, "global.json");
+            FileAssert.Exists(globalJsonPath);
+            using var globalJson = JsonDocument.Parse(File.ReadAllText(globalJsonPath));
+            using var packageReader = new PackageArchiveReader(GetLocalTemplatePackagePath());
+            Assert.AreEqual(packageReader.GetIdentity().Version.ToNormalizedString(),
+                globalJson.RootElement.GetProperty("msbuild-sdks").GetProperty("Microsoft.Build.Sql").GetString(),
+                "global.json must contain the SDK version stamped into the template package.");
         }
 
         [Test]

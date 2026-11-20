@@ -2,6 +2,10 @@
 
 ## Build
 
+The project uses `<Project Sdk="Microsoft.Build.Sql">`. Its SDK version is specified in the generated `global.json` under `msbuild-sdks`; update that entry to change the Microsoft.Build.Sql version.
+
+If your repository already has a `global.json`, merge the `msbuild-sdks` entry into that file and remove the generated project-level `global.json`. This keeps the repository's existing .NET SDK settings and lets SQL projects share the same build SDK version.
+
 To build the project, run the following command:
 
 ```bash

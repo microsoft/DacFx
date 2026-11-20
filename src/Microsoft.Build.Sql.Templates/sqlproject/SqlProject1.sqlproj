@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build">
-  <Sdk Name="Microsoft.Build.Sql" Version="###ASSEMBLY_VERSION###" />
+<Project Sdk="Microsoft.Build.Sql">
   <PropertyGroup>
     <Name>SqlProject1</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.{TargetPlatform}DatabaseSchemaProvider</DSP>

@@ -53,6 +53,36 @@ inside the `<Project>` tag.
 
 Depending on where you are developing, additional steps may be required. A walk-through of the conversion process is available at https://learn.microsoft.com/sql/tools/sql-database-projects/howto/convert-original-sql-project.
 
+## Inline C# SQLCLR compilation
+
+On Windows, SQL projects can opt in to compiling inline C# SQLCLR sources with
+Visual Studio's **.NET Framework MSBuild (`MSBuild.exe`)**. This mode is not
+supported by `dotnet build`. Target .NET Framework, not modern .NET:
+
+```xml
+<Project>
+  <Sdk Name="Microsoft.Build.Sql" Version="###ASSEMBLY_VERSION###" />
+  <PropertyGroup>
+    <EnableSqlClr>true</EnableSqlClr>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Clr\**\*.cs" />
+  </ItemGroup>
+</Project>
+```
+
+From a Visual Studio Developer Command Prompt, run
+`MSBuild.exe Database.sqlproj /restore /t:Build`. The matching .NET Framework
+targeting pack must be installed or available through package restore. The build
+compiles the C# sources, generates the SQLCLR objects from their attributes, and
+embeds the assembly in the DACPAC. SQL files remain included by default.
+
+Deploy the resulting DACPAC with SqlPackage; its runtime does not need to match
+the framework build host. The target SQL Server must already be configured to
+run the assembly under its CLR security policy. This option does not change
+server security settings or add modern-.NET SQLCLR runtime support.
+
 ## Resources
 
 - [Release notes](https://github.com/microsoft/DacFx/tree/main/release-notes/Microsoft.Build.Sql)

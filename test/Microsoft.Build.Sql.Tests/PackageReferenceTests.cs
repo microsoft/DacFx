@@ -32,9 +32,9 @@ namespace Microsoft.Build.Sql.Tests
             string packagesFolder = Path.Combine(this.WorkingDirectory, "pkg");
             int exitCode = RunDotnetCommandOnProject("pack", out stdOutput, out stdError,
                 projectPath: $"{ReferenceProjectName}/{ReferenceProjectName}.sqlproj",
-                arguments: $"-p:Version={ReferencePackageVersion} -p:OutputPath=\"{packagesFolder}\"");
+                arguments: $"-warnaserror -p:Version={ReferencePackageVersion} -p:OutputPath=\"{packagesFolder}\"");
 
-            Assert.AreEqual(0, exitCode, "dotnet pack failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "dotnet pack failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             FileAssert.Exists(Path.Combine(packagesFolder, $"{ReferenceProjectName}.{ReferencePackageVersion}.nupkg"));
 
@@ -62,9 +62,9 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion);
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
@@ -75,9 +75,9 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, databaseSqlcmdVariable: "RefProj");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
@@ -88,9 +88,9 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, databaseVariableLiteralValue: "RefProjLit");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
@@ -101,9 +101,9 @@ namespace Microsoft.Build.Sql.Tests
         {
             this.AddPackageReference(packageName: ReferenceProjectName, version: ReferencePackageVersion, serverSqlcmdVariable: "RefServer", databaseSqlcmdVariable: "RefProj");
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
 
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
         }
@@ -119,9 +119,11 @@ namespace Microsoft.Build.Sql.Tests
                 { "GenerateCreateScript", "True" }
             });
 
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
+            // Create-script generation reports SQL72025 for the hidden master.dacpac path, including on main.
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError,
+                arguments: "-warnaserror -warnnotaserror:SQL72025");
 
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
             FileAssert.Exists(Path.Combine(this.GetOutputDirectory(), $"{DatabaseProjectName}_Create.sql"));
@@ -133,8 +135,8 @@ namespace Microsoft.Build.Sql.Tests
         {
             // Add PackageReference to master.dacpac and build
             this.AddPackageReference(packageName: "Microsoft.SqlServer.Dacpacs.Master", version: "160.*");
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 
@@ -156,8 +158,8 @@ namespace Microsoft.Build.Sql.Tests
                 item.AddMetadata("Version", "160.*");
                 item.AddMetadata("HideAbsolutePath", "false");
             });
-            int exitCode = this.RunDotnetCommandOnProject("build", out _, out string stdError);
-            Assert.AreEqual(0, exitCode, "Build failed with error " + stdError);
+            int exitCode = this.RunDotnetCommandOnProject("build", out string stdOutput, out string stdError, arguments: "-warnaserror");
+            Assert.AreEqual(0, exitCode, "Build failed: " + stdOutput + stdError);
             Assert.AreEqual(string.Empty, stdError);
             this.VerifyDacPackage();
 

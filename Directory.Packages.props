@@ -4,7 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
     <!-- Let CI pipelines to set these for testing dependencies -->
-    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.6.58-preview</DacFxPackageVersion>
+    <DacFxPackageVersion Condition="'$(DacFxPackageVersion)' == ''">170.6.60</DacFxPackageVersion>
     <ScriptDomPackageVersion Condition="'$(ScriptDomPackageVersion)' == ''">180.154.0</ScriptDomPackageVersion>
     <SqlClientPackageVersion Condition="'$(SqlClientPackageVersion)' == ''">6.1.8</SqlClientPackageVersion>
   </PropertyGroup>
